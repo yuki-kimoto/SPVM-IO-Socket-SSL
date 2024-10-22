@@ -1,7 +1,7 @@
 # Copyright (c) 2024 Yuki Kimoto
 # MIT License
 
-class IO::Socket::SSL {
+class IO::Socket::SSL extends IO::Socket::IP {
   version "0.001";
   
   # Class Methods
@@ -17,6 +17,16 @@ class IO::Socket::SSL {
   }
   
   # Instance Methods
+  protected method option_names : string[] () {
+    
+    my $option_names = Array->merge_string(
+      $self->SUPER::option_names,
+      new string [0],
+    );
+    
+    return $option_names;
+  }
+  
   protected method init : void ($options : object[] = undef) {
     
   }
