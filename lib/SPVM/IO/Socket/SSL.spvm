@@ -4,7 +4,16 @@
 class IO::Socket::SSL extends IO::Socket::IP {
   version "0.001";
   
+  use IO::Socket::INET;
   use Net::SSLeay;
+  use Net::SSLeay::SSL_CTX;
+  use Net::SSLeay::SSL_METHOD;
+  use Net::SSLeay::Constant as SSL;
+  use Net::SSLeay::ERR;
+  use Net::SSLeay::BIO;
+  use Net::SSLeay::PEM;
+  use StringBuffer;
+  use Mozilla::CA;
   
   has ssl : Net::SSLeay;
   
@@ -33,10 +42,59 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   protected method init : void ($options : object[] = undef) {
     
+    $self->SUPER::init($options);
+    
   }
   
   protected method configure : void () {
     
+    $self->SUPER::configure;
+    
+    $self->start_SSL;
+    
+  }
+  
+  protected method start_SSL : void () {
+    
+    my $host = $self->{PeerAddr};
+    
+    my $ssl_method = Net::SSLeay::SSL_METHOD->SSLv23_client_method;
+    
+    my $ssl_ctx = Net::SSLeay::SSL_CTX->new($ssl_method);
+    
+    $ssl_ctx->set_verify(SSL->SSL_VERIFY_PEER);
+    
+    my $ca = Mozilla::CA->SSL_ca;
+    
+    my $bio = Net::SSLeay::BIO->new;
+    
+    $bio->write($ca);
+    
+    my $x509 = Net::SSLeay::PEM->read_bio_X509($bio);
+    
+    my $x509_store = $ssl_ctx->get_cert_store;
+    
+    $x509_store->add_cert($x509);
+    
+    # $ssl_ctx->set_default_verify_paths;
+    
+    my $verify_param = $ssl_ctx->get0_param;
+    
+    $verify_param->set_hostflags(SSL->X509_CHECK_FLAG_NO_PARTIAL_WILDCARDS);
+    
+    $verify_param->set1_host($host);
+    
+    my $ssl = Net::SSLeay->new($ssl_ctx);
+    
+    my $socket_fileno = $self->fileno;
+    
+    $ssl->set_fd($socket_fileno);
+    
+    $ssl->set_tlsext_host_name($host);
+    
+    $ssl->connect;
+    
+    $self->{ssl} = $ssl;
   }
   
   method read : int ($buffer : mutable string, $length : int = -1, $offset : int = 0) {
