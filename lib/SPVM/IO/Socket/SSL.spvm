@@ -37,12 +37,3 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
 }
 
-=pod
-
-use constant SSL_OCSP_NO_STAPLE   => 0b00001;
-use constant SSL_OCSP_MUST_STAPLE => 0b00010;
-use constant SSL_OCSP_FAIL_HARD   => 0b00100;
-use constant SSL_OCSP_FULL_CHAIN  => 0b01000;
-use constant SSL_OCSP_TRY_STAPLE  => 0b10000;
-
-=cut
