@@ -39,6 +39,24 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
   }
   
+  method read : int ($buffer : mutable string, $length : int = -1, $offset : int = 0) {
+    
+    my $ssl = $self->{ssl};
+    
+    my $read_length = $ssl->read($buffer, $length, $offset);
+    
+    return $read_length;
+  }
+  
+  method write : int ($buffer : string, $length : int = -1, $offset : int = 0) {
+    
+    my $ssl = $self->{ssl};
+    
+    my $write_length = $self->write($buffer, $length, $offset);
+    
+    return $write_length;
+  }
+  
   method close : void () {
     
     $self->stop_SSL;
