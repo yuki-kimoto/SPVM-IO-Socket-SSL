@@ -3,4 +3,26 @@
 
 class IO::Socket::SSL {
   version "0.001";
+  
+  # Class Methods
+  static method new : IO::Socket::SSL ($options : object[] = undef) {
+    
+    my $self = new IO::Socket::SSL;
+    
+    $self->init($options);
+    
+    $self->configure;
+    
+    return $self;
+  }
+  
+  # Instance Methods
+  protected method init : void ($options : object[] = undef) {
+    
+  }
+  
+  protected method configure : void () {
+    
+  }
+  
 }
