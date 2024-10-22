@@ -1,0 +1,7 @@
+class TestCase::IO::Socket::SSL {
+  use IO::Socket::SSL;
+  static method test : int () {
+    
+    return 1;
+  }
+}
