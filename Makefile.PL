@@ -36,8 +36,8 @@ WriteMakefile(
     resources => {
       repository => {
         type => 'git',
-        url  => '',
-        web  => '',
+        url  => 'https://github.com/yuki-kimoto/SPVM-IO-Socket-SSL.git',
+        web  => 'https://github.com/yuki-kimoto/SPVM-IO-Socket-SSL',
       },
     },
     no_index => {
