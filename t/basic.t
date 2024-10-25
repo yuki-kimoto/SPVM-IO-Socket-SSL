@@ -9,7 +9,6 @@ BEGIN { $ENV{SPVM_BUILD_DIR} = "$FindBin::Bin/.spvm_build"; }
 use SPVM 'TestCase::IO::Socket::SSL';
 
 use SPVM 'IO::Socket::SSL';
-use SPVM::IO::Socket::IP; # TODO: This is not needed.
 use SPVM::IO::Socket::SSL;
 use SPVM 'Fn';
 
