@@ -129,6 +129,34 @@ class IO::Socket::SSL extends IO::Socket::IP {
     }
   }
   
+  method accept_SSL : void () {
+    
+    my $ssl = $self->{ssl};
+    
+    my $fd = $self->{FD};
+    
+    my $timeout = $self->{Timeout};
+    
+    while (1) {
+      eval { $ssl->accept; }
+      
+      if ($@) {
+        my $again = Sys::Socket::Errno->is_accept_again(Sys::Socket::Errno->errno);
+        
+        if ($again) {
+          Go->gosched_io_read($fd, $timeout);
+          next;
+        }
+        else {
+          die $@;
+        }
+      }
+      else {
+        last;
+      }
+    }
+  }
+  
   method read : int ($buffer : mutable string, $length : int = -1, $offset : int = 0) {
     
     my $ssl = $self->{ssl};
