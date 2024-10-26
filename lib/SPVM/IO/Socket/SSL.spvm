@@ -172,5 +172,23 @@ class IO::Socket::SSL extends IO::Socket::IP {
     }
     
   }
+  
+  method stat : Sys::IO::Stat () { die "stat method is not allowed in IO::Scoekt::SSL."; }
+  
+  method send : int ($buffer : string, $flags : int = 0, $length : int = -1, $offset : int = 0) {
+    die "send method is not allowed in IO::Scoekt::SSL. Use write method instead.";
+  }
+  
+  method sendto : int ($buffer : string, $flags : int, $to : Sys::Socket::Sockaddr, $length : int = -1, $offset : int = 0) {
+    die "sendto method is not allowed in IO::Scoekt::SSL. Use write method instead.";
+  }
+  
+  method recv : int ($buffer : mutable string, $length : int = -1, $flags : int = 0, $offset : int = 0) {
+    die "recv method is not allowed in IO::Scoekt::SSL. Use read method instead.";
+  }
+  
+  method recvfrom : int ($buffer : mutable string, $length : int, $flags : int, $from_ref : Sys::Socket::Sockaddr[], $offset : int = 0) {
+    die "recvfrom method is not allowed in IO::Scoekt::SSL. Use read method instead.";
+  }
 }
 
