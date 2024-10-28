@@ -6,11 +6,13 @@ our $VERSION = "0.001";
 
 =head1 Name
 
-SPVM::IO::Socket::SSL - Short Description
+SPVM::IO::Socket::SSL - Sockets for SSL.
 
 =head1 Description
 
-IO::Socket::SSL class in L<SPVM> has methods to do someting.
+B<This class is highly experimental and not yet implemented completly and not tested well and not yet documented.>
+
+IO::Socket::SSL class in L<SPVM> has methods for SSL sockets.
 
 =head1 Usage
 
