@@ -71,7 +71,9 @@ class IO::Socket::SSL extends IO::Socket::IP {
     $ssl_ctx->set_verify(SSL->SSL_VERIFY_PEER);
     
     my $ca = Mozilla::CA->SSL_ca;
-    
+
+=pod
+
     my $bio = Net::SSLeay::BIO->new;
     
     $bio->write($ca);
@@ -81,8 +83,10 @@ class IO::Socket::SSL extends IO::Socket::IP {
     my $x509_store = $ssl_ctx->get_cert_store;
     
     $x509_store->add_cert($x509);
-    
-    # $ssl_ctx->set_default_verify_paths;
+
+=cut
+
+    $ssl_ctx->set_default_verify_paths;
     
     my $verify_param = $ssl_ctx->get0_param;
     
