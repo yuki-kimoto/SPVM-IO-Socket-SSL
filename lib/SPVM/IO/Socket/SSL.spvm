@@ -207,7 +207,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     my $write_length = -1;
     while (1) {
       
-      eval { $write_length = $self->write($buffer, $length, $offset); }
+      eval { $write_length = $ssl->write($buffer, $length, $offset); }
       
       if ($@) {
         my $again = Sys::Socket::Errno->is_write_again(Sys::Socket::Errno->errno);
