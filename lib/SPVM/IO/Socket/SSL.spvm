@@ -102,6 +102,10 @@ class IO::Socket::SSL extends IO::Socket::IP {
       }
     }
     
+    my $default_ssl_options = SSL->SSL_OP_ALL | SSL->SSL_OP_SINGLE_DH_USE | SSL->SSL_OP_SINGLE_ECDH_USE;
+    
+    my $ssl_options = $default_ssl_options;
+    
 =pod
 
     my $bio = Net::SSLeay::BIO->new;
