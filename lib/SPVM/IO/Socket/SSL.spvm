@@ -38,7 +38,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
     my $option_names = Array->merge_string(
       $self->SUPER::option_names,
       [
-        "SSL_verify_mode"
+        "SSL_verify_mode",
+        "SSL_hostname",
       ],
     );
     
@@ -51,11 +52,15 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     $self->SUPER::init($options);
     
-    my $verify_mode = $options_h->get_or_default_int("SSL_verify_mode", SSL->SSL_VERIFY_PEER);
-    
     my $ssl_options_h = Hash->new;
     
+    my $verify_mode = $options_h->get_or_default_int("SSL_verify_mode", SSL->SSL_VERIFY_PEER);
+    
     $ssl_options_h->set("SSL_verify_mode", $verify_mode);
+    
+    my $hostname = $options_h->get_or_default_string("SSL_hostname", undef);
+    
+    $ssl_options_h->set("SSL_hostname", $hostname);
     
     $self->{ssl_options_h} = $ssl_options_h;
   }
@@ -88,7 +93,15 @@ class IO::Socket::SSL extends IO::Socket::IP {
     $ssl_ctx->set_verify($verify_mode);
     
     my $ca = Mozilla::CA->SSL_ca;
-
+    
+    my $hostname = $ssl_options_h->get_string("SSL_hostname");
+    
+    unless ($hostname) {
+      if ($host) {
+        $hostname = $host;
+      }
+    }
+    
 =pod
 
     my $bio = Net::SSLeay::BIO->new;
