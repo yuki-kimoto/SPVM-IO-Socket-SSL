@@ -251,27 +251,11 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   method close : void () {
     
-    $self->stop_SSL;
-    
-    $self->SUPER::close;
-    
-  }
-  
-  protected method stop_SSL : void () {
-    
     my $ssl = $self->{ssl};
     
-    my $shutdown_ret = $ssl->shutdown;
+    $ssl->shutdown;
     
-    if ($shutdown_ret == 0) {
-      while (1) {
-        my $recv_buffer = (mutable string)new_string_len 100;
-        my $read_length = $ssl->read($recv_buffer);
-        if ($read_length <= 0) {
-          last;
-        }
-      }
-    }
+    $self->SUPER::close;
     
   }
   
