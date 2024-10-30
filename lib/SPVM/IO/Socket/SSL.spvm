@@ -41,6 +41,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
         "SSL_version", 
         "SSL_verify_mode",
         "SSL_hostname",
+        "SSL_cipher_list",
       ],
     );
     
@@ -66,6 +67,10 @@ class IO::Socket::SSL extends IO::Socket::IP {
     my $ssl_hostname = $options_h->get_or_default_string("SSL_hostname", undef);
     
     $ssl_options_h->set("SSL_hostname", $ssl_hostname);
+    
+    my $ssl_cipher_list = $options_h->get_or_default_string("SSL_cipher_list", "DEFAULT !EXP !MEDIUM !LOW !eNULL !aNULL !RC4 !DES !MD5 !PSK !SRP");
+    
+    $ssl_options_h->set("SSL_cipher_list", $ssl_cipher_list);
     
     $self->{ssl_options_h} = $ssl_options_h;
   }
@@ -154,6 +159,10 @@ class IO::Socket::SSL extends IO::Socket::IP {
     }
     
     my $ssl_ctx = Net::SSLeay::SSL_CTX->new($ssl_method);
+    
+    my $ssl_cipher_list = $ssl_options_h->get_string("SSL_cipher_list");
+    
+    $ssl_ctx->set_cipher_list($ssl_cipher_list);
     
     my $ssl_verify_mode = $ssl_options_h->get_int("SSL_verify_mode");
     
