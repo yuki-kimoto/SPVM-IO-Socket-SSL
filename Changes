@@ -1,6 +1,8 @@
 0.002 2024-10-30
   [Requirement Changes]
     * Require SPVM::Net::SSLeay 0.002.
+  [Internal Changes]
+    * set_tlsext_host_name is called only in a client.
 0.001 2024-10-22
   [Changes]
     * First release.
