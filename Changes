@@ -1,7 +1,8 @@
 0.002 2024-10-30
   [New Features]
-    * Support SSL_version option.
-    * Support SSL_cipher_list option.
+    * Add SSL_version option to IO::Socket::SSL#init method.
+    * Add SSL_cipher_list option IO::Socket::SSL#init method.
+    * Add SSL_ciphersuites option IO::Socket::SSL#init method.
     
   [Requirement Changes]
     * Require SPVM::Net::SSLeay 0.003.
