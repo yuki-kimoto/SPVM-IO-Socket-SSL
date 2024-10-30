@@ -3,6 +3,8 @@
     * Require SPVM::Net::SSLeay 0.002.
   [Internal Changes]
     * set_tlsext_host_name is called only in a client.
+  [Changes]
+    * Call set_options method given SSL->SSL_OP_ALL | SSL->SSL_OP_SINGLE_DH_USE | SSL->SSL_OP_SINGLE_ECDH_USE.
 0.001 2024-10-22
   [Changes]
     * First release.

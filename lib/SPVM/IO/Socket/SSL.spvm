@@ -129,6 +129,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     $verify_param->set1_host($host);
     
+    $ssl_ctx->set_options($default_ssl_options);
+    
     my $ssl = Net::SSLeay->new($ssl_ctx);
     
     my $socket_fileno = $self->fileno;
