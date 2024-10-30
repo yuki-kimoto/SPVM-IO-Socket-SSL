@@ -73,9 +73,9 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     $ssl_options_h->set("SSL_cipher_list", $ssl_cipher_list);
     
-    my $ssl_set_ciphersuites = $options_h->get_or_default_string("SSL_ciphersuites", undef);
+    my $ssl_ciphersuites = $options_h->get_or_default_string("SSL_ciphersuites", undef);
     
-    $ssl_options_h->set("SSL_ciphersuites", $ssl_set_ciphersuites);
+    $ssl_options_h->set("SSL_ciphersuites", $ssl_ciphersuites);
     
     $self->{ssl_options_h} = $ssl_options_h;
   }
@@ -174,6 +174,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
     if ($ssl_ciphersuites) {
       $ssl_ctx->set_ciphersuites($ssl_ciphersuites);
     }
+    
+    my $DEFAULT_X509_STORE_flags = SSL->X509_V_FLAG_TRUSTED_FIRST;
     
     my $ssl_verify_mode = $ssl_options_h->get_int("SSL_verify_mode");
     
