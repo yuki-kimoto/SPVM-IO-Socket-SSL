@@ -87,16 +87,26 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $host = $self->{PeerAddr};
     
+    my $listen = $self->{Listen};
+    
     my $is_client = 0;
+    my $is_server = 0;
     if ($host) {
       $is_client = 1;
     }
+    elsif ($listen > 0) {
+      $is_server = 1;
+    }
     
-    my $ssl_method = Net::SSLeay::SSL_METHOD->SSLv23_client_method;
+    my $ssl_method = (Net::SSLeay::SSL_METHOD)Net::SSLeay::SSL_METHOD->SSLv23_method;
     
     my $ssl_ctx = Net::SSLeay::SSL_CTX->new($ssl_method);
     
     my $ssl_options_h = $self->{ssl_options_h};
+    
+    my $ssl_version_option = $ssl_options_h->get_string("SSL_version");
+    
+    my $ssl_versions = Fn->split(":", $ssl_version_option);
     
     my $ssl_verify_mode = $ssl_options_h->get_int("SSL_verify_mode");
     
