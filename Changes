@@ -1,4 +1,7 @@
 0.002 2024-10-30
+  [New Features]
+    * Support SSL_version option.
+    
   [Requirement Changes]
     * Require SPVM::Net::SSLeay 0.002.
   [Internal Changes]

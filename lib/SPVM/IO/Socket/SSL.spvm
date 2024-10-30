@@ -98,15 +98,62 @@ class IO::Socket::SSL extends IO::Socket::IP {
       $is_server = 1;
     }
     
-    my $ssl_method = (Net::SSLeay::SSL_METHOD)Net::SSLeay::SSL_METHOD->SSLv23_method;
-    
-    my $ssl_ctx = Net::SSLeay::SSL_CTX->new($ssl_method);
-    
     my $ssl_options_h = $self->{ssl_options_h};
+    
+    my $ssl_method = (Net::SSLeay::SSL_METHOD)undef;
+    my $ssl_method_name = (string)undef;
     
     my $ssl_version_option = $ssl_options_h->get_string("SSL_version");
     
     my $ssl_versions = Fn->split(":", $ssl_version_option);
+    
+    my $ssl_op_no_options = 0;
+    for my $ssl_version (@$ssl_versions) {
+      
+      if ($ssl_version eq "TLS") {
+        if ($ssl_method) {
+          die "SSL_METHOD is already set to ${ssl_method_name}_method.";
+        }
+        
+        $ssl_method = Net::SSLeay::SSL_METHOD->TLS_method;
+        $ssl_method_name = $ssl_version;
+      }
+      elsif ($ssl_version eq "SSLv23") {
+        if ($ssl_method) {
+          die "SSL_METHOD is already set to ${ssl_method_name}_method.";
+        }
+        
+        $ssl_method = Net::SSLeay::SSL_METHOD->SSLv23_method;
+        $ssl_method_name = $ssl_version;
+      }
+      elsif ($ssl_version eq "!SSLv2") {
+        $ssl_op_no_options |= SSL->SSL_OP_NO_SSLv2;
+      }
+      elsif ($ssl_version eq "!SSLv3") {
+        $ssl_op_no_options |= SSL->SSL_OP_NO_SSLv3;
+      }
+      elsif ($ssl_version eq "!TLSv1") {
+        $ssl_op_no_options |= SSL->SSL_OP_NO_TLSv1;
+      }
+      elsif ($ssl_version eq "!TLSv1_1") {
+        $ssl_op_no_options |= SSL->SSL_OP_NO_TLSv1_1;
+      }
+      elsif ($ssl_version eq "!TLSv1_2") {
+        $ssl_op_no_options |= SSL->SSL_OP_NO_TLSv1_2;
+      }
+      elsif ($ssl_version eq "!TLSv1_3") {
+        $ssl_op_no_options |= SSL->SSL_OP_NO_TLSv1_3;
+      }
+      else {
+        die "SSL_option contains an invalid value:$ssl_version.";
+      }
+    }
+    
+    unless ($ssl_method) {
+      die "SSL_version must contain TLS or SSLv23.";
+    }
+    
+    my $ssl_ctx = Net::SSLeay::SSL_CTX->new($ssl_method);
     
     my $ssl_verify_mode = $ssl_options_h->get_int("SSL_verify_mode");
     
@@ -126,6 +173,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $ssl_options = $default_ssl_options;
     
+    $ssl_options |= $ssl_op_no_options;
+    
     $ssl_ctx->set_default_verify_paths;
     
     my $bio = Net::SSLeay::BIO->new;
@@ -144,7 +193,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     $verify_param->set1_host($host);
     
-    $ssl_ctx->set_options($default_ssl_options);
+    $ssl_ctx->set_options($ssl_options);
     
     my $ssl = Net::SSLeay->new($ssl_ctx);
     
