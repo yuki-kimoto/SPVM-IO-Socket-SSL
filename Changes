@@ -1,5 +1,6 @@
-0.002 2024-10-22
-  
+0.002 2024-10-30
+  [Requirement Changes]
+    * Require SPVM::Net::SSLeay 0.002.
 0.001 2024-10-22
   [Changes]
     * First release.
