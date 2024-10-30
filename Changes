@@ -3,7 +3,7 @@
     * Support SSL_version option.
     
   [Requirement Changes]
-    * Require SPVM::Net::SSLeay 0.002.
+    * Require SPVM::Net::SSLeay 0.003.
   [Internal Changes]
     * set_tlsext_host_name is called only in a client.
   [Changes]
