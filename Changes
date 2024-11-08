@@ -3,7 +3,6 @@
     * Add SSL_version option to IO::Socket::SSL#init method.
     * Add SSL_cipher_list option IO::Socket::SSL#init method.
     * Add SSL_ciphersuites option IO::Socket::SSL#init method.
-    
   [Requirement Changes]
     * Require SPVM::Net::SSLeay 0.003.
   [Internal Changes]
