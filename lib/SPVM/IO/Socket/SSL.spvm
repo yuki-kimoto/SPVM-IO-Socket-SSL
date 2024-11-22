@@ -20,6 +20,22 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   has ssl_options_h : Hash;
   
+  has SSL_version : string;
+  
+  has SSL_verify_mode : int;
+  
+  has SSL_hostname : string;
+  
+  has SSL_cipher_list : string;
+  
+  has SSL_ciphersuites : string;
+  
+  has SSL_check_crl : int;
+  
+  has SSL_crl_file : string;
+  
+  has SSL_passwd_cb : Net::SSLeay::Callback::PemPasswd;
+  
   # Class Methods
   static method new : IO::Socket::SSL ($options : object[] = undef) {
     
