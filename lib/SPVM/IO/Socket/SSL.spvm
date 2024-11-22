@@ -80,44 +80,44 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     $self->SUPER::init($options);
     
-    my $ssl_version = $options_h->get_or_default_string("SSL_version", "SSLv23:!TLSv1:!TLSv1_1:!SSLv3:!SSLv2");
+    my $SSL_version = $options_h->get_or_default_string("SSL_version", "SSLv23:!TLSv1:!TLSv1_1:!SSLv3:!SSLv2");
     
-    $self->{SSL_version} = $ssl_version;
+    $self->{SSL_version} = $SSL_version;
     
-    my $ssl_verify_mode = $options_h->get_or_default_int("SSL_verify_mode", SSL->SSL_VERIFY_PEER);
+    my $SSL_verify_mode = $options_h->get_or_default_int("SSL_verify_mode", SSL->SSL_VERIFY_PEER);
     
-    $self->{SSL_verify_mode} = $ssl_verify_mode;
+    $self->{SSL_verify_mode} = $SSL_verify_mode;
     
-    my $ssl_hostname = $options_h->get_or_default_string("SSL_hostname", undef);
+    my $SSL_hostname = $options_h->get_or_default_string("SSL_hostname", undef);
     
-    $self->{SSL_hostname} = $ssl_hostname;
+    $self->{SSL_hostname} = $SSL_hostname;
     
-    my $ssl_cipher_list = $options_h->get_or_default_string("SSL_cipher_list", "DEFAULT !EXP !MEDIUM !LOW !eNULL !aNULL !RC4 !DES !MD5 !PSK !SRP");
+    my $SSL_cipher_list = $options_h->get_or_default_string("SSL_cipher_list", "DEFAULT !EXP !MEDIUM !LOW !eNULL !aNULL !RC4 !DES !MD5 !PSK !SRP");
     
-    $self->{SSL_cipher_list} = $ssl_cipher_list;
+    $self->{SSL_cipher_list} = $SSL_cipher_list;
     
-    my $ssl_ciphersuites = $options_h->get_or_default_string("SSL_ciphersuites", undef);
+    my $SSL_ciphersuites = $options_h->get_or_default_string("SSL_ciphersuites", undef);
     
-    $self->{SSL_ciphersuites} = $ssl_ciphersuites;
+    $self->{SSL_ciphersuites} = $SSL_ciphersuites;
     
-    my $ssl_check_crl = $options_h->get_or_default_int("SSL_check_crl", 0);
+    my $SSL_check_crl = $options_h->get_or_default_int("SSL_check_crl", 0);
     
-    $self->{SSL_check_crl} = $ssl_check_crl;
+    $self->{SSL_check_crl} = $SSL_check_crl;
     
-    my $ssl_crl_file = $options_h->get_or_default_string("SSL_crl_file", 0);
+    my $SSL_crl_file = $options_h->get_or_default_string("SSL_crl_file", 0);
     
-    $self->{SSL_crl_file} = $ssl_crl_file;
+    $self->{SSL_crl_file} = $SSL_crl_file;
     
     my $SSL_passwd_cb = (Net::SSLeay::Callback::PemPasswd)$options_h->get_or_default("SSL_passwd_cb", undef);
     
     $self->{SSL_passwd_cb} = $SSL_passwd_cb;
     
-    my $ssl_server = $options_h->get_or_default_int("SSL_server", 0);
+    my $SSL_server = $options_h->get_or_default_int("SSL_server", 0);
     
-    if ($ssl_server) {
+    if ($SSL_server) {
       $self->{SSL_server_specified} = 1;
       
-      $self->{SSL_server} = $ssl_server;
+      $self->{SSL_server} = $SSL_server;
     }
     
     my $SSL_npn_protocols = (string[])$options_h->get_or_default("SSL_npn_protocols", undef);
@@ -143,64 +143,64 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $listen = $self->{Listen};
     
-    my $ssl_server_specified = $self->{SSL_server_specified};
+    my $SSL_server_specified = $self->{SSL_server_specified};
     
-    my $ssl_server = 0;
-    if ($ssl_server_specified) {
-      $ssl_server = $self->{SSL_server};
+    my $SSL_server = 0;
+    if ($SSL_server_specified) {
+      $SSL_server = $self->{SSL_server};
     }
     else {
       if ($listen > 0) {
-        $ssl_server = 1;
+        $SSL_server = 1;
       }
     }
     
     my $ssl_method = (Net::SSLeay::SSL_METHOD)undef;
     my $ssl_method_name = (string)undef;
     
-    my $ssl_version_option = $self->{SSL_version};
+    my $SSL_version_option = $self->{SSL_version};
     
-    my $ssl_versions = Fn->split(":", $ssl_version_option);
+    my $SSL_versions = Fn->split(":", $SSL_version_option);
     
     my $ssl_op_no_options = 0;
-    for my $ssl_version (@$ssl_versions) {
+    for my $SSL_version (@$SSL_versions) {
       
-      if ($ssl_version eq "TLS") {
+      if ($SSL_version eq "TLS") {
         if ($ssl_method) {
           die "SSL_METHOD is already set to ${ssl_method_name}_method.";
         }
         
         $ssl_method = Net::SSLeay::SSL_METHOD->TLS_method;
-        $ssl_method_name = $ssl_version;
+        $ssl_method_name = $SSL_version;
       }
-      elsif ($ssl_version eq "SSLv23") {
+      elsif ($SSL_version eq "SSLv23") {
         if ($ssl_method) {
           die "SSL_METHOD is already set to ${ssl_method_name}_method.";
         }
         
         $ssl_method = Net::SSLeay::SSL_METHOD->SSLv23_method;
-        $ssl_method_name = $ssl_version;
+        $ssl_method_name = $SSL_version;
       }
-      elsif ($ssl_version eq "!SSLv2") {
+      elsif ($SSL_version eq "!SSLv2") {
         $ssl_op_no_options |= SSL->SSL_OP_NO_SSLv2;
       }
-      elsif ($ssl_version eq "!SSLv3") {
+      elsif ($SSL_version eq "!SSLv3") {
         $ssl_op_no_options |= SSL->SSL_OP_NO_SSLv3;
       }
-      elsif ($ssl_version eq "!TLSv1") {
+      elsif ($SSL_version eq "!TLSv1") {
         $ssl_op_no_options |= SSL->SSL_OP_NO_TLSv1;
       }
-      elsif ($ssl_version eq "!TLSv1_1") {
+      elsif ($SSL_version eq "!TLSv1_1") {
         $ssl_op_no_options |= SSL->SSL_OP_NO_TLSv1_1;
       }
-      elsif ($ssl_version eq "!TLSv1_2") {
+      elsif ($SSL_version eq "!TLSv1_2") {
         $ssl_op_no_options |= SSL->SSL_OP_NO_TLSv1_2;
       }
-      elsif ($ssl_version eq "!TLSv1_3") {
+      elsif ($SSL_version eq "!TLSv1_3") {
         $ssl_op_no_options |= SSL->SSL_OP_NO_TLSv1_3;
       }
       else {
-        die "SSL_option contains an invalid value:$ssl_version.";
+        die "SSL_option contains an invalid value:$SSL_version.";
       }
     }
     
@@ -210,27 +210,27 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $ssl_ctx = Net::SSLeay::SSL_CTX->new($ssl_method);
     
-    my $ssl_cipher_list = $self->{SSL_cipher_list};
+    my $SSL_cipher_list = $self->{SSL_cipher_list};
     
-    $ssl_ctx->set_cipher_list($ssl_cipher_list);
+    $ssl_ctx->set_cipher_list($SSL_cipher_list);
     
-    my $ssl_ciphersuites = $self->{SSL_ciphersuites};
+    my $SSL_ciphersuites = $self->{SSL_ciphersuites};
     
-    if ($ssl_ciphersuites) {
-      $ssl_ctx->set_ciphersuites($ssl_ciphersuites);
+    if ($SSL_ciphersuites) {
+      $ssl_ctx->set_ciphersuites($SSL_ciphersuites);
     }
     
-    my $ssl_verify_mode = $self->{SSL_verify_mode};
+    my $SSL_verify_mode = $self->{SSL_verify_mode};
     
-    $ssl_ctx->set_verify($ssl_verify_mode);
+    $ssl_ctx->set_verify($SSL_verify_mode);
     
     my $ca = Mozilla::CA->SSL_ca;
     
-    my $ssl_hostname = $self->{SSL_hostname};
+    my $SSL_hostname = $self->{SSL_hostname};
     
-    unless ($ssl_hostname) {
+    unless ($SSL_hostname) {
       if ($peer_addr) {
-        $ssl_hostname = $peer_addr;
+        $SSL_hostname = $peer_addr;
       }
     }
     
@@ -252,18 +252,18 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     $x509_store->add_cert($x509);
     
-    my $ssl_check_crl = $self->{SSL_check_crl};
+    my $SSL_check_crl = $self->{SSL_check_crl};
     
-    my $ssl_crl_file = $self->{SSL_crl_file};
+    my $SSL_crl_file = $self->{SSL_crl_file};
     
     my $default_x509_store_flags = SSL->X509_V_FLAG_TRUSTED_FIRST;
     
     my $x509_store_flags = $default_x509_store_flags;
-    if ($ssl_check_crl) {
+    if ($SSL_check_crl) {
       $x509_store_flags |= SSL->X509_V_FLAG_CRL_CHECK;
       
-      if ($ssl_crl_file) {
-        my $bio = Net::SSLeay::BIO->new_file($ssl_crl_file, "r");
+      if ($SSL_crl_file) {
+        my $bio = Net::SSLeay::BIO->new_file($SSL_crl_file, "r");
         my $crl = Net::SSLeay::PEM->read_bio_X509_CRL($bio);
         my $cert_store = $ssl_ctx->get_cert_store;
         $cert_store->add_crl($crl);
@@ -279,7 +279,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $SSL_npn_protocols = $self->{SSL_npn_protocols};
     if ($SSL_npn_protocols) {
-      if ($ssl_server) {
+      if ($SSL_server) {
         $ssl_ctx->set_next_protos_advertised_cb_with_protocols($SSL_npn_protocols);
       }
       else {
@@ -301,8 +301,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     $ssl->set_fd($socket_fileno);
     
-    if (!$ssl_server && $ssl_hostname && $ssl_hostname ne "") {
-      $ssl->set_tlsext_host_name($ssl_hostname);
+    if (!$SSL_server && $SSL_hostname && $SSL_hostname ne "") {
+      $ssl->set_tlsext_host_name($SSL_hostname);
     }
     
     $self->{ssl} = $ssl;
