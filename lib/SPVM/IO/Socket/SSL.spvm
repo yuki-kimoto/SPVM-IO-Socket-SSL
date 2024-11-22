@@ -34,6 +34,10 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   has SSL_passwd_cb : Net::SSLeay::Callback::PemPasswd;
   
+  has SSL_server : int;
+  
+  has SSL_server_specified : int;
+  
   # Class Methods
   static method new : IO::Socket::SSL ($options : object[] = undef) {
     
@@ -60,6 +64,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
         "SSL_check_crl",
         "SSL_crl_file",
         "SSL_passwd_cb",
+        "SSL_server",
       ],
     );
     
@@ -103,6 +108,15 @@ class IO::Socket::SSL extends IO::Socket::IP {
     my $ssl_passwd_cb = (Net::SSLeay::Callback::PemPasswd)$options_h->get_or_default("SSL_passwd_cb", undef);
     
     $self->{SSL_passwd_cb} = $ssl_passwd_cb;
+    
+    my $ssl_server = $options_h->get_or_default_int("SSL_server", 0);
+    
+    if ($ssl_server) {
+      $self->{SSL_server_specified} = 1;
+      
+      $self->{SSL_server} = $ssl_server;
+    }
+    
   }
   
   protected method configure : void () {
@@ -124,13 +138,16 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $listen = $self->{Listen};
     
-    my $is_client = 0;
-    my $is_server = 0;
-    if ($peer_addr) {
-      $is_client = 1;
+    my $ssl_server_specified = $self->{SSL_server_specified};
+    
+    my $ssl_server = 0;
+    if ($ssl_server_specified) {
+      $ssl_server = $self->{SSL_server};
     }
-    elsif ($listen > 0) {
-      $is_server = 1;
+    else {
+      if ($listen > 0) {
+        $ssl_server = 1;
+      }
     }
     
     my $ssl_method = (Net::SSLeay::SSL_METHOD)undef;
@@ -269,7 +286,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     $ssl->set_fd($socket_fileno);
     
-    if ($is_client && $ssl_hostname && $ssl_hostname ne "") {
+    if (!$ssl_server && $ssl_hostname && $ssl_hostname ne "") {
       $ssl->set_tlsext_host_name($ssl_hostname);
     }
     
