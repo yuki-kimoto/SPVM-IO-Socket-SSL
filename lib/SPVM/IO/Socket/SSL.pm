@@ -18,21 +18,9 @@ IO::Socket::SSL class in L<SPVM> has methods for SSL sockets.
 
   use IO::Socket::SSL;
 
-=head1 Details
-
-
-
 =head1 Super Class
 
-
-
-=head1 Interfaces
-
-
-
-=head1 Enumerations
-
-
+L<IO::Socket::IP|SPVM::IO::Socket::IP>
 
 =head1 Fields
 
@@ -46,14 +34,9 @@ IO::Socket::SSL class in L<SPVM> has methods for SSL sockets.
 
 
 
-=head1 See Also
-
-
-
-
 =head1 Repository
 
-
+L<SPVM::IO::Socket::SSL - Github|https://github.com/yuki-kimoto/SPVM-IO-Socket-SSL>
 
 =head1 Author
 

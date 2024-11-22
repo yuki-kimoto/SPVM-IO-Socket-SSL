@@ -228,7 +228,10 @@ class IO::Socket::SSL extends IO::Socket::IP {
       $x509_store_flags |= SSL->X509_V_FLAG_CRL_CHECK;
       
       if ($ssl_crl_file) {
-        
+        my $bio = Net::SSLeay::BIO->new_file($ssl_crl_file, "r");
+        my $crl = Net::SSLeay::PEM->read_bio_X509_CRL($bio);
+        my $cert_store = $ssl_ctx->get_cert_store;
+        $cert_store->add_crl($crl);
       }
     }
     
