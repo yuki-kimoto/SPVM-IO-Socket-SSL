@@ -45,6 +45,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
         "SSL_ciphersuites",
         "SSL_check_crl",
         "SSL_crl_file",
+        "SSL_passwd_cb",
       ],
     );
     
@@ -86,6 +87,15 @@ class IO::Socket::SSL extends IO::Socket::IP {
     my $ssl_crl_file = $options_h->get_or_default_int("SSL_crl_file", 0);
     
     $ssl_options_h->set("SSL_crl_file", $ssl_crl_file);
+    
+    my $ssl_passwd_cb = $options_h->get_or_default("SSL_passwd_cb", undef);
+    
+    if ($ssl_passwd_cb) {
+      unless ($ssl_passwd_cb is_type Net::SSLeay::Callback::PemPasswd) {
+        die "The type of the value of SSL_passwd_cb option must be Net::SSLeay::Callback::PemPasswd";
+      }
+    }
+    $ssl_options_h->set("SSL_passwd_cb", $ssl_passwd_cb);
     
     $self->{ssl_options_h} = $ssl_options_h;
   }
@@ -236,6 +246,11 @@ class IO::Socket::SSL extends IO::Socket::IP {
     }
     
     $x509_store->set_flags($x509_store_flags);
+    
+    my $ssl_passwd_cb = (Net::SSLeay::Callback::PemPasswd)$ssl_options_h->get("SSL_passwd_cb");
+    if ($ssl_passwd_cb) {
+      $ssl_ctx->set_default_passwd_cb($ssl_passwd_cb);
+    }
     
     my $verify_param = $ssl_ctx->get0_param;
     
