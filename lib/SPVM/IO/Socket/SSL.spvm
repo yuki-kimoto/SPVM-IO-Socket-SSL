@@ -108,9 +108,9 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     $self->{SSL_crl_file} = $ssl_crl_file;
     
-    my $ssl_passwd_cb = (Net::SSLeay::Callback::PemPasswd)$options_h->get_or_default("SSL_passwd_cb", undef);
+    my $SSL_passwd_cb = (Net::SSLeay::Callback::PemPasswd)$options_h->get_or_default("SSL_passwd_cb", undef);
     
-    $self->{SSL_passwd_cb} = $ssl_passwd_cb;
+    $self->{SSL_passwd_cb} = $SSL_passwd_cb;
     
     my $ssl_server = $options_h->get_or_default_int("SSL_server", 0);
     
@@ -272,9 +272,9 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     $x509_store->set_flags($x509_store_flags);
     
-    my $ssl_passwd_cb = (Net::SSLeay::Callback::PemPasswd)$self->{SSL_passwd_cb};
-    if ($ssl_passwd_cb) {
-      $ssl_ctx->set_default_passwd_cb($ssl_passwd_cb);
+    my $SSL_passwd_cb = (Net::SSLeay::Callback::PemPasswd)$self->{SSL_passwd_cb};
+    if ($SSL_passwd_cb) {
+      $ssl_ctx->set_default_passwd_cb($SSL_passwd_cb);
     }
     
     my $SSL_npn_protocols = $self->{SSL_npn_protocols};
