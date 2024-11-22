@@ -18,8 +18,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   has ssl : Net::SSLeay;
   
-  has ssl_options_h : Hash;
-  
   has SSL_version : string;
   
   has SSL_verify_mode : int;
@@ -74,46 +72,37 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     $self->SUPER::init($options);
     
-    my $ssl_options_h = Hash->new;
-    
     my $ssl_version = $options_h->get_or_default_string("SSL_version", "SSLv23:!TLSv1:!TLSv1_1:!SSLv3:!SSLv2");
     
-    $ssl_options_h->set("SSL_version", $ssl_version);
+    $self->{SSL_version} = $ssl_version;
     
     my $ssl_verify_mode = $options_h->get_or_default_int("SSL_verify_mode", SSL->SSL_VERIFY_PEER);
     
-    $ssl_options_h->set("SSL_verify_mode", $ssl_verify_mode);
+    $self->{SSL_verify_mode} = $ssl_verify_mode;
     
     my $ssl_hostname = $options_h->get_or_default_string("SSL_hostname", undef);
     
-    $ssl_options_h->set("SSL_hostname", $ssl_hostname);
+    $self->{SSL_hostname} = $ssl_hostname;
     
     my $ssl_cipher_list = $options_h->get_or_default_string("SSL_cipher_list", "DEFAULT !EXP !MEDIUM !LOW !eNULL !aNULL !RC4 !DES !MD5 !PSK !SRP");
     
-    $ssl_options_h->set("SSL_cipher_list", $ssl_cipher_list);
+    $self->{SSL_cipher_list} = $ssl_cipher_list;
     
     my $ssl_ciphersuites = $options_h->get_or_default_string("SSL_ciphersuites", undef);
     
-    $ssl_options_h->set("SSL_ciphersuites", $ssl_ciphersuites);
+    $self->{SSL_ciphersuites} = $ssl_ciphersuites;
     
     my $ssl_check_crl = $options_h->get_or_default_int("SSL_check_crl", 0);
     
-    $ssl_options_h->set("SSL_check_crl", $ssl_check_crl);
+    $self->{SSL_check_crl} = $ssl_check_crl;
     
-    my $ssl_crl_file = $options_h->get_or_default_int("SSL_crl_file", 0);
+    my $ssl_crl_file = $options_h->get_or_default_string("SSL_crl_file", 0);
     
-    $ssl_options_h->set("SSL_crl_file", $ssl_crl_file);
+    $self->{SSL_crl_file} = $ssl_crl_file;
     
-    my $ssl_passwd_cb = $options_h->get_or_default("SSL_passwd_cb", undef);
+    my $ssl_passwd_cb = (Net::SSLeay::Callback::PemPasswd)$options_h->get_or_default("SSL_passwd_cb", undef);
     
-    if ($ssl_passwd_cb) {
-      unless ($ssl_passwd_cb is_type Net::SSLeay::Callback::PemPasswd) {
-        die "The type of the value of SSL_passwd_cb option must be Net::SSLeay::Callback::PemPasswd";
-      }
-    }
-    $ssl_options_h->set("SSL_passwd_cb", $ssl_passwd_cb);
-    
-    $self->{ssl_options_h} = $ssl_options_h;
+    $self->{SSL_passwd_cb} = $ssl_passwd_cb;
   }
   
   protected method configure : void () {
@@ -144,12 +133,10 @@ class IO::Socket::SSL extends IO::Socket::IP {
       $is_server = 1;
     }
     
-    my $ssl_options_h = $self->{ssl_options_h};
-    
     my $ssl_method = (Net::SSLeay::SSL_METHOD)undef;
     my $ssl_method_name = (string)undef;
     
-    my $ssl_version_option = $ssl_options_h->get_string("SSL_version");
+    my $ssl_version_option = $self->{SSL_version};
     
     my $ssl_versions = Fn->split(":", $ssl_version_option);
     
@@ -201,23 +188,23 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $ssl_ctx = Net::SSLeay::SSL_CTX->new($ssl_method);
     
-    my $ssl_cipher_list = $ssl_options_h->get_string("SSL_cipher_list");
+    my $ssl_cipher_list = $self->{SSL_cipher_list};
     
     $ssl_ctx->set_cipher_list($ssl_cipher_list);
     
-    my $ssl_ciphersuites = $ssl_options_h->get_string("SSL_ciphersuites");
+    my $ssl_ciphersuites = $self->{SSL_ciphersuites};
     
     if ($ssl_ciphersuites) {
       $ssl_ctx->set_ciphersuites($ssl_ciphersuites);
     }
     
-    my $ssl_verify_mode = $ssl_options_h->get_int("SSL_verify_mode");
+    my $ssl_verify_mode = $self->{SSL_verify_mode};
     
     $ssl_ctx->set_verify($ssl_verify_mode);
     
     my $ca = Mozilla::CA->SSL_ca;
     
-    my $ssl_hostname = $ssl_options_h->get_string("SSL_hostname");
+    my $ssl_hostname = $self->{SSL_hostname};
     
     unless ($ssl_hostname) {
       if ($peer_addr) {
@@ -243,9 +230,9 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     $x509_store->add_cert($x509);
     
-    my $ssl_check_crl = $ssl_options_h->get_int("SSL_check_crl");
+    my $ssl_check_crl = $self->{SSL_check_crl};
     
-    my $ssl_crl_file = $ssl_options_h->get_int("SSL_crl_file");
+    my $ssl_crl_file = $self->{SSL_crl_file};
     
     my $default_x509_store_flags = SSL->X509_V_FLAG_TRUSTED_FIRST;
     
@@ -263,7 +250,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     $x509_store->set_flags($x509_store_flags);
     
-    my $ssl_passwd_cb = (Net::SSLeay::Callback::PemPasswd)$ssl_options_h->get("SSL_passwd_cb");
+    my $ssl_passwd_cb = (Net::SSLeay::Callback::PemPasswd)$self->{SSL_passwd_cb};
     if ($ssl_passwd_cb) {
       $ssl_ctx->set_default_passwd_cb($ssl_passwd_cb);
     }
