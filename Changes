@@ -1,3 +1,6 @@
+0.003 2024-11-23
+  [Requirement Changes]
+    * Require SPVM::Net::SSLeay 0.017.
 0.002 2024-10-30
   [New Features]
     * Add SSL_version option to IO::Socket::SSL#init method.
