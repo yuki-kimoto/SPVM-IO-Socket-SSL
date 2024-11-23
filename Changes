@@ -6,6 +6,7 @@
     * Add SSL_server option to IO::Socket::SSL#init method.
     * Add SSL_npn_protocols option to IO::Socket::SSL#init method.
     * Add SSL_alpn_protocols option to IO::Socket::SSL#init method.
+    * Add SSL_ticket_keycb option to IO::Socket::SSL#init method.
     
 0.002 2024-10-30
   [New Features]
