@@ -1,6 +1,8 @@
-0.003 2024-11-23
-  [Requirement Changes]
-    * Require SPVM::Net::SSLeay 0.017.
+0.002 2024-111-23
+  [New Features]
+    * Add SSL_version option to IO::Socket::SSL#init method.
+    * Add SSL_cipher_list option IO::Socket::SSL#init method.
+    * Add SSL_ciphersuites option IO::Socket::SSL#init method.
     * Add SSL_crl_file option to IO::Socket::SSL#init method.
     * Add SSL_passwd_cb option to IO::Socket::SSL#init method.
     * Add SSL_server option to IO::Socket::SSL#init method.
@@ -8,13 +10,8 @@
     * Add SSL_alpn_protocols option to IO::Socket::SSL#init method.
     * Add SSL_ticket_keycb option to IO::Socket::SSL#init method.
     
-0.002 2024-10-30
-  [New Features]
-    * Add SSL_version option to IO::Socket::SSL#init method.
-    * Add SSL_cipher_list option IO::Socket::SSL#init method.
-    * Add SSL_ciphersuites option IO::Socket::SSL#init method.
   [Requirement Changes]
-    * Require SPVM::Net::SSLeay 0.003.
+    * Require SPVM::Net::SSLeay 0.017.
   [Internal Changes]
     * set_tlsext_host_name is called only in a client.
   [Changes]
