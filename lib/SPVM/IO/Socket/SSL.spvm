@@ -44,6 +44,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   has SSL_ticket_keycb : Net::SSLeay::Callback::TlsextTicketKey;
   
+  has SSL_startHandshake : int;
+  
   # Class Methods
   static method new : IO::Socket::SSL ($options : object[] = undef) {
     
@@ -74,6 +76,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
         "SSL_npn_protocols",
         "SSL_alpn_protocols",
         "SSL_ticket_keycb",
+        "SSL_startHandshake",
       ],
     );
     
@@ -135,6 +138,9 @@ class IO::Socket::SSL extends IO::Socket::IP {
     my $SSL_ticket_keycb = (Net::SSLeay::Callback::TlsextTicketKey)$options_h->get_or_default("SSL_ticket_keycb", undef);
     $self->{SSL_ticket_keycb} = $SSL_ticket_keycb;
     
+    my $SSL_startHandshake = $options_h->get_or_default_int("SSL_startHandshake", 1);
+    $self->{SSL_startHandshake} = $SSL_startHandshake;
+    
   }
   
   protected method configure : void () {
@@ -146,7 +152,12 @@ class IO::Socket::SSL extends IO::Socket::IP {
     # Client
     my $peer_address = $self->{PeerAddr};
     if ($peer_address) {
-      $self->connect_SSL;
+      
+      my $SSL_startHandshake = $self->{SSL_startHandshake};
+      
+      if ($SSL_startHandshake) {
+        $self->connect_SSL;
+      }
     }
   }
   
@@ -337,7 +348,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     $self->{ssl} = $ssl;
   }
   
-  protected method connect_SSL : void () {
+  method connect_SSL : void () {
     
     my $ssl = $self->{ssl};
     
@@ -365,7 +376,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     }
   }
   
-  private method accept_SSL : void () {
+  method accept_SSL : void () {
     
     my $ssl = $self->{ssl};
     
@@ -396,7 +407,11 @@ class IO::Socket::SSL extends IO::Socket::IP {
   method accept : IO::Socket::SSL ($peer_ref : Sys::Socket::Sockaddr[] = undef) {
     my $client = (IO::Socket::SSL)$self->SUPER::accept($peer_ref);
     
-    $self->accept_SSL;
+    my $SSL_startHandshake = $self->{SSL_startHandshake};
+    
+    if ($SSL_startHandshake) {
+      $self->accept_SSL;
+    }
     
     return $client;
   }

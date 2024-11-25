@@ -90,7 +90,11 @@ C<has SSL_alpn_protocols : string[];>
 =head2 SSL_ticket_keycb
 
 C<has SSL_ticket_keycb : L<Net::SSLeay::Callback::TlsextTicketKey|SPVM::Net::SSLeay::Callback::TlsextTicketKey>;>
-  
+
+=head2 SSL_startHandshake
+
+C<has SSL_startHandshake : int;>
+
 =head1 Class Methods
 
 =head2 new
@@ -121,19 +125,21 @@ Options:
 
 =item * SSL_ciphersuites : string
 
-=item * SSL_check_crl : int
+=item * SSL_check_crl : Int
 
 =item * SSL_crl_file : string
 
 =item * SSL_passwd_cb : L<Net::SSLeay::Callback::PemPasswd|SPVM::Net::SSLeay::Callback::PemPasswd>
 
-=item * SSL_server : int
+=item * SSL_server : Int
 
 =item * SSL_npn_protocols : string[]
 
 =item * SSL_alpn_protocols : string[]
 
 =item * SSL_ticket_keycb : L<Net::SSLeay::Callback::TlsextTicketKey|SPVM::Net::SSLeay::Callback::TlsextTicketKey>
+
+=item * SSL_startHandshake : Int = 1
 
 =back
 
@@ -147,11 +153,11 @@ C<protected method configure_SSL : void ();>
 
 =head2 connect_SSL
 
-C<protected method connect_SSL : void ();>
+C<method connect_SSL : void ();>
 
 =head2 accept_SSL
 
-C<private method accept_SSL : void ();>
+C<method accept_SSL : void ();>
 
 =head2 accept
 
