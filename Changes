@@ -2,6 +2,7 @@
   [New Features]
     * Add IO::Socket::SSL#dump_peer_certificate method.
     * Add IO::Socket::SSL#next_proto_negotiated method.
+    * Add IO::Socket::SSL#alpn_selected method.
 0.002 2024-11-23
   [New Features]
     * Add SSL_version option to IO::Socket::SSL#init method.

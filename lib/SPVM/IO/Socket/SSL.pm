@@ -205,6 +205,12 @@ C<method next_proto_negotiated : string ();>
 
 Calls L<Net::SSLeay#get0_next_proto_negotiated|SPVM::Net::SSLeay/"get0_next_proto_negotiated"> method given appropriate arguments, converts the value of output argument to a string of appropriate length, and retunrs it.
 
+=head2 alpn_selected
+
+C<method alpn_selected : string ();>
+
+Calls L<Net::SSLeay#get0_alpn_selected|SPVM::Net::SSLeay/"get0_alpn_selected"> method given appropriate arguments, converts the value of output argument to a string of appropriate length, and retunrs it.
+
 =head1 Repository
 
 L<SPVM::IO::Socket::SSL - Github|https://github.com/yuki-kimoto/SPVM-IO-Socket-SSL>
