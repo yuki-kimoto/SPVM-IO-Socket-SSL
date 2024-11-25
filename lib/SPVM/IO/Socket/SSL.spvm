@@ -491,5 +491,15 @@ class IO::Socket::SSL extends IO::Socket::IP {
   method recvfrom : int ($buffer : mutable string, $length : int, $flags : int, $from_ref : Sys::Socket::Sockaddr[], $offset : int = 0) {
     die "recvfrom method is not allowed in IO::Scoekt::SSL. Use read method instead.";
   }
+  
+  method dump_peer_certificate : string () {
+    
+    my $ssl = $self->{ssl};
+    
+    my $dump = $ssl->P_dump_peer_certificate;
+    
+    return $dump;
+  }
+  
 }
 

@@ -1,4 +1,7 @@
-0.002 2024-111-23
+0.003 2024-11-25
+  [New Features]
+    * Add IO::Socket::SSL#dump_peer_certificate method.
+0.002 2024-11-23
   [New Features]
     * Add SSL_version option to IO::Socket::SSL#init method.
     * Add SSL_cipher_list option IO::Socket::SSL#init method.

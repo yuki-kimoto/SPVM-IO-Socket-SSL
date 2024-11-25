@@ -189,6 +189,16 @@ C<method recv : int ($buffer : mutable string, $length : int = -1, $flags : int 
 
 C<method recvfrom : int ($buffer : mutable string, $length : int, $flags : int, $from_ref : Sys::Socket::Sockaddr[], $offset : int = 0);>
 
+=head2 dump_peer_certificate
+
+C<method dump_peer_certificate : string ();>
+
+Calls L<Net::SSLeay#P_dump_peer_certificate|SPVM::Net::SSLeay/"P_dump_peer_certificate"> method given the value of L</"ssl"> field, and returns its return value.
+
+Exceptions:
+
+Exceptions thrown by L<Net::SSLeay#P_dump_peer_certificate|SPVM::Net::SSLeay/"P_dump_peer_certificate"> method could be thrown.
+
 =head1 Repository
 
 L<SPVM::IO::Socket::SSL - Github|https://github.com/yuki-kimoto/SPVM-IO-Socket-SSL>
