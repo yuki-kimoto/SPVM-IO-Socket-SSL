@@ -267,6 +267,16 @@ C<method get_sslversion_int : int ();>
 
 Calls L<Net::SSLeay#version|SPVM::Net::SSLeay/"version"> method given the value of L</"ssl"> field, and returns its return value.
 
+=head2 get_cipher
+
+C<method get_cipher : string ();>
+
+Calls L<Net::SSLeay#get_cipher|SPVM::Net::SSLeay/"get_cipher"> method given the value of L</"ssl"> field, and returns its return value.
+
+Exceptions:
+
+Exceptions thrown by L<Net::SSLeay#get_cipher|SPVM::Net::SSLeay/"get_cipher"> method could be thrown.
+
 =head1 Repository
 
 L<SPVM::IO::Socket::SSL - Github|https://github.com/yuki-kimoto/SPVM-IO-Socket-SSL>

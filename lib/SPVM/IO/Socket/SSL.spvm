@@ -587,5 +587,15 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     return $version;
   }
+  
+  method get_cipher : string ()  {
+    
+    my $ssl = $self->{ssl};
+    
+    my $cipher = $ssl->get_cipher;
+    
+    return $cipher;
+  }  
+  
 }
 
