@@ -9,6 +9,7 @@
     * Add IO::Socket::SSL#get_cipher method.
     * Add IO::Socket::SSL#get_servername method.
     * Add SSL_startHandshake option to IO::Socket::SSL#init method.
+    * Add SSL_honor_cipher_order option to IO::Socket::SSL#init method.
   [Changes]
     * IO::Socket::SSL#connect_SSL becomes a public method.
     * IO::Socket::SSL#accept_SSL becomes a public method.

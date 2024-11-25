@@ -95,6 +95,10 @@ C<has SSL_ticket_keycb : L<Net::SSLeay::Callback::TlsextTicketKey|SPVM::Net::SSL
 
 C<has SSL_startHandshake : int;>
 
+=head2 SSL_honor_cipher_order
+
+C<has SSL_honor_cipher_order : int;>
+
 =head1 Class Methods
 
 =head2 new
@@ -140,6 +144,8 @@ Options:
 =item * SSL_ticket_keycb : L<Net::SSLeay::Callback::TlsextTicketKey|SPVM::Net::SSLeay::Callback::TlsextTicketKey>
 
 =item * SSL_startHandshake : Int = 1
+
+=item * SSL_honor_cipher_order : Int = 0;
 
 =back
 
