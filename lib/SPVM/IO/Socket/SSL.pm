@@ -171,23 +171,53 @@ C<method close : void ();>
 
 =head2 stat
 
-C<method stat : Sys::IO::Stat ();> die "stat method is not allowed in IO::Scoekt::SSL."; }
+C<method stat : L<Sys::IO::Stat|SPVM::Sys::IO::Stat> ();
+
+This method is not allowed in IO::Scoekt::SSL.
+
+Exceptions:
+
+An exception is thrown.
 
 =head2 send
 
 C<method send : int ($buffer : string, $flags : int = 0, $length : int = -1, $offset : int = 0);>
 
+This method is not allowed in IO::Scoekt::SSL.
+
+Exceptions:
+
+An exception is thrown.
+
 =head2 sendto
 
 C<method sendto : int ($buffer : string, $flags : int, $to : Sys::Socket::Sockaddr, $length : int = -1, $offset : int = 0);>
+
+This method is not allowed in IO::Scoekt::SSL.
+
+Exceptions:
+
+An exception is thrown.
 
 =head2 recv
 
 C<method recv : int ($buffer : mutable string, $length : int = -1, $flags : int = 0, $offset : int = 0);>
 
+This method is not allowed in IO::Scoekt::SSL.
+
+Exceptions:
+
+An exception is thrown.
+
 =head2 recvfrom
 
 C<method recvfrom : int ($buffer : mutable string, $length : int, $flags : int, $from_ref : Sys::Socket::Sockaddr[], $offset : int = 0);>
+
+This method is not allowed in IO::Scoekt::SSL.
+
+Exceptions:
+
+An exception is thrown.
 
 =head2 dump_peer_certificate
 
