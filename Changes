@@ -13,6 +13,7 @@
   [Changes]
     * IO::Socket::SSL#connect_SSL becomes a public method.
     * IO::Socket::SSL#accept_SSL becomes a public method.
+    * If a socket is for a server, SSL_verify_mode is set to SSL_VERIFY_NONE.
     
 0.002 2024-11-23
   [New Features]
