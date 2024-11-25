@@ -543,5 +543,49 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     return $reused;
   }
+  
+  method get_sslversion : string () {
+    
+    my $ssl = $self->{ssl};
+    
+    my $version = $self->get_sslversion_int;
+    
+    my $version_string = (string)undef;
+    if ($version == 0x0304) {
+      $version_string = "TLSv1_3";
+    }
+    elsif ($version == 0x0303) {
+      $version_string = "TLSv1_2";
+    }
+    elsif ($version == 0x0302) {
+      $version_string = "TLSv1_1";
+    }
+    elsif ($version == 0x0301) {
+      $version_string = "TLSv1";
+    }
+    elsif ($version == 0x0300) {
+      $version_string = "SSLv3";
+    }
+    elsif ($version == 0x0002) {
+      $version_string = "SSLv2";
+    }
+    elsif ($version == 0xfeff) {
+      $version_string = "DTLS1";
+    }
+    else {
+      die "The version number is unknown.";
+    }
+    
+    return $version_string;
+  }
+  
+  method get_sslversion_int : int () {
+    
+    my $ssl = $self->{ssl};
+    
+    my $version = $ssl->version;
+    
+    return $version;
+  }
 }
 

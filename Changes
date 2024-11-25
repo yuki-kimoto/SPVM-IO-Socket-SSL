@@ -4,6 +4,8 @@
     * Add IO::Socket::SSL#next_proto_negotiated method.
     * Add IO::Socket::SSL#alpn_selected method.
     * Add IO::Socket::SSL#get_session_reused method.
+    * Add IO::Socket::SSL#get_sslversion method.
+    * Add IO::Socket::SSL#get_sslversion_int method.
 0.002 2024-11-23
   [New Features]
     * Add SSL_version option to IO::Socket::SSL#init method.

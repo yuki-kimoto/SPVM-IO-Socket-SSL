@@ -251,6 +251,22 @@ Exceptions:
 
 Exceptions thrown by L<Net::SSLeay#session_reused|SPVM::Net::SSLeay/"session_reused"> method could be thrown.
 
+=head2 get_sslversion
+
+C<method get_sslversion : string ();>
+
+Returns the same output of Perl's L<IO::Socket::SSL|/"get_sslversion"> method.
+
+Exceptions:
+
+If the version number is unknown, an exception is thrown.
+
+=head2 get_sslversion_int
+
+C<method get_sslversion_int : int ();>
+
+Calls L<Net::SSLeay#version|SPVM::Net::SSLeay/"version"> method given the value of L</"ssl"> field, and returns its return value.
+
 =head1 Repository
 
 L<SPVM::IO::Socket::SSL - Github|https://github.com/yuki-kimoto/SPVM-IO-Socket-SSL>
