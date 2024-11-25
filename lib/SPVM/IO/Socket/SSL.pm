@@ -199,6 +199,12 @@ Exceptions:
 
 Exceptions thrown by L<Net::SSLeay#P_dump_peer_certificate|SPVM::Net::SSLeay/"P_dump_peer_certificate"> method could be thrown.
 
+=head2 next_proto_negotiated
+
+C<method next_proto_negotiated : string ();>
+
+Calls L<Net::SSLeay#get0_next_proto_negotiated|SPVM::Net::SSLeay/"get0_next_proto_negotiated"> method given appropriate arguments, converts the value of output argument to a string of appropriate length, and retunrs it.
+
 =head1 Repository
 
 L<SPVM::IO::Socket::SSL - Github|https://github.com/yuki-kimoto/SPVM-IO-Socket-SSL>
