@@ -315,6 +315,16 @@ C<method peer_certificates : L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509>[];>
 
 Returns the same output of Perl's L<IO::Socket::SSL|/"peer_certificates"> method.
 
+=head2 sock_certificate
+
+C<method sock_certificate : L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509> ();>
+
+Calls L<Net::SSLeay#get_certificate|SPVM::Net::SSLeay/"get_certificate"> method given the value of L</"ssl"> field, and returns its return value.
+
+Exceptions:
+
+Exceptions thrown by L<Net::SSLeay#get_certificate|SPVM::Net::SSLeay/"get_certificate"> method could be thrown.
+
 =head1 Repository
 
 L<SPVM::IO::Socket::SSL - Github|https://github.com/yuki-kimoto/SPVM-IO-Socket-SSL>

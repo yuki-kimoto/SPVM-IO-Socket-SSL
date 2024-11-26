@@ -685,4 +685,13 @@ class IO::Socket::SSL extends IO::Socket::IP {
     return $x509s;
   }
   
+  method sock_certificate : Net::SSLeay::X509 () {
+    
+    my $ssl = $self->{ssl};
+    
+    my $cert = $ssl->get_certificate;
+    
+    return $cert;
+  }
+  
 }
