@@ -37,7 +37,9 @@ L<IO::Socket::IP|SPVM::IO::Socket::IP>
 
 =head2 ssl
 
-C<has ssl : L<Net::SSLeay|SPVM::Net::SSLeay>;>
+C<has ssl : ro L<Net::SSLeay|SPVM::Net::SSLeay>;>
+
+A L<Net::SSLeay|SPVM::Net::SSLeay> object.
 
 =head2 SSL_version
 
