@@ -15,6 +15,9 @@ class IO::Socket::SSL extends IO::Socket::IP {
   use StringBuffer;
   use Mozilla::CA;
   use Go;
+  use Net::SSLeay::X509;
+  
+  has ref_x509s_list : List of Net::SSLeay::X509;
   
   has ssl : Net::SSLeay;
   
@@ -89,6 +92,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
   }
   
   protected method init : void ($options : object[] = undef) {
+    
+    $self->{ref_x509s_list} = List->new(new Net::SSLeay::X509[0]);
     
     my $options_h = Hash->new($options);
     
@@ -644,6 +649,17 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     return $servername;
   }  
+  
+  method peer_certificate : Net::SSLeay::X509 () {
+    
+    my $ssl = $self->{ssl};
+    
+    # TODO: use SSL_get1_peer_certificate
+    my $cert = $ssl->get_peer_certificate;
+    $self->{ref_x509s_list}->push($cert);
+    
+    return $cert;
+  }
   
 }
 
