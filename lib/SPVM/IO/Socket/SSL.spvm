@@ -55,6 +55,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   has SSL_honor_cipher_order : int;
   
+  has SSL_honor_cipher_order_specified : int;
+  
   # Class Methods
   static method new : IO::Socket::SSL ($options : object[] = undef) {
     
@@ -159,9 +161,11 @@ class IO::Socket::SSL extends IO::Socket::IP {
     my $SSL_startHandshake = $options_h->get_or_default_int("SSL_startHandshake", 1);
     $self->{SSL_startHandshake} = $SSL_startHandshake;
     
-    my $SSL_honor_cipher_order = $options_h->get_or_default_int("SSL_honor_cipher_order", 0);
-    $self->{SSL_honor_cipher_order} = $SSL_honor_cipher_order;
-    
+    if ($options_h->exists("SSL_honor_cipher_order")) {
+      $self->{SSL_honor_cipher_order_specified} = 1;
+      my $SSL_honor_cipher_order = $options_h->get_int("SSL_honor_cipher_order");
+      $self->{SSL_honor_cipher_order} = $SSL_honor_cipher_order;
+    }
   }
   
   protected method configure : void () {
@@ -359,7 +363,15 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     $verify_param->set1_host($peer_addr);
     
-    my $SSL_honor_cipher_order = $self->{SSL_honor_cipher_order};
+    my $SSL_honor_cipher_order = 0;
+    if ($self->{SSL_honor_cipher_order_specified}) {
+      $SSL_honor_cipher_order = $self->{SSL_honor_cipher_order};
+    }
+    else {
+      if ($self->{SSL_server}) {
+        $SSL_honor_cipher_order = 1;
+      }
+    }
     if ($SSL_honor_cipher_order) {
       $ssl_options |= SSL->SSL_OP_CIPHER_SERVER_PREFERENCE;
     }
