@@ -14,6 +14,7 @@
     * Add IO::Socket::SSL#peer_certificates method.
     * Add IO::Socket::SSL#sock_certificate method.
     * Add IO::Socket::SSL#get_fingerprint_bin method.
+    * Add IO::Socket::SSL#get_fingerprint method.
   [Changes]
     * IO::Socket::SSL#connect_SSL becomes a public method.
     * IO::Socket::SSL#accept_SSL becomes a public method.
