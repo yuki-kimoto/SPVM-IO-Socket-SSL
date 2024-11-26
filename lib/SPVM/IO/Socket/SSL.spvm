@@ -665,14 +665,14 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $ssl = $self->{ssl};
     
-    my $x509s_original = $ssl->get_peer_cert_chain;
-    
     my $x509_peer = $self->peer_certificate;
     
     my $x509s = (Net::SSLeay::X509[])undef;
     if ($x509_peer) {
+      my $x509s_original = $ssl->get_peer_cert_chain;
+      
       if ($self->{SSL_server}) {
-        $x509s = Array->merge_object([$x509_peer], $x509s);
+        $x509s = (Net::SSLeay::X509[])Array->merge_object([$x509_peer], $x509s_original);
       }
       else {
         $x509s = $x509s_original;
