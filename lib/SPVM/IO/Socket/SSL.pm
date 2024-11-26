@@ -325,6 +325,12 @@ Exceptions:
 
 Exceptions thrown by L<Net::SSLeay#get_certificate|SPVM::Net::SSLeay/"get_certificate"> method could be thrown.
 
+=head2 get_fingerprint_bin
+
+C<method get_fingerprint_bin : string ($algo : string = undef, $cert : Net::SSLeay::X509 = undef, $key_only : int = 0);>
+
+Returns the same output of Perl's L<IO::Socket::SSL|/"get_fingerprint_bin"> method.
+
 =head1 Repository
 
 L<SPVM::IO::Socket::SSL - Github|https://github.com/yuki-kimoto/SPVM-IO-Socket-SSL>
