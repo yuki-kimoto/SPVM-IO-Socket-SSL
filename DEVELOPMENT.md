@@ -10,9 +10,13 @@ I'm not a security expert so I select the default OpenSSL settings.
 
 #### verify_hostname
 
-Too complex. It is good that another module implements this method.
+Too complex to implement for now. It is good that another module implements this method.
 
 #### errstr
 
 Errors are reported by exceptions.
+
+#### OCSP and SCSP Stapling Features
+
+Too complex to implement for now. It is good that another module implements a callback for OCSP stapling.
 
