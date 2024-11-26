@@ -337,6 +337,16 @@ C<method get_fingerprint : string ($algo : string = undef, $cert : L<Net::SSLeay
 
 Returns the same output of Perl's L<IO::Socket::SSL|/"get_fingerprint"> method.
 
+=head2 set_msg_callback
+
+C<method set_msg_callback : void ($cb : L<Net::SSLeay::Callback::Msg|SPVM::Net::SSLeay::Callback::Msg>, $arg : object);>
+
+Calls L<Net::SSLeay#set_msg_callback|SPVM::Net::SSLeay/"set_msg_callback"> method given the value of L</"ssl"> field, $cb, $arg.
+
+Exceptions:
+
+Exceptions thrown by L<Net::SSLeay#set_msg_callback|SPVM::Net::SSLeay/"set_msg_callback"> method could be thrown.
+
 =head1 Repository
 
 L<SPVM::IO::Socket::SSL - Github|https://github.com/yuki-kimoto/SPVM-IO-Socket-SSL>

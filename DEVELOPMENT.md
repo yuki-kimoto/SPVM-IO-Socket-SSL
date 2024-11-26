@@ -8,3 +8,11 @@
 
 I'm not a security expert so I select the default OpenSSL settings.
 
+#### verify_hostname
+
+Too complex. It is good that another module implements this method.
+
+#### errstr
+
+Errors are reported by exceptions.
+
