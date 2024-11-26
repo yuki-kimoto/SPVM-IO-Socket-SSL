@@ -309,6 +309,12 @@ Exceptions:
 
 Exceptions thrown by L<Net::SSLeay#get1_peer_certificate|SPVM::Net::SSLeay/"get1_peer_certificate"> method could be thrown.
 
+=head2 peer_certificates
+
+C<method peer_certificates : L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509>[];>
+
+Returns the same output of Perl's L<IO::Socket::SSL|/"peer_certificates"> method.
+
 =head1 Repository
 
 L<SPVM::IO::Socket::SSL - Github|https://github.com/yuki-kimoto/SPVM-IO-Socket-SSL>
