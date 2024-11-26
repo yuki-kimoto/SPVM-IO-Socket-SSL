@@ -20,3 +20,6 @@ Errors are reported by exceptions.
 
 Too complex to implement for now. It is good that another module implements a callback for OCSP stapling.
 
+#### Session Features
+
+Too complex to implement for now. It is good that another module implements a callback for SSL session.
