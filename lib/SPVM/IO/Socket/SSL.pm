@@ -311,6 +311,24 @@ C<method get_fingerprint : string ($algo : string = undef, $cert : L<Net::SSLeay
 
 Returns the same output of Perl's L<IO::Socket::SSL|/"get_fingerprint"> method.
 
+=head1 FAQ
+
+=head2 How to create Net::SSLeay::X509 for SSL_ca option from the return value of Mozilla::CA#SSL_ca method.
+  
+  use Mozilla::CA;
+  use Net::SSLeay::BIO;
+  use Net::SSLeay::PEM;
+  
+  my $ca = Mozilla::CA->SSL_ca;
+  
+  my $bio = Net::SSLeay::BIO->new;
+  
+  $bio->write($ca);
+  
+  my $x509 = Net::SSLeay::PEM->read_bio_X509($bio);
+  
+  my $SSL_ca = $x509;
+  
 =head1 Repository
 
 L<SPVM::IO::Socket::SSL - Github|https://github.com/yuki-kimoto/SPVM-IO-Socket-SSL>
