@@ -249,16 +249,6 @@ C<method alpn_selected : string ();>
 
 Calls L<Net::SSLeay#get0_alpn_selected|SPVM::Net::SSLeay/"get0_alpn_selected"> method given appropriate arguments, converts the value of output argument to a string of appropriate length, and retunrs it.
 
-=head2 get_session_reused
-
-C<method get_session_reused : int ();>
-
-Calls L<Net::SSLeay#session_reused|SPVM::Net::SSLeay/"session_reused"> method given the value of L</"ssl"> field, and returns its return value.
-
-Exceptions:
-
-Exceptions thrown by L<Net::SSLeay#session_reused|SPVM::Net::SSLeay/"session_reused"> method could be thrown.
-
 =head2 get_sslversion
 
 C<method get_sslversion : string ();>
