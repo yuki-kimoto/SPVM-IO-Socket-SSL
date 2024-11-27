@@ -85,10 +85,6 @@ C<has SSL_npn_protocols : string[];>
 
 C<has SSL_alpn_protocols : string[];>
 
-=head2 SSL_ticket_keycb
-
-C<has SSL_ticket_keycb : L<Net::SSLeay::Callback::TlsextTicketKey|SPVM::Net::SSLeay::Callback::TlsextTicketKey>;>
-
 =head2 SSL_startHandshake
 
 C<has SSL_startHandshake : int;>
@@ -136,8 +132,6 @@ Options:
 =item * SSL_npn_protocols : string[]
 
 =item * SSL_alpn_protocols : string[]
-
-=item * SSL_ticket_keycb : L<Net::SSLeay::Callback::TlsextTicketKey|SPVM::Net::SSLeay::Callback::TlsextTicketKey>
 
 =item * SSL_startHandshake : Int = 1
 

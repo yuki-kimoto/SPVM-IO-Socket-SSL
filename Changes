@@ -6,6 +6,7 @@
   [Incompatible Changes]
     * Remove SSL_passwd_cb option from IO::Socket::SSL#init method.
     * Remove IO::Socket::SSL#get_session_reused method.
+    * Remove SSL_ticket_keycb option.
 0.003 2024-11-27
   [New Features]
     * Add IO::Socket::SSL#dump_peer_certificate method.

@@ -18,7 +18,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
   use Net::SSLeay::X509;
   use Net::SSLeay::EVP;
   use Fn;
-  use Net::SSLeay::Callback::Msg;
   
   has ref_x509s_list : List of Net::SSLeay::X509;
   
@@ -47,8 +46,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
   has SSL_npn_protocols : string[];
   
   has SSL_alpn_protocols : string[];
-  
-  has SSL_ticket_keycb : Net::SSLeay::Callback::TlsextTicketKey;
   
   has SSL_startHandshake : int;
   
@@ -84,7 +81,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
         "SSL_server",
         "SSL_npn_protocols",
         "SSL_alpn_protocols",
-        "SSL_ticket_keycb",
         "SSL_startHandshake",
         "SSL_honor_cipher_order",
       ],
@@ -145,9 +141,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $SSL_alpn_protocols = (string[])$options_h->get_or_default("SSL_alpn_protocols", undef);
     $self->{SSL_alpn_protocols} = $SSL_alpn_protocols;
-    
-    my $SSL_ticket_keycb = (Net::SSLeay::Callback::TlsextTicketKey)$options_h->get_or_default("SSL_ticket_keycb", undef);
-    $self->{SSL_ticket_keycb} = $SSL_ticket_keycb;
     
     my $SSL_startHandshake = $options_h->get_or_default_int("SSL_startHandshake", 1);
     $self->{SSL_startHandshake} = $SSL_startHandshake;
@@ -341,11 +334,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
         # TODO
         # $ssl_ctx->set_alpn_protos($SSL_alpn_protocols);
       }
-    }
-    
-    my $SSL_ticket_keycb = $self->{SSL_ticket_keycb};
-    if ($SSL_ticket_keycb) {
-      $ssl_ctx->set_tlsext_ticket_key_cb($SSL_ticket_keycb);
     }
     
     my $verify_param = $ssl_ctx->get0_param;
