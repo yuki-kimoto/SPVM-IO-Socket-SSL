@@ -13,6 +13,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
   use Net::SSLeay::BIO;
   use Net::SSLeay::PEM;
   use StringBuffer;
+  use Mozilla::CA;
   use Go;
   use Net::SSLeay::X509;
   use Net::SSLeay::EVP;
@@ -260,6 +261,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
     }
     $ssl_ctx->set_verify($SSL_verify_mode);
     
+    my $ca = Mozilla::CA->SSL_ca;
+    
     my $SSL_hostname = $self->{SSL_hostname};
     
     unless ($SSL_hostname) {
@@ -276,26 +279,16 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     $ssl_ctx->set_default_verify_paths;
     
+    my $bio = Net::SSLeay::BIO->new;
+    
+    $bio->write($ca);
+    
+    my $x509 = Net::SSLeay::PEM->read_bio_X509($bio);
+    
     my $x509_store = $ssl_ctx->get_cert_store;
     
-=begin comment
-
-    {
-      my $ca = Mozilla::CA->SSL_ca;
-      
-      my $bio = Net::SSLeay::BIO->new;
-      
-      $bio->write($ca);
-      
-      my $x509 = Net::SSLeay::PEM->read_bio_X509($bio);
-      
-      $x509_store->add_cert($x509);
-    }
-
-=end comment
-
-=cut
-
+    $x509_store->add_cert($x509);
+    
     my $SSL_check_crl = $self->{SSL_check_crl};
     
     my $SSL_crl_file = $self->{SSL_crl_file};
