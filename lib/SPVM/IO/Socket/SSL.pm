@@ -69,10 +69,6 @@ C<has SSL_check_crl : int;>
 
 C<has SSL_crl_file : string;>
 
-=head2 SSL_passwd_cb
-
-C<has SSL_passwd_cb : L<Net::SSLeay::Callback::PemPasswd|SPVM::Net::SSLeay::Callback::PemPasswd>;>
-
 =head2 SSL_server
 
 C<has SSL_server : int;>
@@ -134,8 +130,6 @@ Options:
 =item * SSL_check_crl : Int
 
 =item * SSL_crl_file : string
-
-=item * SSL_passwd_cb : L<Net::SSLeay::Callback::PemPasswd|SPVM::Net::SSLeay::Callback::PemPasswd>
 
 =item * SSL_server : Int
 

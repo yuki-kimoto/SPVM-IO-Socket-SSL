@@ -40,8 +40,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   has SSL_crl_file : string;
   
-  has SSL_passwd_cb : Net::SSLeay::Callback::PemPasswd;
-  
   has SSL_server : int;
   
   has SSL_server_specified : int;
@@ -83,7 +81,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
         "SSL_ciphersuites",
         "SSL_check_crl",
         "SSL_crl_file",
-        "SSL_passwd_cb",
         "SSL_server",
         "SSL_npn_protocols",
         "SSL_alpn_protocols",
@@ -134,10 +131,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
     my $SSL_crl_file = $options_h->get_or_default_string("SSL_crl_file", 0);
     
     $self->{SSL_crl_file} = $SSL_crl_file;
-    
-    my $SSL_passwd_cb = (Net::SSLeay::Callback::PemPasswd)$options_h->get_or_default("SSL_passwd_cb", undef);
-    
-    $self->{SSL_passwd_cb} = $SSL_passwd_cb;
     
     my $SSL_server = $options_h->get_or_default_int("SSL_server", 0);
     
@@ -328,11 +321,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
     }
     
     $x509_store->set_flags($x509_store_flags);
-    
-    my $SSL_passwd_cb = (Net::SSLeay::Callback::PemPasswd)$self->{SSL_passwd_cb};
-    if ($SSL_passwd_cb) {
-      $ssl_ctx->set_default_passwd_cb($SSL_passwd_cb);
-    }
     
     my $SSL_npn_protocols = $self->{SSL_npn_protocols};
     if ($SSL_npn_protocols) {

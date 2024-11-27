@@ -21,7 +21,8 @@
     * IO::Socket::SSL#accept_SSL becomes a public method.
     * If a socket is for a server, SSL_verify_mode is set to SSL_VERIFY_NONE.
     * SSL_honor_cipher_order is set to 1 if a socket is server and this option is not specified.
-    
+  [Incompatible Changes]
+    * Remove SSL_passwd_cb option from IO::Socket::SSL#init method.
 0.002 2024-11-23
   [New Features]
     * Add SSL_version option to IO::Socket::SSL#init method.
