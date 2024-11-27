@@ -77,10 +77,6 @@ C<has SSL_server : int;>
 
 C<has SSL_server_specified : int;>
 
-=head2 SSL_npn_protocols
-
-C<has SSL_npn_protocols : string[];>
-
 =head2 SSL_alpn_protocols
 
 C<has SSL_alpn_protocols : string[];>
@@ -128,8 +124,6 @@ Options:
 =item * SSL_crl_file : string
 
 =item * SSL_server : Int
-
-=item * SSL_npn_protocols : string[]
 
 =item * SSL_alpn_protocols : string[]
 

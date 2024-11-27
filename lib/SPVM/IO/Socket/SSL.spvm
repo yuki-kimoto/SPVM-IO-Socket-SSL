@@ -43,8 +43,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   has SSL_server_specified : int;
   
-  has SSL_npn_protocols : string[];
-  
   has SSL_alpn_protocols : string[];
   
   has SSL_startHandshake : int;
@@ -79,7 +77,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
         "SSL_check_crl",
         "SSL_crl_file",
         "SSL_server",
-        "SSL_npn_protocols",
         "SSL_alpn_protocols",
         "SSL_startHandshake",
         "SSL_honor_cipher_order",
@@ -135,9 +132,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
       
       $self->{SSL_server} = $SSL_server;
     }
-    
-    my $SSL_npn_protocols = (string[])$options_h->get_or_default("SSL_npn_protocols", undef);
-    $self->{SSL_npn_protocols} = $SSL_npn_protocols;
     
     my $SSL_alpn_protocols = (string[])$options_h->get_or_default("SSL_alpn_protocols", undef);
     $self->{SSL_alpn_protocols} = $SSL_alpn_protocols;
@@ -314,16 +308,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
     }
     
     $x509_store->set_flags($x509_store_flags);
-    
-    my $SSL_npn_protocols = $self->{SSL_npn_protocols};
-    if ($SSL_npn_protocols) {
-      if ($SSL_server) {
-        $ssl_ctx->set_next_protos_advertised_cb_with_protocols($SSL_npn_protocols);
-      }
-      else {
-        $ssl_ctx->set_next_proto_select_cb_with_protocols($SSL_npn_protocols);
-      }
-    }
     
     my $SSL_alpn_protocols = $self->{SSL_alpn_protocols};
     if ($SSL_alpn_protocols) {
