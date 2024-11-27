@@ -1,6 +1,6 @@
 package SPVM::IO::Socket::SSL;
 
-our $VERSION = "0.003";
+our $VERSION = "0.004";
 
 1;
 
@@ -313,7 +313,7 @@ Returns the same output of Perl's L<IO::Socket::SSL|/"get_fingerprint"> method.
 
 =head1 FAQ
 
-=head2 How to create Net::SSLeay::X509 for SSL_ca option from the return value of Mozilla::CA#SSL_ca method.
+=head2 How to create a Net::SSLeay::X509 object for SSL_ca option from the return value of Mozilla::CA#SSL_ca method.
   
   use Mozilla::CA;
   use Net::SSLeay::BIO;
