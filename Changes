@@ -8,6 +8,8 @@
     * Remove IO::Socket::SSL#get_session_reused method.
     * Remove SSL_ticket_keycb option.
     * Remove SSL_npn_protocols option.
+  [Requirement Changes]
+    * Not require Mozilla::CA.
 0.003 2024-11-27
   [New Features]
     * Add IO::Socket::SSL#dump_peer_certificate method.
