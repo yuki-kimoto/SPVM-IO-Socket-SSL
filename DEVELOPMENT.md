@@ -23,3 +23,7 @@ Too complex to implement for now. It is good that another module implements a ca
 #### Session Features
 
 Too complex to implement for now. It is good that another module implements a callback for SSL session.
+
+#### Callbacks
+
+Too complex to implement them for now. It is good to use Net::SSLeay object directly.

@@ -755,11 +755,4 @@ class IO::Socket::SSL extends IO::Socket::IP {
     return $fingerprint;
   }
   
-  method set_msg_callback : void ($cb : Net::SSLeay::Callback::Msg, $arg : object) {
-    
-    my $ssl = $self->{ssl};
-    
-    $ssl->set_msg_callback($cb, $arg);
-  }
-  
 }
