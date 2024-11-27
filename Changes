@@ -1,9 +1,8 @@
-0.003 2024-11-25
+0.003 2024-11-27
   [New Features]
     * Add IO::Socket::SSL#dump_peer_certificate method.
     * Add IO::Socket::SSL#next_proto_negotiated method.
     * Add IO::Socket::SSL#alpn_selected method.
-    * Add IO::Socket::SSL#get_session_reused method.
     * Add IO::Socket::SSL#get_sslversion method.
     * Add IO::Socket::SSL#get_sslversion_int method.
     * Add IO::Socket::SSL#get_cipher method.
@@ -16,7 +15,6 @@
     * Add IO::Socket::SSL#get_fingerprint_bin method.
     * Add IO::Socket::SSL#get_fingerprint method.
     * Add IO::Socket::SSL#ssl method.
-    * Remove IO::Socket::SSL#get_session_reused method.
   [Changes]
     * IO::Socket::SSL#connect_SSL becomes a public method.
     * IO::Socket::SSL#accept_SSL becomes a public method.
