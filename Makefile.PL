@@ -18,7 +18,7 @@ unless ($meta) {
   # Do something such as environment check.
 }
 
-my %configure_and_runtime_requires = ('SPVM' => '0.990023');
+my %configure_and_runtime_requires = ('SPVM' => '0.990032');
 WriteMakefile(
   NAME => 'SPVM::IO::Socket::SSL',
   VERSION_FROM => 'lib/SPVM/IO/Socket/SSL.pm',
