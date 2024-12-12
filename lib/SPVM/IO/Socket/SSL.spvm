@@ -682,17 +682,17 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   method get_fingerprint : string ($algo : string = undef, $cert : Net::SSLeay::X509 = undef, $key_only : int = 0) {
     
-    my $fingerprint_bin = $self->get_fingerprint_bin($algo, $cert, $key_only);
-    
     my $fingerprint = "$algo$";
     
     if ($key_only) {
       $fingerprint .= "pub$";
     }
     
-    my $fingerprint_ref = (string[])Fn->unpack("H*", $fingerprint);
+    my $fingerprint_bin = $self->get_fingerprint_bin($algo, $cert, $key_only);
     
-    $fingerprint .= $fingerprint_ref->[0];
+    my $unpacked_objects = Fn->unpack("H*", $fingerprint_bin);
+    
+    $fingerprint .= (string)$unpacked_objects->[0];
     
     return $fingerprint;
   }

@@ -6,6 +6,8 @@
     * Require SPVM 0.990032.
   [Incompatible Changes]
     * Remove IO::Socket::SSL#next_proto_negotiated method.
+  [Bug Fix]
+    * Fix bugs of IO::Socket::SSL#get_fingerprint method.
 0.004 2024-11-25
   [New Features]
     * Add IO::Socket::SSL#ssl method.
