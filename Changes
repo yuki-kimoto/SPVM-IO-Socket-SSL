@@ -1,3 +1,10 @@
+0.005 2024-12-12
+  [Changes]
+    * Use TLS_method instead of SSLv23_method.
+  [Requirement Changes]
+    * Require SPVM::Net::SSLeay 0.026.
+  [Incompatible Changes]
+    * Remove IO::Socket::SSL#next_proto_negotiated method.
 0.004 2024-11-25
   [New Features]
     * Add IO::Socket::SSL#ssl method.

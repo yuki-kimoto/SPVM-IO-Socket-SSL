@@ -204,7 +204,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
           die "SSL_METHOD is already set to ${ssl_method_name}_method.";
         }
         
-        $ssl_method = Net::SSLeay::SSL_METHOD->SSLv23_method;
+        $ssl_method = Net::SSLeay::SSL_METHOD->TLS_method;
         $ssl_method_name = $SSL_version;
       }
       elsif ($SSL_version eq "!SSLv2") {
@@ -526,25 +526,9 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $ssl = $self->{ssl};
     
-    my $dump = $ssl->P_dump_peer_certificate;
+    my $dump = $ssl->dump_peer_certificate;
     
     return $dump;
-  }
-  
-  method next_proto_negotiated : string () {
-    
-    my $ssl = $self->{ssl};
-    
-    my $protocol_ref = [(string)undef];
-    my $protocol_length = 0;
-    
-    $ssl->get0_next_proto_negotiated($protocol_ref, \$protocol_length);
-    
-    my $protocol = (mutable string)$protocol_ref->[0];
-    
-    Fn->shorten($protocol, $protocol_length);
-    
-    return $protocol;
   }
   
   method alpn_selected : string () {
