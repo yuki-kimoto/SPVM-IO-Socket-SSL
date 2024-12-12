@@ -4,6 +4,7 @@
   [Requirement Changes]
     * Require SPVM::Net::SSLeay 0.026.
     * Require SPVM 0.990032.
+    * Require SPVM::Sys 0.528.
   [Incompatible Changes]
     * Remove IO::Socket::SSL#next_proto_negotiated method.
   [Bug Fix]
