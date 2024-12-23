@@ -238,7 +238,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $x509_store = $ssl_ctx->get_cert_store;
     
-    my $SSL_ca_file = $self->{SSL_ca_path};
+    my $SSL_ca_file = $self->{SSL_ca_file};
     
     my $SSL_ca_path = $self->{SSL_ca_path};
     
