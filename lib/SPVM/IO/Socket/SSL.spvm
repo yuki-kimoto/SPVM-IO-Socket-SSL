@@ -21,6 +21,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
   use Net::SSLeay::Error::SSL_ERROR_WANT_READ;
   use Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
   
+  has ssl_ctx : ro Net::SSLeay::SSL_CTX;
+  
   has ssl : ro Net::SSLeay;
   
   has SSL_verify_mode : int;
@@ -373,6 +375,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
       $ssl->set_tlsext_host_name($SSL_hostname);
     }
     
+    $self->{ssl_ctx} = $ssl_ctx;
+    
     $self->{ssl} = $ssl;
   }
   
@@ -406,20 +410,41 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   method accept_SSL : void () {
     
-    my $ssl = $self->{ssl};
-    
     my $fd = $self->{FD};
     
     my $timeout = $self->{Timeout};
     
+    my $ssl_ctx = $self->{ssl_ctx};
+    
+    my $ssl = Net::SSLeay->new($ssl_ctx);
+    
+    $ssl->set_fd($fd);
+
+=pod TODO
+
+    my $before_accept_SSL_cbs_list = $self->{before_accept_SSL_cbs_list};
+    my $before_accept_SSL_cbs_length = $before_accept_SSL_cbs_list->length;
+    for (my $i = 0; $i < $before_accept_SSL_cbs_length; $i++) {
+      my $cb = (TestUtil::Socket::Callback::BeforeAcceptSSL)$before_accept_SSL_cbs_list->get($i);
+      $cb->($self, $ssl);
+    }
+
+=cut
+
     while (1) {
       eval { $ssl->accept; }
       
       if ($@) {
-        my $again = Sys::Socket::Errno->is_accept_again(Sys::Socket::Errno->errno);
+        my $again_read = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_WANT_READ;
         
-        if ($again) {
+        my $again_write = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
+        
+        if ($again_read) {
           Go->gosched_io_read($fd, $timeout);
+          next;
+        }
+        elsif ($again_write) {
+          Go->gosched_io_write($fd, $timeout);
           next;
         }
         else {
@@ -430,6 +455,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
         last;
       }
     }
+    
+    $self->{ssl} = $ssl;
   }
   
   method accept : IO::Socket::SSL ($peer_ref : Sys::Socket::Sockaddr[] = undef) {
