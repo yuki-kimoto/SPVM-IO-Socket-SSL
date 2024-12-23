@@ -1,3 +1,7 @@
+0.007 2024-12-24
+  [New Features]
+    * Add IO::Socket::SSL#shutdown_SSL method. And IO::Socket::SSL#close method calls this method if the socket is client socket or accepted socket.
+    
 0.006 2024-12-23
   [Requirement Changes]
     * Require SPVM::Net::SSLeay 0.033.

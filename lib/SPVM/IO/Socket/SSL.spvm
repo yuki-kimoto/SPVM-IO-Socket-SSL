@@ -18,6 +18,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
   use Net::SSLeay::EVP;
   use Fn;
   use Net::SSLeay::EVP_PKEY;
+  use Net::SSLeay::Error::SSL_ERROR_WANT_READ;
+  use Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
   
   has ssl : ro Net::SSLeay;
   
@@ -505,11 +507,56 @@ class IO::Socket::SSL extends IO::Socket::IP {
     return $write_length;
   }
   
+  method shutdown_SSL : int () {
+    
+    my $ssl = $self->{ssl};
+    
+    my $fd = $self->{FD};
+    
+    my $timeout = $self->{Timeout};
+    
+    my $status = -1;
+    while (1) {
+      
+      eval { $status = $ssl->shutdown; }
+      
+      if ($@) {
+        my $again_read = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_WANT_READ;
+        
+        my $again_write = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
+        
+        if ($again_read) {
+          Go->gosched_io_read($fd, $timeout);
+          next;
+        }
+        elsif ($again_write) {
+          Go->gosched_io_write($fd, $timeout);
+          next;
+        }
+        else {
+          die $@;
+        }
+      }
+      else {
+        last;
+      }
+    }
+    
+    return $status;
+  }
+  
   method close : void () {
     
     my $ssl = $self->{ssl};
     
-    $ssl->shutdown;
+    if ($ssl) {
+      my $listen = $self->{Listen};
+      
+      # Only client sockets and accpected sockets
+      unless ($listen > 0) {
+        $self->shutdown_SSL;
+      }
+    }
     
     $self->SUPER::close;
     

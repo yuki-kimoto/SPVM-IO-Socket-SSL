@@ -173,6 +173,10 @@ C<method read : int ($buffer : mutable string, $length : int = -1, $offset : int
 
 C<method write : int ($buffer : string, $length : int = -1, $offset : int = 0);>
 
+=head2 shutdown_SSL
+
+C<method shutdown_SSL : int ();>
+
 =head2 close
 
 C<method close : void ();>
