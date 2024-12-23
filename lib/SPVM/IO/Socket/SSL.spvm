@@ -653,48 +653,4 @@ class IO::Socket::SSL extends IO::Socket::IP {
     return $cert;
   }
   
-  method get_fingerprint_bin : string ($algo : string = undef, $cert : Net::SSLeay::X509 = undef, $key_only : int = 0) {
-    
-    unless ($cert) {
-      $cert = $self->peer_certificate;
-    }
-    
-    unless ($algo) {
-      $algo = "sha256";
-    }
-    
-    my $algo_evp = Net::SSLeay::EVP->get_digestbyname($algo);
-    
-    # TODO: use EVP_MAX_MD_SIZE
-    my $fingerprint_bin = (mutable string)new_string_len 64;
-    my $fingerprint_bin_length = 0;
-    if ($key_only) {
-      $fingerprint_bin = $cert->pubkey_digest($algo_evp, $fingerprint_bin, \$fingerprint_bin_length);
-    }
-    else {
-      $fingerprint_bin = $cert->digest($algo_evp, $fingerprint_bin, \$fingerprint_bin_length);
-    }
-    
-    Fn->shorten($fingerprint_bin, $fingerprint_bin_length);
-    
-    return $fingerprint_bin;
-  }
-  
-  method get_fingerprint : string ($algo : string = undef, $cert : Net::SSLeay::X509 = undef, $key_only : int = 0) {
-    
-    my $fingerprint = "$algo$";
-    
-    if ($key_only) {
-      $fingerprint .= "pub$";
-    }
-    
-    my $fingerprint_bin = $self->get_fingerprint_bin($algo, $cert, $key_only);
-    
-    my $unpacked_objects = Fn->unpack("H*", $fingerprint_bin);
-    
-    $fingerprint .= (string)$unpacked_objects->[0];
-    
-    return $fingerprint;
-  }
-  
 }

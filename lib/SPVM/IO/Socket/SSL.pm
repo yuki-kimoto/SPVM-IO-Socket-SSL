@@ -293,18 +293,6 @@ Exceptions:
 
 Exceptions thrown by L<Net::SSLeay#get_certificate|SPVM::Net::SSLeay/"get_certificate"> method could be thrown.
 
-=head2 get_fingerprint_bin
-
-C<method get_fingerprint_bin : string ($algo : string = undef, $cert : L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509> = undef, $key_only : int = 0);>
-
-Returns the same output of Perl's L<IO::Socket::SSL|/"get_fingerprint_bin"> method.
-
-=head2 get_fingerprint
-
-C<method get_fingerprint : string ($algo : string = undef, $cert : L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509> = undef, $key_only : int = 0);>
-
-Returns the same output of Perl's L<IO::Socket::SSL|/"get_fingerprint"> method.
-
 =head1 FAQ
 
 =head2 How to create a Net::SSLeay::X509 object for SSL_ca option from the return value of Mozilla::CA#SSL_ca method.

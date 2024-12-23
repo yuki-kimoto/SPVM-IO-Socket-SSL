@@ -1,6 +1,10 @@
 0.006 2024-12-23
   [Requirement Changes]
     * Require SPVM::Net::SSLeay 0.033.
+  [Incompatible Changes]
+    * Remove IO::Socket::SSL#get_fingerprint_bin method.
+    * Remove IO::Socket::SSL#get_fingerprint method.
+    
 0.005 2024-12-12
   [Changes]
     * Use TLS_method instead of SSLv23_method.
