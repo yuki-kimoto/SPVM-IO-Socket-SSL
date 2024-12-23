@@ -3,6 +3,7 @@
     * Add IO::Socket::SSL#shutdown_SSL method. And IO::Socket::SSL#close method calls this method if the socket is client socket or accepted socket.
   [Changes]
     * Improve IO::Socket::SSL#write logic.
+    * Improve IO::Socket::SSL#read logic.
     
 0.006 2024-12-23
   [Requirement Changes]

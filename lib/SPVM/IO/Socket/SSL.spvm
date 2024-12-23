@@ -457,10 +457,16 @@ class IO::Socket::SSL extends IO::Socket::IP {
       eval { $read_length = $ssl->read($buffer, $length, $offset); }
       
       if ($@) {
-        my $again = Sys::Socket::Errno->is_read_again(Sys::Socket::Errno->errno);
+        my $again_read = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_WANT_READ;
         
-        if ($again) {
+        my $again_write = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
+        
+        if ($again_read) {
           Go->gosched_io_read($fd, $timeout);
+          next;
+        }
+        elsif ($again_write) {
+          Go->gosched_io_write($fd, $timeout);
           next;
         }
         else {
