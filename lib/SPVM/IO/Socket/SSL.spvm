@@ -317,9 +317,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
       if ($SSL_server) {
         $ssl_ctx->set_alpn_select_cb_with_protocols($SSL_alpn_protocols);
       } else {
-        die "[TODO]";
-        # TODO
-        # $ssl_ctx->set_alpn_protos($SSL_alpn_protocols);
+        $ssl_ctx->set_alpn_protos_with_protocols($SSL_alpn_protocols);
       }
     }
     

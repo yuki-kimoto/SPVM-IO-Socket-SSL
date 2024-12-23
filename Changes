@@ -4,7 +4,8 @@
   [Incompatible Changes]
     * Remove IO::Socket::SSL#get_fingerprint_bin method.
     * Remove IO::Socket::SSL#get_fingerprint method.
-    
+  [New Features]
+    * Support SSL_alpn_protocols option in client.
 0.005 2024-12-12
   [Changes]
     * Use TLS_method instead of SSLv23_method.
