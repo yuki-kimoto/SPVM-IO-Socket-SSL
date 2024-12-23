@@ -89,6 +89,18 @@ C<has SSL_startHandshake : int;>
 
 C<has SSL_honor_cipher_order : int;>
 
+=head2 SSL_ca_file
+
+C<has SSL_ca_file : string;>
+
+=head2 SSL_ca_path
+
+C<has SSL_ca_path : string;>
+
+=head2 SSL_ca
+
+C<has SSL_ca : Net::SSLeay::X509[];>
+
 =head1 Class Methods
 
 =head2 new
@@ -130,6 +142,12 @@ Options:
 =item * SSL_startHandshake : Int = 1
 
 =item * SSL_honor_cipher_order : Int = 0;
+
+=item * SSL_ca_file : string = undef;
+
+=item * SSL_ca_path : string = undef;
+
+=item * SSL_ca : Net::SSLeay::X509[] = undef;
 
 =back
 

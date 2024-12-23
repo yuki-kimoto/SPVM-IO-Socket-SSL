@@ -48,6 +48,12 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   has SSL_honor_cipher_order_specified : int;
   
+  has SSL_ca_file : string;
+  
+  has SSL_ca_path : string;
+  
+  has SSL_ca : Net::SSLeay::X509[];
+  
   # Class Methods
   static method new : IO::Socket::SSL ($options : object[] = undef) {
     
@@ -77,6 +83,9 @@ class IO::Socket::SSL extends IO::Socket::IP {
         "SSL_alpn_protocols",
         "SSL_startHandshake",
         "SSL_honor_cipher_order",
+        "SSL_ca_file",
+        "SSL_ca_path",
+        "SSL_ca",
       ],
     );
     
@@ -139,6 +148,20 @@ class IO::Socket::SSL extends IO::Socket::IP {
       my $SSL_honor_cipher_order = $options_h->get_int("SSL_honor_cipher_order");
       $self->{SSL_honor_cipher_order} = $SSL_honor_cipher_order;
     }
+    
+    my $SSL_ca_file = $options_h->get_or_default_string("SSL_ca_file", undef);
+    $self->{SSL_ca_file} = $SSL_ca_file;
+    
+    my $SSL_ca_path = $options_h->get_or_default_string("SSL_ca_path", undef);
+    $self->{SSL_ca_path} = $SSL_ca_path;
+    
+    my $SSL_ca = (Net::SSLeay::X509[])$options_h->get_or_default("SSL_ca", undef);
+    $self->{SSL_ca} = $SSL_ca;
+    
+    if ($SSL_ca && ($SSL_ca_file || $SSL_ca_path)) {
+      die "If SSL_ca option is specified, SSL_ca_file option or SSL_ca_path option cannot be specified.";
+    }
+    
   }
   
   protected method configure : void () {
@@ -279,24 +302,22 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $x509_store = $ssl_ctx->get_cert_store;
     
-=begin comment
-
-    {
-      my $ca = Mozilla::CA->SSL_ca;
-      
-      my $bio = Net::SSLeay::BIO->new;
-      
-      $bio->write($ca);
-      
-      my $x509 = Net::SSLeay::PEM->read_bio_X509($bio);
-      
-      $x509_store->add_cert($x509);
+    my $SSL_ca_file = $self->{SSL_ca_path};
+    
+    my $SSL_ca_path = $self->{SSL_ca_path};
+    
+    my $SSL_ca = $self->{SSL_ca};
+    
+    if ($SSL_ca) {
+      for (my $i = 0; $i < @$SSL_ca; $i++) {
+        my $x509 = $SSL_ca->[$i];
+        $x509_store->add_cert($x509);
+      }
     }
-
-=end comment
-
-=cut
-
+    elsif ($SSL_ca_file || $SSL_ca_path) {
+      $ssl_ctx->load_verify_locations($SSL_ca_file, $SSL_ca_path);
+    }
+    
     my $SSL_check_crl = $self->{SSL_check_crl};
     
     my $SSL_crl_file = $self->{SSL_crl_file};
