@@ -270,7 +270,12 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     $ssl_options |= $ssl_op_no_options;
     
-    $ssl_ctx->set_default_verify_paths;
+    if (Sys::OS->is_windows) {
+      $ssl_ctx->set_default_verify_paths_windows;
+    }
+    else {
+      $ssl_ctx->set_default_verify_paths;
+    }
     
     my $x509_store = $ssl_ctx->get_cert_store;
     
