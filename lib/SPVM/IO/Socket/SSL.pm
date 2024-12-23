@@ -17,7 +17,7 @@ IO::Socket::SSL class in L<SPVM> has methods for SSL sockets.
 =head1 Usage
 
   use IO::Socket::SSL;
-
+  
   # Client
   my $client_socket = IO::Socket::SSL->new({
     PeerAddr => "www.google.com:443"
@@ -167,7 +167,7 @@ C<method close : void ();>
 
 =head2 stat
 
-C<method stat : L<Sys::IO::Stat|SPVM::Sys::IO::Stat> ();
+C<method stat : L<Sys::IO::Stat|SPVM::Sys::IO::Stat> ();>
 
 This method is not allowed in IO::Scoekt::SSL.
 
@@ -295,11 +295,12 @@ Exceptions thrown by L<Net::SSLeay#get_certificate|SPVM::Net::SSLeay/"get_certif
 
 =head1 FAQ
 
-=head2 How to create a Net::SSLeay::X509 object for SSL_ca option from the return value of Mozilla::CA#SSL_ca method.
-  
+=head2 How to create L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509> objects for C<SSL_ca> option from the return value of L<Mozilla::CA#SSL_ca|SPVM::Mozilla::CA/"SSL_ca"> method.
+
   use Mozilla::CA;
   use Net::SSLeay::BIO;
   use Net::SSLeay::PEM;
+  use List;
   
   my $ca = Mozilla::CA->SSL_ca;
   
@@ -307,9 +308,27 @@ Exceptions thrown by L<Net::SSLeay#get_certificate|SPVM::Net::SSLeay/"get_certif
   
   $bio->write($ca);
   
-  my $x509 = Net::SSLeay::PEM->read_bio_X509($bio);
+  my $x509s_list = List->new(new Net::SSLeay::X509[0]);
+  while (1) {
+    my $x509 = (Net::SSLeay::X509)undef;
+    
+    eval { $x509 = Net::SSLeay::PEM->read_bio_X509($bio); }
+    
+    if ($@) {
+      if (eval_error_id isa_error Net::SSLeay::Error::PEM_R_NO_START_LINE) {
+        last;
+      }
+      else {
+        die $@;
+      }
+    }
+    
+    $x509s_list->push($x509);
+  }
   
-  my $SSL_ca = $x509;
+  my $x509s = (Net::SSLeay::X509[])$x509s_list->to_array;
+  
+  my $SSL_ca_option = $x509x;
 
 =head1 See Also
 
