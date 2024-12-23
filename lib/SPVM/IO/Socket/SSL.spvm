@@ -20,8 +20,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   has ssl : ro Net::SSLeay;
   
-  has SSL_version : string;
-  
   has SSL_verify_mode : int;
   
   has SSL_verify_mode_specified : int;
@@ -72,7 +70,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
     my $option_names = Array->merge_string(
       $self->SUPER::option_names,
       [
-        "SSL_version", 
         "SSL_verify_mode",
         "SSL_hostname",
         "SSL_cipher_list",
@@ -97,10 +94,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
     my $options_h = Hash->new($options);
     
     $self->SUPER::init($options);
-    
-    my $SSL_version = $options_h->get_or_default_string("SSL_version", "SSLv23:!TLSv1:!TLSv1_1:!SSLv3:!SSLv2");
-    
-    $self->{SSL_version} = $SSL_version;
     
     if ($options_h->exists("SSL_verify_mode")) {
       $self->{SSL_verify_mode_specified} = 1;
@@ -200,58 +193,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
       }
     }
     
-    my $ssl_method = (Net::SSLeay::SSL_METHOD)undef;
-    my $ssl_method_name = (string)undef;
-    
-    my $SSL_version_option = $self->{SSL_version};
-    
-    my $SSL_versions = Fn->split(":", $SSL_version_option);
-    
-    my $ssl_op_no_options = 0;
-    for my $SSL_version (@$SSL_versions) {
-      
-      if ($SSL_version eq "TLS") {
-        if ($ssl_method) {
-          die "SSL_METHOD is already set to ${ssl_method_name}_method.";
-        }
-        
-        $ssl_method = Net::SSLeay::SSL_METHOD->TLS_method;
-        $ssl_method_name = $SSL_version;
-      }
-      elsif ($SSL_version eq "SSLv23") {
-        if ($ssl_method) {
-          die "SSL_METHOD is already set to ${ssl_method_name}_method.";
-        }
-        
-        $ssl_method = Net::SSLeay::SSL_METHOD->TLS_method;
-        $ssl_method_name = $SSL_version;
-      }
-      elsif ($SSL_version eq "!SSLv2") {
-        $ssl_op_no_options |= SSL->SSL_OP_NO_SSLv2;
-      }
-      elsif ($SSL_version eq "!SSLv3") {
-        $ssl_op_no_options |= SSL->SSL_OP_NO_SSLv3;
-      }
-      elsif ($SSL_version eq "!TLSv1") {
-        $ssl_op_no_options |= SSL->SSL_OP_NO_TLSv1;
-      }
-      elsif ($SSL_version eq "!TLSv1_1") {
-        $ssl_op_no_options |= SSL->SSL_OP_NO_TLSv1_1;
-      }
-      elsif ($SSL_version eq "!TLSv1_2") {
-        $ssl_op_no_options |= SSL->SSL_OP_NO_TLSv1_2;
-      }
-      elsif ($SSL_version eq "!TLSv1_3") {
-        $ssl_op_no_options |= SSL->SSL_OP_NO_TLSv1_3;
-      }
-      else {
-        die "SSL_option contains an invalid value:$SSL_version.";
-      }
-    }
-    
-    unless ($ssl_method) {
-      die "SSL_version must contain TLS or SSLv23.";
-    }
+    my $ssl_method = Net::SSLeay::SSL_METHOD->TLS_method;
     
     my $ssl_ctx = Net::SSLeay::SSL_CTX->new($ssl_method);
     
@@ -291,6 +233,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $ssl_options = $default_ssl_options;
     
+    my $ssl_op_no_options = 0;
     $ssl_options |= $ssl_op_no_options;
     
     if (Sys::OS->is_windows) {

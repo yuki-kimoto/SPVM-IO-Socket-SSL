@@ -4,6 +4,7 @@
   [Incompatible Changes]
     * Remove IO::Socket::SSL#get_fingerprint_bin method.
     * Remove IO::Socket::SSL#get_fingerprint method.
+    * Remove SSL_version option.
   [New Features]
     * Support SSL_alpn_protocols option in client.
     * Add SSL_ca_file, SSL_ca_path, SSL_ca options.

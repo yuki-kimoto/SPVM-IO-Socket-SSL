@@ -41,10 +41,6 @@ C<has ssl : ro L<Net::SSLeay|SPVM::Net::SSLeay>;>
 
 A L<Net::SSLeay|SPVM::Net::SSLeay> object.
 
-=head2 SSL_version
-
-C<has SSL_version : string;>
-
 =head2 SSL_verify_mode
 
 C<has SSL_verify_mode : int;>
@@ -120,8 +116,6 @@ C<protected method init : void ($options : object[] = undef);>
 Options:
 
 =over 2
-
-=item * SSL_version : string
 
 =item * SSL_verify_mode : Int
 
