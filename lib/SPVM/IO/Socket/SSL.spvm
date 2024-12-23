@@ -17,6 +17,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
   use Net::SSLeay::X509;
   use Net::SSLeay::EVP;
   use Fn;
+  use Net::SSLeay::EVP_PKEY;
   
   has ssl : ro Net::SSLeay;
   
@@ -52,6 +53,12 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   has SSL_ca : Net::SSLeay::X509[];
   
+  has SSL_cert : Net::SSLeay::X509[];
+  
+  has SSL_key_file : string;
+  
+  has SSL_key : Net::SSLeay::EVP_PKEY;
+  
   # Class Methods
   static method new : IO::Socket::SSL ($options : object[] = undef) {
     
@@ -83,6 +90,9 @@ class IO::Socket::SSL extends IO::Socket::IP {
         "SSL_ca_file",
         "SSL_ca_path",
         "SSL_ca",
+        "SSL_cert",
+        "SSL_key_file",
+        "SSL_key"
       ],
     );
     
@@ -153,6 +163,19 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     if ($SSL_ca && ($SSL_ca_file || $SSL_ca_path)) {
       die "If SSL_ca option is specified, SSL_ca_file option or SSL_ca_path option cannot be specified.";
+    }
+    
+    my $SSL_cert = (Net::SSLeay::X509[])$options_h->get_or_default("SSL_cert", undef);
+    $self->{SSL_cert} = $SSL_cert;
+    
+    my $SSL_key_file = $options_h->get_or_default_string("SSL_key_file", undef);
+    $self->{SSL_key_file} = $SSL_key_file;
+    
+    my $SSL_key = $options_h->get_or_default("SSL_key", undef);
+    $self->{SSL_key} = (Net::SSLeay::EVP_PKEY)$SSL_key;
+    
+    if ($SSL_key && $SSL_key_file) {
+      die "If SSL_key option is specified, SSL_key_file option cannot be specified.";
     }
     
   }
@@ -260,6 +283,32 @@ class IO::Socket::SSL extends IO::Socket::IP {
       else {
         $ssl_ctx->set_default_verify_paths;
       }
+    }
+    
+    my $SSL_cert = $self->{SSL_cert};
+    
+    if ($SSL_cert) {
+      for (my $i = 0; $i < @$SSL_cert; $i++) {
+        my $x509 = $SSL_cert->[$i];
+        if ($i == 0) {
+          die "[TODO]";
+          # $ssl_ctx->use_certificate($x509);
+        }
+        else {
+          $ssl_ctx->add_extra_chain_cert($x509);
+        }
+      }
+    }
+    
+    my $SSL_key_file = $self->{SSL_key_file};
+    
+    my $SSL_key = $self->{SSL_key};
+    
+    if ($SSL_key_file) {
+      $ssl_ctx->use_PrivateKey_file($SSL_key_file, SSL->SSL_FILETYPE_PEM);
+    }
+    elsif ($SSL_key) {
+      $ssl_ctx->use_PrivateKey($SSL_key);
     }
     
     my $SSL_check_crl = $self->{SSL_check_crl};
