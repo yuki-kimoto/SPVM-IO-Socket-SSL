@@ -600,7 +600,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $ssl = $self->{ssl};
     
-    my $servername = $ssl->get_servername(0); # SSL->TLSEXT_NAMETYPE_host_name
+    my $servername = $ssl->get_servername(SSL->TLSEXT_NAMETYPE_host_name);
     
     return $servername;
   }  
