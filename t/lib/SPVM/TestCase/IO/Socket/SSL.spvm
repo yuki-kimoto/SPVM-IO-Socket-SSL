@@ -56,6 +56,11 @@ class TestCase::IO::Socket::SSL {
       
       my $ssl = $socket->ssl;
       
+      warn "[Test Output][IO::Socket::IO#get_sslversion]" . $socket->get_sslversion;
+      
+      warn "[Test Output][IO::Socket::IO#get_sslversion_int]" . $socket->get_sslversion_int;
+      
+      
       unless ($ssl) {
         return 0;
       }
