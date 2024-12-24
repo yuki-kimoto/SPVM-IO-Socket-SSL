@@ -47,6 +47,14 @@ C<has ssl : ro L<Net::SSLeay|SPVM::Net::SSLeay>;>
 
 A L<Net::SSLeay|SPVM::Net::SSLeay> object. This object is set after L</"connect_SSL"> method or L</"accept_SSL"> method succeeds.
 
+=head2 before_connect_SSL_cbs_list
+
+C<has before_connect_SSL_cbs_list : ro List of L<IO::Socket::SSL::Callback::BeforeConnectSSL|SPVM::IO::Socket::SSL::Callback::BeforeConnectSSL>;>
+
+=head2 before_accept_SSL_cbs_list
+
+C<has before_accept_SSL_cbs_list : ro List of L<IO::Socket::SSL::Callback::BeforeAcceptSSL|SPVM::IO::Socket::SSL::Callback::BeforeAcceptSSL>;>
+
 =head2 SSL_verify_mode
 
 C<has SSL_verify_mode : int;>
@@ -314,6 +322,14 @@ Calls L<Net::SSLeay#get_certificate|SPVM::Net::SSLeay/"get_certificate"> method 
 Exceptions:
 
 Exceptions thrown by L<Net::SSLeay#get_certificate|SPVM::Net::SSLeay/"get_certificate"> method could be thrown.
+
+=head2 add_before_connect_SSL_cb
+
+C<method add_before_connect_SSL_cb : void ($cb : L<IO::Socket::SSL::Callback::BeforeConnectSSL|SPVM::IO::Socket::SSL::Callback::BeforeConnectSSL>);>
+
+=head2 add_before_accept_SSL_cb
+
+C<method add_before_accept_SSL_cb : void ($cb : L<IO::Socket::SSL::Callback::BeforeAcceptSSL|SPVM::IO::Socket::SSL::Callback::BeforeAcceptSSL>);>
 
 =head1 FAQ
 
