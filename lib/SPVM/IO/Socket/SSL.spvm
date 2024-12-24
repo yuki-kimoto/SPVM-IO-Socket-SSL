@@ -556,12 +556,10 @@ class IO::Socket::SSL extends IO::Socket::IP {
         my $again_write = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
         
         if ($again_read) {
-          warn;
           Go->gosched_io_read($fd, $timeout);
           next;
         }
         elsif ($again_write) {
-          warn;
           Go->gosched_io_write($fd, $timeout);
           next;
         }
@@ -787,18 +785,21 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   method DESTROY : void () {
     
-    my $ssl = $self->{ssl};
-    
-    if ($ssl) {
-      my $listen = $self->{Listen};
+    if ($self->opened) {
+      my $ssl = $self->{ssl};
       
-      # Only client sockets and accpected sockets
-      unless ($listen > 0) {
-        $self->shutdown_SSL;
+      if ($ssl) {
+        my $listen = $self->{Listen};
+        
+        # Only client sockets and accpected sockets
+        unless ($listen > 0) {
+          $self->shutdown_SSL;
+        }
       }
+      
+      $self->close;
     }
     
-    $self->close;
   }
 
 }

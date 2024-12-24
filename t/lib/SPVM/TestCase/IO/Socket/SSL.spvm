@@ -57,8 +57,6 @@ class TestCase::IO::Socket::SSL {
       my $data = (mutable string)new_string_len 1;
       my $read_length = $accepted_socket->read($data);
       
-      warn;
-      
       if ($read_length > 0) {
         if ($data eq "\0") {
           last;
@@ -70,8 +68,6 @@ class TestCase::IO::Socket::SSL {
         last;
       }
     }
-    
-    warn;
     
   }
   
@@ -163,8 +159,6 @@ class TestCase::IO::Socket::SSL {
         });
         
         $socket->connect_SSL;
-        
-        warn;
         
         my $ssl = $socket->ssl;
         
@@ -266,23 +260,15 @@ class TestCase::IO::Socket::SSL {
           
           my $recv_length = -1;
           
-          warn;
-          
           eval { $recv_length = $socket->read($recv_buffer); }
           
-          warn $recv_length;
-          
           if ($recv_length > 0) {
-            warn;
             $string_buffer->push($recv_buffer);
           }
           else {
-            warn;
             last;
           }
         }
-        
-        warn;
         
         unless ($string_buffer->to_string eq "abc") {
           $success_ref->[0] = 0;
