@@ -59,6 +59,10 @@ C<has before_accept_SSL_cbs_list : ro List of L<IO::Socket::SSL::Callback::Befor
 
 C<has SSL_verify_mode : int;>
 
+=head2 SSL_verify_callback
+
+C<has SSL_verify_callback : L<Net::SSLeay::Callback::Verify|SPVM::Net::SSLeay::Callback::Verify>;>
+
 =head2 SSL_hostname
 
 C<has SSL_hostname : string;>
@@ -148,6 +152,8 @@ Options:
 =over 2
 
 =item * SSL_verify_mode : Int
+
+=item * SSL_verify_callback : L<Net::SSLeay::Callback::Verify|SPVM::Net::SSLeay::Callback::Verify> = undef
 
 =item * SSL_hostname : string
 
