@@ -1,4 +1,4 @@
-0.007 2024-12-24
+0.006 2024-12-24
   [New Features]
     * Add IO::Socket::SSL#shutdown_SSL method. And IO::Socket::SSL#close method calls this method if the socket is client socket or accepted socket.
     * Add IO::Socket::SSL#ssl_ctx field.
@@ -7,26 +7,21 @@
     * Add add_before_connect_SSL_cb method.
     * Add add_before_accept_SSL_cb method.
     * Support IP address verification.
+    * Support SSL_alpn_protocols option in client.
+    * Add SSL_ca_file, SSL_ca_path, SSL_ca options.
   [Changes]
     * Improve IO::Socket::SSL#write logic.
     * Improve IO::Socket::SSL#read logic.
     * Improve IO::Socket::SSL#accept_SSL logic.
     * Improve IO::Socket::SSL#connect_SSL logic.
+    * Use Windows CA ROOT in Windows.
   [Requirement Changes]
     * Require SPVM::Net::SSLeay 0.034.
     * Require SPVM::Regex 0.244.
-0.006 2024-12-23
-  [Requirement Changes]
-    * Require SPVM::Net::SSLeay 0.033.
   [Incompatible Changes]
     * Remove IO::Socket::SSL#get_fingerprint_bin method.
     * Remove IO::Socket::SSL#get_fingerprint method.
     * Remove SSL_version option.
-  [New Features]
-    * Support SSL_alpn_protocols option in client.
-    * Add SSL_ca_file, SSL_ca_path, SSL_ca options.
-  [Changes]
-    * Use Windows CA ROOT in Windows.
 0.005 2024-12-12
   [Changes]
     * Use TLS_method instead of SSLv23_method.
