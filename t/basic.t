@@ -20,7 +20,7 @@ my $start_memory_blocks_count = $api->get_memory_blocks_count;
 
 my $port = Test::SPVM::Sys::Socket::Util::get_available_port();
 
-ok(SPVM::TestCase::IO::Socket::SSL->accept($port));
+ok(SPVM::TestCase::IO::Socket::SSL->client_and_server_basic($port));
 
 # Version check
 {

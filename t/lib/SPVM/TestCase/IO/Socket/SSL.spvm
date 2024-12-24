@@ -71,7 +71,7 @@ class TestCase::IO::Socket::SSL {
     
   }
   
-  static method accept : int ($port : int) {
+  static method client_and_server_basic : int ($port : int) {
     
     my $success_ref = [1];
     
