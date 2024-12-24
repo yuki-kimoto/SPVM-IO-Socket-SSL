@@ -431,9 +431,9 @@ class IO::Socket::SSL extends IO::Socket::IP {
       }
     }
     
-    # if ($SSL_honor_cipher_order) {
+    if ($SSL_honor_cipher_order) {
       $ssl_options |= SSL->SSL_OP_CIPHER_SERVER_PREFERENCE;
-    # }
+    }
     
     $ssl_ctx->set_options($ssl_options);
     
