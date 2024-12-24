@@ -158,3 +158,5 @@ t/file/wildcard-cert.key.enc.pem
 t/file/wildcard-cert.key.pem
 t/file/wildcard-cert.p12
 t/lib/SPVM/TestCase/IO/Socket/SSL.spvm
+t/lib/SPVM/TestCase/IO/Socket/SSL/Online.spvm
+t/online.t
