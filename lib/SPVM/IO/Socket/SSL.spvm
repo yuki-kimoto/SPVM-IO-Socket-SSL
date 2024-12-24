@@ -27,6 +27,12 @@ class IO::Socket::SSL extends IO::Socket::IP {
   use Regex;
   use Net::SSLeay::Callback::PemPassword;
   
+  enum {
+    SOCKET_CATEGORY_CLIENT,
+    SOCKET_CATEGORY_SERVER,
+    SOCKET_CATEGORY_ACCEPTED,
+  }
+  
   has ssl_ctx : ro Net::SSLeay::SSL_CTX;
   
   has ssl : ro Net::SSLeay;
@@ -76,6 +82,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
   has SSL_key : Net::SSLeay::EVP_PKEY;
   
   has SSL_passwd_cb : Net::SSLeay::Callback::PemPassword;
+  
+  has SocketCategory : int;
   
   # Class Methods
   static method new : IO::Socket::SSL ($options : object[] = undef) {
@@ -216,8 +224,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
     $self->configure_SSL;
     
     # Client
-    my $peer_address = $self->{PeerAddr};
-    if ($peer_address) {
+    my $PeerAddress = $self->{PeerAddr};
+    if ($PeerAddress) {
       
       my $SSL_startHandshake = $self->{SSL_startHandshake};
       
@@ -229,13 +237,30 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   protected method configure_SSL : void () {
     
-    my $peer_addr = $self->{PeerAddr};
+    my $PeerAddr = $self->{PeerAddr};
     
-    my $listen = $self->{Listen};
+    my $Listen = $self->{Listen};
     
-    my $SSL_server = $listen > 0;
+    my $FD = $self->{FD};
+    
+    my $SSL_server = $Listen > 0;
     
     $self->{SSL_server} = $SSL_server;
+    
+    my $SocketCategory = -1;
+    if ($Listen > 0) {
+      $SocketCategory = &SOCKET_CATEGORY_SERVER;
+    }
+    elsif ($PeerAddr) {
+      $SocketCategory = &SOCKET_CATEGORY_CLIENT;
+    }
+    elsif ($FD > 0) {
+      $SocketCategory = &SOCKET_CATEGORY_ACCEPTED;
+    }
+    else {
+      die "[Unexpected Error]A socket category cannot be detected.";
+    }
+    $self->{SocketCategory} = $SocketCategory;
     
     my $ssl_method = Net::SSLeay::SSL_METHOD->TLS_method;
     
@@ -368,30 +393,30 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     $verify_param->set_hostflags(SSL->X509_CHECK_FLAG_NO_PARTIAL_WILDCARDS);
     
-    my $peer_addr_is_ip_address = 0;
-    if ($peer_addr) {
+    my $PeerAddr_is_ip_address = 0;
+    if ($PeerAddr) {
       # Maybe IPv6
-      if (Fn->contains($peer_addr, ":")) {
-        $peer_addr_is_ip_address = 1;
+      if (Fn->contains($PeerAddr, ":")) {
+        $PeerAddr_is_ip_address = 1;
       }
       # IPv4
-      elsif (Regex->new("^(\d+)(?:\.(\d+)\.(\d+)\.(\d+)|[\d\.]*)$")->match($peer_addr)) {
-        $peer_addr_is_ip_address = 1;
+      elsif (Regex->new("^(\d+)(?:\.(\d+)\.(\d+)\.(\d+)|[\d\.]*)$")->match($PeerAddr)) {
+        $PeerAddr_is_ip_address = 1;
       }
       
-      if ($peer_addr_is_ip_address) {
-        $verify_param->set1_ip_asc($peer_addr);
+      if ($PeerAddr_is_ip_address) {
+        $verify_param->set1_ip_asc($PeerAddr);
       }
       else {
-        $verify_param->set1_host($peer_addr);
+        $verify_param->set1_host($PeerAddr);
       }
     }
     
     my $SSL_hostname = $self->{SSL_hostname};
     
     unless ($SSL_hostname) {
-      if ($peer_addr && !$peer_addr_is_ip_address) {
-        $SSL_hostname = $peer_addr;
+      if ($PeerAddr && !$PeerAddr_is_ip_address) {
+        $SSL_hostname = $PeerAddr;
       }
     }
     
@@ -781,10 +806,10 @@ class IO::Socket::SSL extends IO::Socket::IP {
       my $ssl = $self->{ssl};
       
       if ($ssl) {
-        my $listen = $self->{Listen};
+        my $Listen = $self->{Listen};
         
         # Only client sockets and accpected sockets
-        unless ($listen > 0) {
+        unless ($Listen > 0) {
           $self->shutdown_SSL;
         }
       }
