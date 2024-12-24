@@ -252,7 +252,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     unless ($SSL_hostname) {
       if ($peer_addr) {
-        $SSL_hostname = $peer_addr;
+        $self->{SSL_hostname} = $SSL_hostname = $peer_addr;
       }
     }
     
@@ -365,36 +365,52 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     $ssl_ctx->set_options($ssl_options);
     
-    my $ssl = Net::SSLeay->new($ssl_ctx);
-    
-    my $socket_fileno = $self->fileno;
-    
-    $ssl->set_fd($socket_fileno);
-    
-    if (!$SSL_server && $SSL_hostname && $SSL_hostname ne "") {
-      $ssl->set_tlsext_host_name($SSL_hostname);
-    }
-    
     $self->{ssl_ctx} = $ssl_ctx;
     
-    $self->{ssl} = $ssl;
   }
   
   method connect_SSL : void () {
-    
-    my $ssl = $self->{ssl};
     
     my $timeout = $self->{Timeout};
     
     my $fd = $self->{FD};
     
+    my $ssl_ctx = $self->{ssl_ctx};
+    
+    my $ssl = Net::SSLeay->new($ssl_ctx);
+    
+    $ssl->set_fd($fd);
+    
+    my $SSL_hostname = $self->{SSL_hostname};
+    
+    if ($SSL_hostname && $SSL_hostname ne "") {
+      $ssl->set_tlsext_host_name($SSL_hostname);
+    }
+    
+=pod TODO
+
+    my $before_connect_SSL_cbs_list = $self->{before_connect_SSL_cbs_list};
+    my $before_connect_SSL_cbs_length = $before_connect_SSL_cbs_list->length;
+    for (my $i = 0; $i < $before_connect_SSL_cbs_length; $i++) {
+      my $cb = (TestUtil::Socket::Callback::BeforeConnectSSL)$before_connect_SSL_cbs_list->get($i);
+      $cb->($self, $ssl);
+    }
+
+=cut
+
     while (1) {
       eval { $ssl->connect; }
       
       if ($@) {
-        my $again = Sys::Socket::Errno->is_connect_again(Sys::Socket::Errno->errno);
+        my $again_read = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_WANT_READ;
         
-        if ($again) {
+        my $again_write = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
+        
+        if ($again_read) {
+          Go->gosched_io_read($fd, $timeout);
+          next;
+        }
+        elsif ($again_write) {
           Go->gosched_io_write($fd, $timeout);
           next;
         }
@@ -406,6 +422,9 @@ class IO::Socket::SSL extends IO::Socket::IP {
         last;
       }
     }
+    
+    $self->{ssl} = $ssl;
+    
   }
   
   method accept_SSL : void () {

@@ -1,9 +1,12 @@
 0.007 2024-12-24
   [New Features]
     * Add IO::Socket::SSL#shutdown_SSL method. And IO::Socket::SSL#close method calls this method if the socket is client socket or accepted socket.
+    * Add IO::Socket::SSL#ssl_ctx field.
   [Changes]
     * Improve IO::Socket::SSL#write logic.
     * Improve IO::Socket::SSL#read logic.
+    * Improve IO::Socket::SSL#accept_SSL logic.
+    * Improve IO::Socket::SSL#connect_SSL logic.
     
 0.006 2024-12-23
   [Requirement Changes]

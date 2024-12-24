@@ -35,11 +35,17 @@ L<IO::Socket::IP|SPVM::IO::Socket::IP>
 
 =head1 Fields
 
+=head2 ssl_ctx
+
+C<has ssl_ctx : ro L<Net::SSLeay::SSL_CTX|SPVM::Net::SSLeay::SSL_CTX>;>
+
+A L<Net::SSLeay::SSL_CTX|SPVM::Net::SSLeay::SSL_CTX> object.
+
 =head2 ssl
 
 C<has ssl : ro L<Net::SSLeay|SPVM::Net::SSLeay>;>
 
-A L<Net::SSLeay|SPVM::Net::SSLeay> object.
+A L<Net::SSLeay|SPVM::Net::SSLeay> object. This object is set after L</"connect_SSL"> method or L</"accept_SSL"> method succeeds.
 
 =head2 SSL_verify_mode
 
@@ -311,7 +317,43 @@ Exceptions thrown by L<Net::SSLeay#get_certificate|SPVM::Net::SSLeay/"get_certif
 
 =head1 FAQ
 
-=head2 How to create L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509> objects for C<SSL_ca> option from the return value of L<Mozilla::CA#SSL_ca|SPVM::Mozilla::CA/"SSL_ca"> method.
+=head2 How to customize L<Net::SSLeay::SSL_CTX|SPVM::Net::SSLeay::SSL_CTX> object?
+
+Sets L</"SSL_startHandshake"> option to 0, gets a L<Net::SSLeay::SSL_CTX|SPVM::Net::SSLeay::SSL_CTX> object by L</"ssl_ctx"> getter, customizes it, and calls L</"connect_SSL"> method in a client or calls L</"accept_SSL"> method.
+
+Client:
+
+  use Net::SSLeay::Constant as SSL;
+  
+  my $host = "www.google.com";
+  my $port = 443;
+  my $socket = IO::Socket::SSL->new({PeerAddr => $host, PeerPort => $port, SSL_startHandshake => 0});
+  
+  my $ssl_ctx = $socket->ssl_ctx;
+  
+  $ssl_ctx->set_min_proto_version(SSL->TLS1_1_VERSION);
+  
+  $socket->connect_SSL;
+  
+  my $ssl = $socket->ssl;
+
+Server:
+
+  use Net::SSLeay::Constant as SSL;
+  
+  my $host = "www.google.com";
+  my $port = 443;
+  my $socket = IO::Socket::SSL->new({Listen => 1, SSL_startHandshake => 0});
+  
+  my $ssl_ctx = $socket->ssl_ctx;
+  
+  $ssl_ctx->set_min_proto_version(SSL->TLS1_1_VERSION);
+  
+  my $accepted_socket = $socket->accept;
+  
+  $accepted_socket->accept_SSL;
+
+=head2 How to create L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509> objects for C<SSL_ca> option from the return value of L<Mozilla::CA#SSL_ca|SPVM::Mozilla::CA/"SSL_ca"> method?
 
   use Mozilla::CA;
   use Net::SSLeay::BIO;
