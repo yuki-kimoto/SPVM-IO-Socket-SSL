@@ -312,8 +312,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
       for (my $i = 0; $i < @$SSL_cert; $i++) {
         my $x509 = $SSL_cert->[$i];
         if ($i == 0) {
-          die "[TODO]";
-          # $ssl_ctx->use_certificate($x509);
+          $ssl_ctx->use_certificate($x509);
         }
         else {
           $ssl_ctx->add_extra_chain_cert($x509);
