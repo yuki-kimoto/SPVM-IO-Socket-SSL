@@ -665,26 +665,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
   }
   
-  method stat : Sys::IO::Stat () {
-    die "This method is not allowed in IO::Scoekt::SSL.";
-  }
-  
-  method send : int ($buffer : string, $flags : int = 0, $length : int = -1, $offset : int = 0) {
-    die "This method is not allowed in IO::Scoekt::SSL.";
-  }
-  
-  method sendto : int ($buffer : string, $flags : int, $to : Sys::Socket::Sockaddr, $length : int = -1, $offset : int = 0) {
-    die "This method is not allowed in IO::Scoekt::SSL.";
-  }
-  
-  method recv : int ($buffer : mutable string, $length : int = -1, $flags : int = 0, $offset : int = 0) {
-    die "This method is not allowed in IO::Scoekt::SSL.";
-  }
-  
-  method recvfrom : int ($buffer : mutable string, $length : int, $flags : int, $from_ref : Sys::Socket::Sockaddr[], $offset : int = 0) {
-    die "This method is not allowed in IO::Scoekt::SSL.";
-  }
-  
   method dump_peer_certificate : string () {
     
     my $ssl = $self->{ssl};
@@ -795,6 +775,26 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     $before_accept_SSL_cbs_list->push($cb);
     
+  }
+  
+  method stat : Sys::IO::Stat () {
+    die "This method is not allowed in IO::Scoekt::SSL.";
+  }
+  
+  method send : int ($buffer : string, $flags : int = 0, $length : int = -1, $offset : int = 0) {
+    die "This method is not allowed in IO::Scoekt::SSL.";
+  }
+  
+  method sendto : int ($buffer : string, $flags : int, $to : Sys::Socket::Sockaddr, $length : int = -1, $offset : int = 0) {
+    die "This method is not allowed in IO::Scoekt::SSL.";
+  }
+  
+  method recv : int ($buffer : mutable string, $length : int = -1, $flags : int = 0, $offset : int = 0) {
+    die "This method is not allowed in IO::Scoekt::SSL.";
+  }
+  
+  method recvfrom : int ($buffer : mutable string, $length : int, $flags : int, $from_ref : Sys::Socket::Sockaddr[], $offset : int = 0) {
+    die "This method is not allowed in IO::Scoekt::SSL.";
   }
   
 }
