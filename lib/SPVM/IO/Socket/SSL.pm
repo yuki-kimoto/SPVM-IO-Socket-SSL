@@ -6,22 +6,38 @@ our $VERSION = "0.005";
 
 =head1 Name
 
-SPVM::IO::Socket::SSL - Sockets for SSL.
+SPVM::IO::Socket::SSL - Sockets for SSL Communication.
 
 =head1 Description
 
 B<This class is highly experimental and not yet implemented completly and not tested well and not yet documented.>
 
-IO::Socket::SSL class in L<SPVM> has methods for SSL sockets.
+IO::Socket::SSL class in L<SPVM> represents sockets for SSL communication.
 
 =head1 Usage
 
   use IO::Socket::SSL;
   
   # Client
-  my $client_socket = IO::Socket::SSL->new({
-    PeerAddr => "www.google.com:443"
-  });
+  my $host = "www.google.com";
+  my $port = 443;
+  my $socket = IO::Socket::SSL->new({PeerAddr => $host, PeerPort => $port});
+  
+  my $write_buffer = "GET / HTTP/1.0\r\nHost: $host\r\n\r\n";
+  $socket->write($write_buffer);
+  
+  my $read_buffer = (mutable string)new_string_len 100000;
+  while (1) {
+    my $read_length = $socket->read($read_buffer);
+    
+    if ($read_length < 0) {
+      die "Read error";
+    }
+    
+    if ($read_length < length $read_buffer) {
+      last;
+    }
+  }
   
   # Server
   my $server_socket = IO::Socket::SSL->new({
