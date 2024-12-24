@@ -147,6 +147,10 @@ C<has SSL_key_file : string;>
 
 C<has SSL_key : L<Net::SSLeay::EVP_PKEY|SPVM::Net::SSLeay::EVP_PKEY>;>
 
+=head2 SSL_passwd_cb
+
+C<has SSL_passwd_cb : L<Net::SSLeay::Callback::PemPassword|SPVM::Net::SSLeay::Callback::PemPassword>;>
+
 =head1 Class Methods
 
 =head2 new
@@ -202,6 +206,8 @@ Options:
 =item * SSL_key_file : string = undef
 
 =item * SSL_key : L<Net::SSLeay::EVP_PKEY|SPVM::Net::SSLeay::EVP_PKEY> = undef
+
+=item * SSL_passwd_cb : L<Net::SSLeay::Callback::PemPassword|SPVM::Net::SSLeay::Callback::PemPassword> = undef;
 
 =back
 

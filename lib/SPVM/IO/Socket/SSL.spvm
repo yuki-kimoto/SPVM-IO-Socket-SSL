@@ -25,6 +25,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
   use Net::SSLeay::Callback::Verify;
   use List;
   use Regex;
+  use Net::SSLeay::Callback::PemPassword;
   
   has ssl_ctx : ro Net::SSLeay::SSL_CTX;
   
@@ -76,6 +77,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   has SSL_key : Net::SSLeay::EVP_PKEY;
   
+  has SSL_passwd_cb : Net::SSLeay::Callback::PemPassword;
+  
   # Class Methods
   static method new : IO::Socket::SSL ($options : object[] = undef) {
     
@@ -111,7 +114,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
         "SSL_cert_file",
         "SSL_cert",
         "SSL_key_file",
-        "SSL_key"
+        "SSL_key",
+        "SSL_passwd_cb",
       ],
     );
     
@@ -137,6 +141,9 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $SSL_verify_callback = (Net::SSLeay::Callback::Verify)$options_h->get_or_default("SSL_verify_callback", undef);
     $self->{SSL_verify_callback} = $SSL_verify_callback;
+    
+    my $SSL_passwd_cb = (Net::SSLeay::Callback::PemPassword)$options_h->get_or_default("SSL_passwd_cb", undef);
+    $self->{SSL_passwd_cb} = $SSL_passwd_cb;
     
     my $SSL_hostname = $options_h->get_or_default_string("SSL_hostname", undef);
     
@@ -279,6 +286,10 @@ class IO::Socket::SSL extends IO::Socket::IP {
     my $SSL_verify_callback = $self->{SSL_verify_callback};
     
     $ssl_ctx->set_verify($SSL_verify_mode, $SSL_verify_callback);
+    
+    my $SSL_passwd_cb = $self->{SSL_passwd_cb};
+    
+    $ssl_ctx->set_default_passwd_cb($SSL_passwd_cb);
     
     my $default_ssl_options = SSL->SSL_OP_ALL | SSL->SSL_OP_SINGLE_DH_USE | SSL->SSL_OP_SINGLE_ECDH_USE;
     

@@ -1,6 +1,7 @@
 0.007 2024-12-24
   [New Features]
     * Add IO::Socket::SSL#DESTROY method.
+    * Add SSL_passwd_cb option.
   [Incompatible Changes]
     * Remove IO::Socket::SSL#close method.
 0.006 2024-12-24
