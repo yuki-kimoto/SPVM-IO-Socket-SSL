@@ -698,14 +698,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $ssl = $self->{ssl};
     
-    my $protocol_ref = [(string)undef];
-    my $protocol_length = 0;
-    
-    $ssl->get0_alpn_selected($protocol_ref, \$protocol_length);
-    
-    my $protocol = (mutable string)$protocol_ref->[0];
-    
-    Fn->shorten($protocol, $protocol_length);
+    my $protocol = $ssl->get0_alpn_selected_return_string;
     
     return $protocol;
   }
