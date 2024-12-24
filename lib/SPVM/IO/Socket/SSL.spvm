@@ -53,8 +53,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   has SSL_server : int;
   
-  has SSL_server_specified : int;
-  
   has SSL_alpn_protocols : string[];
   
   has SSL_startHandshake : int;
@@ -104,7 +102,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
         "SSL_ciphersuites",
         "SSL_check_crl",
         "SSL_crl_file",
-        "SSL_server",
         "SSL_alpn_protocols",
         "SSL_startHandshake",
         "SSL_honor_cipher_order",
@@ -164,14 +161,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
     my $SSL_crl_file = $options_h->get_or_default_string("SSL_crl_file", 0);
     
     $self->{SSL_crl_file} = $SSL_crl_file;
-    
-    my $SSL_server = $options_h->get_or_default_int("SSL_server", 0);
-    
-    if ($SSL_server) {
-      $self->{SSL_server_specified} = 1;
-      
-      $self->{SSL_server} = $SSL_server;
-    }
     
     my $SSL_alpn_protocols = (string[])$options_h->get_or_default("SSL_alpn_protocols", undef);
     $self->{SSL_alpn_protocols} = $SSL_alpn_protocols;
@@ -244,17 +233,9 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $listen = $self->{Listen};
     
-    my $SSL_server_specified = $self->{SSL_server_specified};
+    my $SSL_server = $listen > 0;
     
-    my $SSL_server = 0;
-    if ($SSL_server_specified) {
-      $SSL_server = $self->{SSL_server};
-    }
-    else {
-      if ($listen > 0) {
-        $SSL_server = 1;
-      }
-    }
+    $self->{SSL_server} = $SSL_server;
     
     my $ssl_method = Net::SSLeay::SSL_METHOD->TLS_method;
     
@@ -425,7 +406,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
       $SSL_honor_cipher_order = $self->{SSL_honor_cipher_order};
     }
     else {
-      if ($self->{SSL_server}) {
+      if ($SSL_server) {
         $SSL_honor_cipher_order = 1;
       }
     }

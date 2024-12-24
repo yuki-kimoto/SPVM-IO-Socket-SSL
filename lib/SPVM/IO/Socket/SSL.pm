@@ -103,10 +103,6 @@ C<has SSL_crl_file : string;>
 
 C<has SSL_server : int;>
 
-=head2 SSL_server_specified
-
-C<has SSL_server_specified : int;>
-
 =head2 SSL_alpn_protocols
 
 C<has SSL_alpn_protocols : string[];>
@@ -171,7 +167,7 @@ Options:
 
 =over 2
 
-=item * SSL_verify_mode : Int
+=item * SSL_verify_mode : Int = L<SSL_VERIFY_NONE|SPVM::Net::SSLeay#SSL_VERIFY_NONE>
 
 =item * SSL_verify_callback : L<Net::SSLeay::Callback::Verify|SPVM::Net::SSLeay::Callback::Verify> = undef
 
@@ -184,8 +180,6 @@ Options:
 =item * SSL_check_crl : Int
 
 =item * SSL_crl_file : string
-
-=item * SSL_server : Int
 
 =item * SSL_alpn_protocols : string[]
 
