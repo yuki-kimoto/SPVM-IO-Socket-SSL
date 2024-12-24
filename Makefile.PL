@@ -54,6 +54,7 @@ WriteMakefile(
     'SPVM::Net::SSLeay' => '0.034',
     'SPVM::Mozilla::CA' => '0.002',
     'SPVM::Sys' => '0.528',
+    'SPVM::Regex' => '0.244',
   },
   TEST_REQUIRES => {
     

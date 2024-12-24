@@ -4,6 +4,8 @@
     * Add IO::Socket::SSL#ssl_ctx field.
     * Add SSL_cert_file option.
     * Add SSL_verify_callback option.
+    * Add add_before_connect_SSL_cb method.
+    * Add add_before_accept_SSL_cb method.
   [Changes]
     * Improve IO::Socket::SSL#write logic.
     * Improve IO::Socket::SSL#read logic.
@@ -11,6 +13,7 @@
     * Improve IO::Socket::SSL#connect_SSL logic.
   [Requirement Changes]
     * Require SPVM::Net::SSLeay 0.034.
+    * Require SPVM::Regex 0.244.
 0.006 2024-12-23
   [Requirement Changes]
     * Require SPVM::Net::SSLeay 0.033.
