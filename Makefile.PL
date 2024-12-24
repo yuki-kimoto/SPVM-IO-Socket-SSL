@@ -51,7 +51,7 @@ WriteMakefile(
   PREREQ_PM         => {
     %configure_and_runtime_requires,
     'SPVM::IO' => '0.229',
-    'SPVM::Net::SSLeay' => '0.033',
+    'SPVM::Net::SSLeay' => '0.034',
     'SPVM::Mozilla::CA' => '0.002',
     'SPVM::Sys' => '0.528',
   },

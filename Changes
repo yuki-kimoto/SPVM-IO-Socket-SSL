@@ -7,7 +7,8 @@
     * Improve IO::Socket::SSL#read logic.
     * Improve IO::Socket::SSL#accept_SSL logic.
     * Improve IO::Socket::SSL#connect_SSL logic.
-    
+  [Requirement Changes]
+    * Require SPVM::Net::SSLeay 0.034.
 0.006 2024-12-23
   [Requirement Changes]
     * Require SPVM::Net::SSLeay 0.033.
