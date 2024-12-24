@@ -109,7 +109,23 @@ C<has SSL_ca_path : string;>
 
 =head2 SSL_ca
 
-C<has SSL_ca : Net::SSLeay::X509[];>
+C<has SSL_ca : L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509>[];>
+
+=head2 SSL_cert_file
+
+C<has SSL_cert_file : string;>
+
+=head2 SSL_cert
+
+C<has SSL_cert : L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509>[];>
+
+=head2 SSL_key_file
+
+C<has SSL_key_file : string;>
+
+=head2 SSL_key
+
+C<has SSL_key : L<Net::SSLeay::EVP_PKEY|SPVM::Net::SSLeay::EVP_PKEY>;>
 
 =head1 Class Methods
 
@@ -151,11 +167,19 @@ Options:
 
 =item * SSL_honor_cipher_order : Int = 0;
 
-=item * SSL_ca_file : string = undef;
+=item * SSL_ca_file : string = undef
 
-=item * SSL_ca_path : string = undef;
+=item * SSL_ca_path : string = undef
 
-=item * SSL_ca : Net::SSLeay::X509[] = undef;
+=item * SSL_ca : Net::SSLeay::X509[] = undef
+
+=item * SSL_cert_file : string = undef
+
+=item * SSL_cert : L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509>[] = undef
+
+=item * SSL_key_file : string = undef
+
+=item * SSL_key : L<Net::SSLeay::EVP_PKEY|SPVM::Net::SSLeay::EVP_PKEY> = undef
 
 =back
 

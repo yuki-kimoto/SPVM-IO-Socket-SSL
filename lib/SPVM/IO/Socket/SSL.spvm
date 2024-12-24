@@ -64,6 +64,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   has SSL_ca : Net::SSLeay::X509[];
   
+  has SSL_cert_file : string;
+  
   has SSL_cert : Net::SSLeay::X509[];
   
   has SSL_key_file : string;
@@ -101,6 +103,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
         "SSL_ca_file",
         "SSL_ca_path",
         "SSL_ca",
+        "SSL_cert_file",
         "SSL_cert",
         "SSL_key_file",
         "SSL_key"
@@ -180,8 +183,15 @@ class IO::Socket::SSL extends IO::Socket::IP {
       die "If SSL_ca option is specified, SSL_ca_file option or SSL_ca_path option cannot be specified.";
     }
     
+    my $SSL_cert_file = $options_h->get_or_default_string("SSL_cert_file", undef);
+    $self->{SSL_cert_file} = $SSL_cert_file;
+    
     my $SSL_cert = (Net::SSLeay::X509[])$options_h->get_or_default("SSL_cert", undef);
     $self->{SSL_cert} = $SSL_cert;
+    
+    if ($SSL_cert && $SSL_cert_file) {
+      die "If SSL_cert option is specified, SSL_cert_file option cannot be specified.";
+    }
     
     my $SSL_key_file = $options_h->get_or_default_string("SSL_key_file", undef);
     $self->{SSL_key_file} = $SSL_key_file;
@@ -306,9 +316,14 @@ class IO::Socket::SSL extends IO::Socket::IP {
       }
     }
     
+    my $SSL_cert_file = $self->{SSL_cert_file};
+    
     my $SSL_cert = $self->{SSL_cert};
     
-    if ($SSL_cert) {
+    if ($SSL_cert_file) {
+      $ssl_ctx->use_certificate_chain_file($SSL_cert_file);
+    }
+    elsif ($SSL_cert) {
       for (my $i = 0; $i < @$SSL_cert; $i++) {
         my $x509 = $SSL_cert->[$i];
         if ($i == 0) {

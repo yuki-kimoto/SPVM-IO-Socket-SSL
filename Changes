@@ -2,6 +2,7 @@
   [New Features]
     * Add IO::Socket::SSL#shutdown_SSL method. And IO::Socket::SSL#close method calls this method if the socket is client socket or accepted socket.
     * Add IO::Socket::SSL#ssl_ctx field.
+    * Add SSL_cert_file option.
   [Changes]
     * Improve IO::Socket::SSL#write logic.
     * Improve IO::Socket::SSL#read logic.
