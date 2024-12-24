@@ -1,3 +1,8 @@
+0.007 2024-12-24
+  [New Features]
+    * Add IO::Socket::SSL#DESTROY method.
+  [Incompatible Changes]
+    * Remove IO::Socket::SSL#close method.
 0.006 2024-12-24
   [New Features]
     * Add IO::Socket::SSL#shutdown_SSL method. And IO::Socket::SSL#close method calls this method if the socket is client socket or accepted socket.

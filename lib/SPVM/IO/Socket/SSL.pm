@@ -237,10 +237,6 @@ C<method write : int ($buffer : string, $length : int = -1, $offset : int = 0);>
 
 C<method shutdown_SSL : int ();>
 
-=head2 close
-
-C<method close : void ();>
-
 =head2 dump_peer_certificate
 
 C<method dump_peer_certificate : string ();>
@@ -376,6 +372,10 @@ This method is not supported in L<IO::Socket::SSL|SPVM::IO::Socket::SSL>.
 Exceptions:
 
 An exception is thrown.
+
+=head2 DESTROY
+
+C<method DESTROY : void ();>
 
 =head1 FAQ
 
