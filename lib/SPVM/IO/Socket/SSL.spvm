@@ -47,9 +47,9 @@ class IO::Socket::SSL extends IO::Socket::IP {
   # Undocumented Fields
   has SSL_startHandshake : int;
   
-  has SSL_verify_mode : int;
+  has SSL_verify_mode_option : Int;
   
-  has SSL_verify_mode_specified : int;
+  has SSL_verify_mode : int;
   
   has SSL_verify_callback : Net::SSLeay::Callback::Verify;
   
@@ -128,12 +128,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     $self->{before_accept_SSL_cbs_list} = List->new(new IO::Socket::SSL::Callback::BeforeAcceptSSL[0]);
     
-    if ($options_h->exists("SSL_verify_mode")) {
-      $self->{SSL_verify_mode_specified} = 1;
-      
-      my $SSL_verify_mode = $options_h->get_int("SSL_verify_mode");
-      $self->{SSL_verify_mode} = $SSL_verify_mode;
-    }
+    my $SSL_verify_mode_option = $options_h->get("SSL_verify_mode");
+    $self->{SSL_verify_mode_option} = (Int)$SSL_verify_mode_option;
     
     my $SSL_verify_callback = (Net::SSLeay::Callback::Verify)$options_h->get_or_default("SSL_verify_callback", undef);
     $self->{SSL_verify_callback} = $SSL_verify_callback;
@@ -201,15 +197,14 @@ class IO::Socket::SSL extends IO::Socket::IP {
     $self->configure_SSL;
     
     # Client
-    my $PeerAddress = $self->{PeerAddr};
-    if ($PeerAddress) {
-      
-      my $SSL_startHandshake = $self->{SSL_startHandshake};
-      
-      if ($SSL_startHandshake) {
+    my $SSL_startHandshake = $self->{SSL_startHandshake};
+    if ($SSL_startHandshake) {
+      my $SocketCategory = $self->{SocketCategory};
+      if ($SocketCategory == &SOCKET_CATEGORY_CLIENT) {
         $self->connect_SSL;
       }
     }
+    
   }
   
   protected method configure_SSL : void () {
@@ -256,8 +251,9 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     # SSL_verify_mode
     my $SSL_verify_mode = -1;
-    if ($self->{SSL_verify_mode_specified}) {
-      $SSL_verify_mode = $self->{SSL_verify_mode};
+    my $SSL_verify_mode_option = $self->{SSL_verify_mode_option};
+    if ($SSL_verify_mode_option) {
+      $SSL_verify_mode = (int)$SSL_verify_mode_option;
     }
     else {
       if ($SocketCategory == &SOCKET_CATEGORY_SERVER) {
@@ -267,6 +263,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
         $SSL_verify_mode = SSL->SSL_VERIFY_PEER;
       }
     }
+    $self->{SSL_verify_mode} = $SSL_verify_mode;
     
     # SSL_verify_callback
     my $SSL_verify_callback = $self->{SSL_verify_callback};

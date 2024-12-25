@@ -75,19 +75,29 @@ C<has before_accept_SSL_cbs_list : ro List of L<IO::Socket::SSL::Callback::Befor
 
 =head2 new
 
-C<static method new : IO::Socket::SSL ($options : object[] = undef);>
-  
+C<static method new : L<IO::Socket::SSL|SPVM::IO::Socket::SSL> ($options : object[] = undef);>
+
+Creates a new L<IO::Socket::SSL|SPVM::IO::Socket::SSL> object, calls L</"init"> method given the options $options, calls L</"configure"> method, and return the new object.
+
 =head1 Instance Methods
 
 =head2 init
 
 C<protected method init : void ($options : object[] = undef);>
 
+Initialize the instance given the options $options.
+
 Options:
 
-=over 2
+=head3 SSL_startHandshake
 
-=item * B<SSL_verify_mode>
+Type: L<Int|SPVM::Int>
+
+Default: 1
+
+It this option is a true value, L</"configure"> method calls L</"connect_SSL"> method in the case that the instance is a client socket, and L</"accept"> method calls L</"accept_SSL">.
+
+=head3 SSL_verify_mode
 
 Type: L<Int|SPVM::Int>
 
@@ -97,83 +107,85 @@ Otherwise it is set to C<SSL_VERIFY_NONE|SPVM::Net::SSLeay::Constant#/"SSL_VERIF
 
 L</"configure_SSL"> method calls L<set_verify|Net::SSLeay::SSL_CTX#set_verify> method given the option value and the value of C<SSL_verify_callback> option.
 
-=item * B<SSL_startHandshake>
-
-Type: L<Int|SPVM::Int>
-
-Default: 1
-
-It this option is a false value, L</"configure"> method do not calls L</"connect_SSL"> method and L</"accept"> method do not calls L</"accept_SSL">.
-
-=item * B<SSL_verify_callback>
+=head3 SSL_verify_callback
 
 Type: L<Net::SSLeay::Callback::Verify|SPVM::Net::SSLeay::Callback::Verify>
 
 See C<SSL_verify_mode> option about its beheivior.
 
-=item * B<SSL_passwd_cb>
+=head3 SSL_passwd_cb
 
 Type: L<Net::SSLeay::Callback::PemPassword|SPVM::Net::SSLeay::Callback::PemPassword>
 
 If the option value is defined, L</"configure_SSL"> method calls L<set_default_passwd_cb|Net::SSLeay::SSL_CTX#set_default_passwd_cb> method given the option value.
 
-=item * B<SSL_check_crl>
+=head3 SSL_check_crl
 
 Type: L<Int|SPVM::Int>
 
-=item * B<SSL_crl_file>
+The option value is a true value, C<X509_V_FLAG_CRL_CHECK|SPVM::Net::SSLeay::Constant#/"X509_V_FLAG_CRL_CHECK"> flag is set to the L<Net::SSLeay::X509_VERIFY_PARAM|SPVM::Net::SSLeay::X509_VERIFY_PARAM> object stored in the L<Net::SSLeay::SSL_CTX> object.
+
+=head3 SSL_crl_file
 
 Type: string
 
-=item * B<SSL_ca_file>
+=head3 SSL_ca_file
 
 Type: string
 
-=item * B<SSL_ca_path>
+=head3 SSL_ca_path
 
 Type: string
 
-=item * B<SSL_ca>
+=head3 SSL_ca
 
 Type: L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509>[]
 
-=item * B<SSL_cert_file>
+=head3 SSL_cert_file
 
 Type: string
 
-=item * B<SSL_cert>
+=head3 SSL_cert
 
 Type: L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509>[]
 
-=item * B<SSL_key_file>
+=head3 SSL_key_file
 
 Type: string
 
-=item * B<SSL_key>
+=head3 SSL_key
 
 Type: L<Net::SSLeay::EVP_PKEY|SPVM::Net::SSLeay::EVP_PKEY>
 
-=item * B<SSL_hostname>
+=head3 SSL_hostname
 
 Type: string
 
-=item * B<SSL_alpn_protocols>
+=head3 SSL_alpn_protocols
 
 Type: string[]
-
-=back
 
 =head2 option_names
 
 C<protected method option_names : string[] ();>
 
+Returns available option names in L</"init"> method.
+
 =head2 configure
 
 C<protected method configure : void ();>
 
+Congigures the instance by the following way.
+
+Calls L<configure|SPVM::IO::Socket::IP> method in the super class, and calls L</"configure_SSL"> method.
+
+If the value of L</"SSL_startHandshake"> option is a true value and the instance is a client socket, calls L</"connect_SSL"> method.
+
 =head2 configure_SSL
 
 C<protected method configure_SSL : void ();>
+
+Configures this instacne and a L<Net::SSLeay::SSL_CTX|SPVM::Net::SSLeay::SSL_CTX> object using options passed from L</"init"> method.
 
 =head2 connect_SSL
 
