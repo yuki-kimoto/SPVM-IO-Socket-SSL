@@ -216,6 +216,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $FD = $self->{FD};
     
+    # SocketCategory
     my $SocketCategory = -1;
     if ($Listen > 0) {
       $SocketCategory = &SOCKET_CATEGORY_SERVER;
@@ -230,13 +231,12 @@ class IO::Socket::SSL extends IO::Socket::IP {
       die "[Unexpected Error]A socket category cannot be detected.";
     }
     $self->{SocketCategory} = $SocketCategory;
-    
     if ($SocketCategory == &SOCKET_CATEGORY_ACCEPTED) {
       return;
     }
     
+    # ssl_method
     my $ssl_method = (Net::SSLeay::SSL_METHOD)undef;
-    
     if ($SocketCategory == &SOCKET_CATEGORY_SERVER) {
       $ssl_method = Net::SSLeay::SSL_METHOD->TLS_server_method;
     }
@@ -249,6 +249,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $ssl_ctx = Net::SSLeay::SSL_CTX->new($ssl_method);
     
+    # SSL_verify_mode
     my $SSL_verify_mode = -1;
     if ($self->{SSL_verify_mode_specified}) {
       $SSL_verify_mode = $self->{SSL_verify_mode};
@@ -263,14 +264,10 @@ class IO::Socket::SSL extends IO::Socket::IP {
     }
     
     my $SSL_verify_callback = $self->{SSL_verify_callback};
-    
     $ssl_ctx->set_verify($SSL_verify_mode, $SSL_verify_callback);
     
     my $SSL_passwd_cb = $self->{SSL_passwd_cb};
-    
     $ssl_ctx->set_default_passwd_cb($SSL_passwd_cb);
-    
-    my $ssl_options = 0;
     
     my $x509_store = $ssl_ctx->get_cert_store;
     
@@ -392,8 +389,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
         $ssl->set_tlsext_host_name($SSL_hostname);
       });
     }
-    
-    $ssl_ctx->set_options($ssl_options);
     
     $self->{ssl_ctx} = $ssl_ctx;
     
