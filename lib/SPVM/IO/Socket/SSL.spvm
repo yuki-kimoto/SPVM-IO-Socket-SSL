@@ -231,6 +231,10 @@ class IO::Socket::SSL extends IO::Socket::IP {
     }
     $self->{SocketCategory} = $SocketCategory;
     
+    if ($SocketCategory == &SOCKET_CATEGORY_ACCEPTED) {
+      return;
+    }
+    
     my $ssl_method = (Net::SSLeay::SSL_METHOD)undef;
     
     if ($SocketCategory == &SOCKET_CATEGORY_SERVER) {

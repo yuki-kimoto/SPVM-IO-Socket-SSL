@@ -1,4 +1,4 @@
-0.007 2024-12-24
+0.007 2024-12-25
   [New Features]
     * Add IO::Socket::SSL#DESTROY method.
     * Add SSL_passwd_cb option.
