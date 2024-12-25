@@ -334,9 +334,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $SSL_crl_file = $self->{SSL_crl_file};
     
-    my $default_x509_store_flags = SSL->X509_V_FLAG_TRUSTED_FIRST;
-    
-    my $x509_store_flags = $default_x509_store_flags;
+    my $x509_store_flags = 0;
     if ($SSL_check_crl) {
       $x509_store_flags |= SSL->X509_V_FLAG_CRL_CHECK;
       
