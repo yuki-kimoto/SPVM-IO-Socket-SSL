@@ -83,10 +83,6 @@ C<has SSL_verify_callback : L<Net::SSLeay::Callback::Verify|SPVM::Net::SSLeay::C
 
 C<has SSL_hostname : string;>
 
-=head2 SSL_ciphersuites
-
-C<has SSL_ciphersuites : string;>
-
 =head2 SSL_check_crl
 
 C<has SSL_check_crl : int;>
@@ -168,8 +164,6 @@ Options:
 =item * SSL_verify_callback : L<Net::SSLeay::Callback::Verify|SPVM::Net::SSLeay::Callback::Verify> = undef
 
 =item * SSL_hostname : string
-
-=item * SSL_ciphersuites : string
 
 =item * SSL_check_crl : Int
 
