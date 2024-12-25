@@ -247,6 +247,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
       $ssl_method = Net::SSLeay::SSL_METHOD->TLS_method;
     }
     
+    # ssl_ctx
     my $ssl_ctx = Net::SSLeay::SSL_CTX->new($ssl_method);
     
     # SSL_verify_mode
@@ -263,20 +264,21 @@ class IO::Socket::SSL extends IO::Socket::IP {
       }
     }
     
+    # SSL_verify_callback
     my $SSL_verify_callback = $self->{SSL_verify_callback};
     $ssl_ctx->set_verify($SSL_verify_mode, $SSL_verify_callback);
     
+    # SSL_passwd_cb
     my $SSL_passwd_cb = $self->{SSL_passwd_cb};
     $ssl_ctx->set_default_passwd_cb($SSL_passwd_cb);
     
+    # x509_store
     my $x509_store = $ssl_ctx->get_cert_store;
     
+    # SSL_ca_file, SSL_ca_path, SSL_ca
     my $SSL_ca_file = $self->{SSL_ca_file};
-    
     my $SSL_ca_path = $self->{SSL_ca_path};
-    
     my $SSL_ca = $self->{SSL_ca};
-    
     if ($SSL_ca) {
       for (my $i = 0; $i < @$SSL_ca; $i++) {
         my $x509 = $SSL_ca->[$i];
@@ -295,10 +297,25 @@ class IO::Socket::SSL extends IO::Socket::IP {
       }
     }
     
+    # SSL_check_crl, SSL_crl_file
+    my $SSL_check_crl = $self->{SSL_check_crl};
+    my $SSL_crl_file = $self->{SSL_crl_file};
+    my $x509_store_flags = 0;
+    if ($SSL_check_crl) {
+      $x509_store_flags |= SSL->X509_V_FLAG_CRL_CHECK;
+      
+      if ($SSL_crl_file) {
+        my $bio = Net::SSLeay::BIO->new_file($SSL_crl_file, "r");
+        my $crl = Net::SSLeay::PEM->read_bio_X509_CRL($bio);
+        my $cert_store = $ssl_ctx->get_cert_store;
+        $cert_store->add_crl($crl);
+      }
+    }
+    $x509_store->set_flags($x509_store_flags);
+    
+    # SSL_cert_file, SSL_cert
     my $SSL_cert_file = $self->{SSL_cert_file};
-    
     my $SSL_cert = $self->{SSL_cert};
-    
     if ($SSL_cert_file) {
       $ssl_ctx->use_certificate_chain_file($SSL_cert_file);
     }
@@ -314,10 +331,9 @@ class IO::Socket::SSL extends IO::Socket::IP {
       }
     }
     
+    # SSL_key_file, SSL_key
     my $SSL_key_file = $self->{SSL_key_file};
-    
     my $SSL_key = $self->{SSL_key};
-    
     if ($SSL_key_file) {
       $ssl_ctx->use_PrivateKey_file($SSL_key_file, SSL->SSL_FILETYPE_PEM);
     }
@@ -325,38 +341,9 @@ class IO::Socket::SSL extends IO::Socket::IP {
       $ssl_ctx->use_PrivateKey($SSL_key);
     }
     
-    my $SSL_check_crl = $self->{SSL_check_crl};
-    
-    my $SSL_crl_file = $self->{SSL_crl_file};
-    
-    my $x509_store_flags = 0;
-    if ($SSL_check_crl) {
-      $x509_store_flags |= SSL->X509_V_FLAG_CRL_CHECK;
-      
-      if ($SSL_crl_file) {
-        my $bio = Net::SSLeay::BIO->new_file($SSL_crl_file, "r");
-        my $crl = Net::SSLeay::PEM->read_bio_X509_CRL($bio);
-        my $cert_store = $ssl_ctx->get_cert_store;
-        $cert_store->add_crl($crl);
-      }
-    }
-    
-    $x509_store->set_flags($x509_store_flags);
-    
-    my $SSL_alpn_protocols = $self->{SSL_alpn_protocols};
-    if ($SSL_alpn_protocols) {
-      if ($SocketCategory == &SOCKET_CATEGORY_SERVER) {
-        $ssl_ctx->set_alpn_select_cb_with_protocols($SSL_alpn_protocols);
-      }
-      elsif ($SocketCategory == &SOCKET_CATEGORY_CLIENT) {
-        $ssl_ctx->set_alpn_protos_with_protocols($SSL_alpn_protocols);
-      }
-    }
-    
+    # verify_param
     my $verify_param = $ssl_ctx->get0_param;
-    
     $verify_param->set_hostflags(SSL->X509_CHECK_FLAG_NO_PARTIAL_WILDCARDS);
-    
     my $PeerAddr_is_ip_address = 0;
     if ($PeerAddr) {
       # Maybe IPv6
@@ -376,18 +363,28 @@ class IO::Socket::SSL extends IO::Socket::IP {
       }
     }
     
+    # SSL_hostname
     my $SSL_hostname = $self->{SSL_hostname};
-    
     unless ($SSL_hostname) {
       if ($PeerAddr && !$PeerAddr_is_ip_address) {
         $SSL_hostname = $PeerAddr;
       }
     }
-    
     if ($SSL_hostname && $SSL_hostname ne "") {
       $self->add_before_connect_SSL_cb([$SSL_hostname : string] method : void ($socket : IO::Socket::SSL, $ssl : Net::SSLeay) {
         $ssl->set_tlsext_host_name($SSL_hostname);
       });
+    }
+    
+    # SSL_alpn_protocols
+    my $SSL_alpn_protocols = $self->{SSL_alpn_protocols};
+    if ($SSL_alpn_protocols) {
+      if ($SocketCategory == &SOCKET_CATEGORY_SERVER) {
+        $ssl_ctx->set_alpn_select_cb_with_protocols($SSL_alpn_protocols);
+      }
+      elsif ($SocketCategory == &SOCKET_CATEGORY_CLIENT) {
+        $ssl_ctx->set_alpn_protos_with_protocols($SSL_alpn_protocols);
+      }
     }
     
     $self->{ssl_ctx} = $ssl_ctx;
