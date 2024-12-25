@@ -231,7 +231,17 @@ class IO::Socket::SSL extends IO::Socket::IP {
     }
     $self->{SocketCategory} = $SocketCategory;
     
-    my $ssl_method = Net::SSLeay::SSL_METHOD->TLS_method;
+    my $ssl_method = (Net::SSLeay::SSL_METHOD)undef;
+    
+    if ($SocketCategory == &SOCKET_CATEGORY_SERVER) {
+      $ssl_method = Net::SSLeay::SSL_METHOD->TLS_server_method;
+    }
+    elsif ($SocketCategory == &SOCKET_CATEGORY_CLIENT) {
+      $ssl_method = Net::SSLeay::SSL_METHOD->TLS_client_method;
+    }
+    else {
+      $ssl_method = Net::SSLeay::SSL_METHOD->TLS_method;
+    }
     
     my $ssl_ctx = Net::SSLeay::SSL_CTX->new($ssl_method);
     
