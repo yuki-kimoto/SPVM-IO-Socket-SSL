@@ -91,15 +91,15 @@ Options:
 
 Type: L<Int|SPVM::Int>
 
-If this option is not specified and the instance is a client socket, it is set to C<SSL_VERIFY_PEER|SPVM::Net::SSLeay::Constant#/"SSL_VERIFY_PEER">.
+If the option is not specified and the instance is a client socket, the option value is set to C<SSL_VERIFY_PEER|SPVM::Net::SSLeay::Constant#/"SSL_VERIFY_PEER">.
 
 Otherwise it is set to C<SSL_VERIFY_NONE|SPVM::Net::SSLeay::Constant#/"SSL_VERIFY_NONE">.
 
-This option is used in L</"configure_SSL"> method and the method calls L<set_verify|Net::SSLeay::SSL_CTX#set_verify> method given this option value and the value of C<SSL_verify_callback> option.
+L</"configure_SSL"> method calls L<set_verify|Net::SSLeay::SSL_CTX#set_verify> method given the option value and the value of C<SSL_verify_callback> option.
 
-=item * SSL_startHandshake
+=item * B<SSL_startHandshake>
 
-Type: Int
+Type: L<Int|SPVM::Int>
 
 Default: 1
 
@@ -111,29 +111,55 @@ Type: L<Net::SSLeay::Callback::Verify|SPVM::Net::SSLeay::Callback::Verify>
 
 See C<SSL_verify_mode> option about its beheivior.
 
-=item * SSL_hostname : string
+=item * B<SSL_passwd_cb>
 
-=item * SSL_check_crl : Int
+Type: L<Net::SSLeay::Callback::PemPassword|SPVM::Net::SSLeay::Callback::PemPassword>
 
-=item * SSL_crl_file : string
+If the option value is defined, L</"configure_SSL"> method calls L<set_default_passwd_cb|Net::SSLeay::SSL_CTX#set_default_passwd_cb> method given the option value.
 
-=item * SSL_alpn_protocols : string[]
+=item * B<SSL_check_crl>
 
-=item * SSL_ca_file : string = undef
+Type: L<Int|SPVM::Int>
 
-=item * SSL_ca_path : string = undef
+=item * B<SSL_crl_file>
 
-=item * SSL_ca : Net::SSLeay::X509[] = undef
+Type: string
 
-=item * SSL_cert_file : string = undef
+=item * B<SSL_ca_file>
 
-=item * SSL_cert : L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509>[] = undef
+Type: string
 
-=item * SSL_key_file : string = undef
+=item * B<SSL_ca_path>
 
-=item * SSL_key : L<Net::SSLeay::EVP_PKEY|SPVM::Net::SSLeay::EVP_PKEY> = undef
+Type: string
 
-=item * SSL_passwd_cb : L<Net::SSLeay::Callback::PemPassword|SPVM::Net::SSLeay::Callback::PemPassword> = undef;
+=item * B<SSL_ca>
+
+Type: L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509>[]
+
+=item * B<SSL_cert_file>
+
+Type: string
+
+=item * B<SSL_cert>
+
+Type: L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509>[]
+
+=item * B<SSL_key_file>
+
+Type: string
+
+=item * B<SSL_key>
+
+Type: L<Net::SSLeay::EVP_PKEY|SPVM::Net::SSLeay::EVP_PKEY>
+
+=item * B<SSL_hostname>
+
+Type: string
+
+=item * B<SSL_alpn_protocols>
+
+Type: string[]
 
 =back
 
