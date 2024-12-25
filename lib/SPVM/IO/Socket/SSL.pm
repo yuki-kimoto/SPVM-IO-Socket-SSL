@@ -103,10 +103,6 @@ C<has SSL_alpn_protocols : string[];>
 
 C<has SSL_startHandshake : int;>
 
-=head2 SSL_honor_cipher_order
-
-C<has SSL_honor_cipher_order : int;>
-
 =head2 SSL_ca_file
 
 C<has SSL_ca_file : string;>
@@ -172,8 +168,6 @@ Options:
 =item * SSL_alpn_protocols : string[]
 
 =item * SSL_startHandshake : Int = 1
-
-=item * SSL_honor_cipher_order : Int = 0;
 
 =item * SSL_ca_file : string = undef
 

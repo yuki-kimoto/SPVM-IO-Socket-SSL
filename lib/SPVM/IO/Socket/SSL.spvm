@@ -57,10 +57,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   has SSL_startHandshake : int;
   
-  has SSL_honor_cipher_order : int;
-  
-  has SSL_honor_cipher_order_specified : int;
-  
   has SSL_ca_file : string;
   
   has SSL_ca_path : string;
@@ -104,7 +100,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
         "SSL_crl_file",
         "SSL_alpn_protocols",
         "SSL_startHandshake",
-        "SSL_honor_cipher_order",
         "SSL_ca_file",
         "SSL_ca_path",
         "SSL_ca",
@@ -159,12 +154,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $SSL_startHandshake = $options_h->get_or_default_int("SSL_startHandshake", 1);
     $self->{SSL_startHandshake} = $SSL_startHandshake;
-    
-    if ($options_h->exists("SSL_honor_cipher_order")) {
-      $self->{SSL_honor_cipher_order_specified} = 1;
-      my $SSL_honor_cipher_order = $options_h->get_int("SSL_honor_cipher_order");
-      $self->{SSL_honor_cipher_order} = $SSL_honor_cipher_order;
-    }
     
     my $SSL_ca_file = $options_h->get_or_default_string("SSL_ca_file", undef);
     $self->{SSL_ca_file} = $SSL_ca_file;
@@ -388,20 +377,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
       $self->add_before_connect_SSL_cb([$SSL_hostname : string] method : void ($socket : IO::Socket::SSL, $ssl : Net::SSLeay) {
         $ssl->set_tlsext_host_name($SSL_hostname);
       });
-    }
-    
-    my $SSL_honor_cipher_order = 0;
-    if ($self->{SSL_honor_cipher_order_specified}) {
-      $SSL_honor_cipher_order = $self->{SSL_honor_cipher_order};
-    }
-    else {
-      if ($SocketCategory == &SOCKET_CATEGORY_SERVER) {
-        $SSL_honor_cipher_order = 1;
-      }
-    }
-    
-    if ($SSL_honor_cipher_order) {
-      $ssl_options |= SSL->SSL_OP_CIPHER_SERVER_PREFERENCE;
     }
     
     $ssl_ctx->set_options($ssl_options);
