@@ -297,5 +297,11 @@ class TestCase::IO::Socket::SSL {
     
     return $success_ref->[0];
   }
-  
+
+=pod TODO
+
+"SSL_cipher_list", "DEFAULT !EXP !MEDIUM !LOW !eNULL !aNULL !RC4 !DES !MD5 !PSK !SRP"
+
+=cut
+
 }
