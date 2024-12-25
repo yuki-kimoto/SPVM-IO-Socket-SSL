@@ -351,6 +351,8 @@ An exception is thrown.
 
 C<method DESTROY : void ();>
 
+If the socket is opened, 
+
 =head1 FAQ
 
 =head2 How to customize L<Net::SSLeay::SSL_CTX|SPVM::Net::SSLeay::SSL_CTX> object?
