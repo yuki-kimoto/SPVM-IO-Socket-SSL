@@ -267,12 +267,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     $ssl_ctx->set_default_passwd_cb($SSL_passwd_cb);
     
-    my $default_ssl_options = SSL->SSL_OP_ALL | SSL->SSL_OP_SINGLE_DH_USE | SSL->SSL_OP_SINGLE_ECDH_USE;
-    
-    my $ssl_options = $default_ssl_options;
-    
-    my $ssl_op_no_options = 0;
-    $ssl_options |= $ssl_op_no_options;
+    my $ssl_options = 0;
     
     my $x509_store = $ssl_ctx->get_cert_store;
     

@@ -7,6 +7,8 @@
     * Remove SSL_server option.
     * Remove SSL_cipherlist option.
     * Remove SSL_ciphersuites option.
+    * Default cipherlist is used.
+    * Default SSL options are used.
 0.006 2024-12-24
   [New Features]
     * Add IO::Socket::SSL#shutdown_SSL method. And IO::Socket::SSL#close method calls this method if the socket is client socket or accepted socket.
