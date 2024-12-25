@@ -71,70 +71,6 @@ C<has before_connect_SSL_cbs_list : ro List of L<IO::Socket::SSL::Callback::Befo
 
 C<has before_accept_SSL_cbs_list : ro List of L<IO::Socket::SSL::Callback::BeforeAcceptSSL|SPVM::IO::Socket::SSL::Callback::BeforeAcceptSSL>;>
 
-=head2 SSL_verify_mode
-
-C<has SSL_verify_mode : int;>
-
-=head2 SSL_verify_callback
-
-C<has SSL_verify_callback : L<Net::SSLeay::Callback::Verify|SPVM::Net::SSLeay::Callback::Verify>;>
-
-=head2 SSL_hostname
-
-C<has SSL_hostname : string;>
-
-=head2 SSL_check_crl
-
-C<has SSL_check_crl : int;>
-
-=head2 SSL_crl_file
-
-C<has SSL_crl_file : string;>
-
-=head2 SSL_server
-
-C<has SSL_server : int;>
-
-=head2 SSL_alpn_protocols
-
-C<has SSL_alpn_protocols : string[];>
-
-=head2 SSL_startHandshake
-
-C<has SSL_startHandshake : int;>
-
-=head2 SSL_ca_file
-
-C<has SSL_ca_file : string;>
-
-=head2 SSL_ca_path
-
-C<has SSL_ca_path : string;>
-
-=head2 SSL_ca
-
-C<has SSL_ca : L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509>[];>
-
-=head2 SSL_cert_file
-
-C<has SSL_cert_file : string;>
-
-=head2 SSL_cert
-
-C<has SSL_cert : L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509>[];>
-
-=head2 SSL_key_file
-
-C<has SSL_key_file : string;>
-
-=head2 SSL_key
-
-C<has SSL_key : L<Net::SSLeay::EVP_PKEY|SPVM::Net::SSLeay::EVP_PKEY>;>
-
-=head2 SSL_passwd_cb
-
-C<has SSL_passwd_cb : L<Net::SSLeay::Callback::PemPassword|SPVM::Net::SSLeay::Callback::PemPassword>;>
-
 =head1 Class Methods
 
 =head2 new
@@ -142,10 +78,6 @@ C<has SSL_passwd_cb : L<Net::SSLeay::Callback::PemPassword|SPVM::Net::SSLeay::Ca
 C<static method new : IO::Socket::SSL ($options : object[] = undef);>
   
 =head1 Instance Methods
-
-=head2 option_names
-
-C<protected method option_names : string[] ();>
 
 =head2 init
 
@@ -155,9 +87,29 @@ Options:
 
 =over 2
 
-=item * SSL_verify_mode : Int = L<SSL_VERIFY_NONE|SPVM::Net::SSLeay#SSL_VERIFY_NONE>
+=item * B<SSL_verify_mode>
 
-=item * SSL_verify_callback : L<Net::SSLeay::Callback::Verify|SPVM::Net::SSLeay::Callback::Verify> = undef
+Type: L<Int|SPVM::Int>
+
+If this option is not specified and the instance is a client socket, it is set to C<SSL_VERIFY_PEER|SPVM::Net::SSLeay::Constant#/"SSL_VERIFY_PEER">.
+
+Otherwise it is set to C<SSL_VERIFY_NONE|SPVM::Net::SSLeay::Constant#/"SSL_VERIFY_NONE">.
+
+This option is used in L</"configure_SSL"> method and the method calls L<set_verify|Net::SSLeay::SSL_CTX#set_verify> method given this option value and the value of C<SSL_verify_callback> option.
+
+=item * SSL_startHandshake
+
+Type: Int
+
+Default: 1
+
+It this option is a false value, L</"configure"> method do not calls L</"connect_SSL"> method and L</"accept"> method do not calls L</"accept_SSL">.
+
+=item * B<SSL_verify_callback>
+
+Type: L<Net::SSLeay::Callback::Verify|SPVM::Net::SSLeay::Callback::Verify>
+
+See C<SSL_verify_mode> option about its beheivior.
 
 =item * SSL_hostname : string
 
@@ -166,8 +118,6 @@ Options:
 =item * SSL_crl_file : string
 
 =item * SSL_alpn_protocols : string[]
-
-=item * SSL_startHandshake : Int = 1
 
 =item * SSL_ca_file : string = undef
 
@@ -186,6 +136,10 @@ Options:
 =item * SSL_passwd_cb : L<Net::SSLeay::Callback::PemPassword|SPVM::Net::SSLeay::Callback::PemPassword> = undef;
 
 =back
+
+=head2 option_names
+
+C<protected method option_names : string[] ();>
 
 =head2 configure
 
