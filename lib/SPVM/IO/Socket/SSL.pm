@@ -207,6 +207,12 @@ If the value of L</"PeerAddr"> option is defined, a client socket is created.
 
 If the value of L</"Listen"> option is a positive value, a server socket is created.
 
+If the socket is a client socket and L</"PeerAddr"> is assumed to be a domain name, the domain name is used for SNI.
+
+If the socket is a client socket, the verify mode is set to L<SSL_VERIFY_PEER>.
+
+If L</"PeerAddr"> is assumed to be a domain name(Nor IPv4(Exactly match IPv4 pattern) and IPv6(Contains C<:>)), the host name verification is enabled by calling L<X509_VERIFY_PARAM#set1_host|SPVM::X509_VERIFY_PARAM/"set1_host"> method.
+
 =head1 Instance Methods
 
 =head2 init

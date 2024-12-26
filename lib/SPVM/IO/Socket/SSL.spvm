@@ -283,10 +283,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
         $PeerAddr_is_ip_address = 1;
       }
       
-      if ($PeerAddr_is_ip_address) {
-        $verify_param->set1_ip_asc($PeerAddr);
-      }
-      else {
+      unless ($PeerAddr_is_ip_address) {
         $verify_param->set1_host($PeerAddr);
       }
     }
