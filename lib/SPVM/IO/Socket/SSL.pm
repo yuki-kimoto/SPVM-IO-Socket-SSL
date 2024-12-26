@@ -115,7 +115,7 @@ If the option value is defined, L</"configure_SSL"> method calls L<set_default_p
 
 Type: L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509>[]
 
-If the value of L</"SSL_ca"> option is defined, the certificate is added to the X509 store.
+If the value of L</"SSL_ca"> option is defined, the certificate is added to the X509 store by calling L<Net::SSLeay::X509_STORE#add_cert|SPVM::Net::SSLeay::X509_STORE/"add_cert"> method.
 
 Otherwise if the value of C</"SSL_ca_file"> option or the value of L</"SSL_ca_path"> option is defined, calls L<Net::SSLeay::SSL_CTX#load_verify_locations|Net::SSLeay::SSL_CTX/"load_verify_locations"> method given the value of C</"SSL_ca_file"> option, the value of L</"SSL_ca_path"> option.
 
@@ -137,6 +137,10 @@ See L</"SSL_ca">.
 
 Type: L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509>[]
 
+If the value of L</"SSL_cert"> option is defined, the first element is added as a certificate by calling L<Net::SSLeay::SSL_CTX#use_certificate|SPVM::Net::SSLeay::SSL_CTX/"use_certificate"> method and the rest elements are added as chain certificates using L<Net::SSLeay::SSL_CTX#use_certificate_chain_file|SPVM::Net::SSLeay::SSL_CTX/"use_certificate_chain_file">.
+
+Otherwise if the value of C</"SSL_cert_file"> option is defined, a certificate and chain certificates contained in the file are added by calling L<Net::SSLeay::SSL_CTX#use_certificate_chain_file|Net::SSLeay::SSL_CTX/"use_certificate_chain_file"> method.
+
 =head2 SSL_cert_file
 
 Type: string
@@ -146,6 +150,10 @@ See L</"SSL_cert">
 =head2 SSL_key
 
 Type: L<Net::SSLeay::EVP_PKEY|SPVM::Net::SSLeay::EVP_PKEY>
+
+If the value of L</"SSL_key"> option is defined, the value is added as a private key by calling L<Net::SSLeay::SSL_CTX#use_PrivateKey|SPVM::Net::SSLeay::SSL_CTX/"use_PrivateKey"> method.
+
+Otherwise if the value of C</"SSL_key_file"> option is definedthe value is added as a private key by calling L<Net::SSLeay::SSL_CTX#use_PrivateKey_file|SPVM::Net::SSLeay::SSL_CTX/"use_PrivateKey_file"> method given the option value, C<SSL_FILETYPE_PEM>.
 
 =head2 SSL_key_file
 
@@ -170,6 +178,12 @@ Add all CRLs contained in the file specified by this option to the certificate s
 =head2 SSL_alpn_protocols
 
 Type: string[]
+
+If the value of C<SSL_alpn_protocols> option is defined, performs the following logic.
+
+In client socket, calls L<Net::SSLeay::SSL_CTX#set_alpn_protos_with_protocols|SPVM::Net::SSLeay::SSL_CTX|/"set_alpn_protos_with_protocols"> method given the option value.
+
+In server socket, calls L<Net::SSLeay::SSL_CTX#set_alpn_select_cb_with_protocols|SPVM::Net::SSLeay::SSL_CTX|/"set_alpn_select_cb_with_protocols"> method given the option value.
 
 =head1 Class Methods
 

@@ -24,6 +24,7 @@ class TestCase::IO::Socket::SSL {
       SSL_check_crl => 1,
       SSL_cert_file => "$FILE_DIR/simple-cert.cert.pem",
       SSL_key_file => "$FILE_DIR/simple-cert.key.pem",
+      SSL_alpn_protocols => ["spdy/1", "http/1.1"],
     });
     
     my $ssl_ctx = $server_socket->ssl_ctx;
@@ -41,10 +42,6 @@ class TestCase::IO::Socket::SSL {
       
       return 1;
     });
-    
-    my $protocols = ["spdy/1", "http/1.1"];
-    
-    $ssl_ctx->set_alpn_select_cb_with_protocols($protocols);
     
     my $accepted_socket = $server_socket->accept;
     
@@ -119,17 +116,15 @@ class TestCase::IO::Socket::SSL {
           PeerPort => $port,
           SSL_startHandshake => 0,
           SSL_verify_mode => SSL->SSL_VERIFY_NONE,
+          SSL_cert_file => "$FILE_DIR/simple-cert.cert.pem",
           SSL_key_file => "$FILE_DIR/simple-cert.key.enc.pem",
           SSL_passwd_cb => $default_passwd_cb,
+          SSL_alpn_protocols => ["http/1.1"],
         });
         
         my $ssl_ctx = $socket->ssl_ctx;
         
-        $ssl_ctx->use_certificate_file("$FILE_DIR/simple-cert.cert.pem");
-        
         $ssl_ctx->set_post_handshake_auth(1);
-        
-        $ssl_ctx->set_alpn_protos_with_protocols(["http/1.1"]);
         
         my $msg_callback_results = new object[10];
         

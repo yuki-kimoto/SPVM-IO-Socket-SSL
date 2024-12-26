@@ -394,11 +394,11 @@ class IO::Socket::SSL extends IO::Socket::IP {
     # SSL_alpn_protocols
     my $SSL_alpn_protocols = $self->{SSL_alpn_protocols};
     if ($SSL_alpn_protocols) {
-      if ($SocketCategory == &SOCKET_CATEGORY_SERVER) {
-        $ssl_ctx->set_alpn_select_cb_with_protocols($SSL_alpn_protocols);
-      }
-      elsif ($SocketCategory == &SOCKET_CATEGORY_CLIENT) {
+      if ($SocketCategory == &SOCKET_CATEGORY_CLIENT) {
         $ssl_ctx->set_alpn_protos_with_protocols($SSL_alpn_protocols);
+      }
+      elsif ($SocketCategory == &SOCKET_CATEGORY_SERVER) {
+        $ssl_ctx->set_alpn_select_cb_with_protocols($SSL_alpn_protocols);
       }
     }
     
