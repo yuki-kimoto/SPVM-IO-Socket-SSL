@@ -141,7 +141,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     $self->{SSL_check_crl} = $SSL_check_crl;
     
-    my $SSL_crl_file = $options_h->get_or_default_string("SSL_crl_file", 0);
+    my $SSL_crl_file = $options_h->get_or_default_string("SSL_crl_file", undef);
     
     $self->{SSL_crl_file} = $SSL_crl_file;
     
@@ -275,6 +275,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     # x509_store
     my $x509_store = $ssl_ctx->get_cert_store;
+    my $x509_store_flags = 0;
     
     # SSL_ca_file, SSL_ca_path, SSL_ca
     my $SSL_ca_file = $self->{SSL_ca_file};
@@ -298,19 +299,20 @@ class IO::Socket::SSL extends IO::Socket::IP {
       }
     }
     
-    # SSL_check_crl, SSL_crl_file
-    my $SSL_check_crl = $self->{SSL_check_crl};
+    # SSL_crl_file
     my $SSL_crl_file = $self->{SSL_crl_file};
-    my $x509_store_flags = 0;
+    if ($SSL_crl_file) {
+      my $bio = Net::SSLeay::BIO->new_file($SSL_crl_file, "r");
+      my $crl = Net::SSLeay::PEM->read_bio_X509_CRL($bio);
+      $x509_store->add_crl($crl);
+    }
+    
+    # SSL_check_crl
+    my $SSL_check_crl = $self->{SSL_check_crl};
     if ($SSL_check_crl) {
       $x509_store_flags |= SSL->X509_V_FLAG_CRL_CHECK;
-      
-      if ($SSL_crl_file) {
-        my $bio = Net::SSLeay::BIO->new_file($SSL_crl_file, "r");
-        my $crl = Net::SSLeay::PEM->read_bio_X509_CRL($bio);
-        $x509_store->add_crl($crl);
-      }
     }
+    
     $x509_store->set_flags($x509_store_flags);
     
     # SSL_cert_file, SSL_cert

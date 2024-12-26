@@ -1,3 +1,6 @@
+0.008 2024-12-26
+  [Bug Fix]
+    * Fix a bug of SSL_crl_file option.
 0.007 2024-12-25
   [New Features]
     * Add IO::Socket::SSL#DESTROY method.
