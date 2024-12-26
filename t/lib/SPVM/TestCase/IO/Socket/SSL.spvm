@@ -83,16 +83,22 @@ class TestCase::IO::Socket::SSL {
     my $go_server_ref = [0];
     Go->go([$go_server_ref : int[], $wg : Go::Sync::WaitGroup, $port : int] method : void () {
       
+      Fn->defer([$wg : Go::Sync::WaitGroup] method : void () {
+        $wg->done;
+      });
+      
       $go_server_ref->[0] = 1;
       
       &run_echo_server_accept_once($port);
-      
-      $wg->done;
     });
     
     # Tests
     my $go_tests_ref = [0];
     Go->go([$go_tests_ref : int[], $wg : Go::Sync::WaitGroup, $success_ref : int[], $port : int] method : void () {
+      
+      Fn->defer([$wg : Go::Sync::WaitGroup] method : void () {
+        $wg->done;
+      });
       
       $go_tests_ref->[0] = 1;
       
@@ -280,7 +286,6 @@ class TestCase::IO::Socket::SSL {
         $socket->shutdown_SSL;
       }
       
-      $wg->done;
     });
     
     Go->gosched;
