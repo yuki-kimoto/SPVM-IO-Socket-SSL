@@ -101,6 +101,10 @@ Type: L<Net::SSLeay::Callback::Verify|SPVM::Net::SSLeay::Callback::Verify>
 
 See C<SSL_verify_mode> option about its beheivior.
 
+=head2 SSL_hostname
+
+Type: string
+
 =head2 SSL_passwd_cb
 
 Type: L<Net::SSLeay::Callback::PemPassword|SPVM::Net::SSLeay::Callback::PemPassword>
@@ -162,10 +166,6 @@ Adds C<X509_V_FLAG_CRL_CHECK> flag to the options of X509 store.
 Type: string
 
 Add all CRLs contained in the file specified by this option to the certificate store.
-
-=head2 SSL_hostname
-
-Type: string
 
 =head2 SSL_alpn_protocols
 

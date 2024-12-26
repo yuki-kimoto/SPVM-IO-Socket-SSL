@@ -55,6 +55,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   has SSL_verify_callback : Net::SSLeay::Callback::Verify;
   
+  has SSL_hostname : string;
+  
   has SSL_passwd_cb : Net::SSLeay::Callback::PemPassword;
   
   has SSL_ca : Net::SSLeay::X509[];
@@ -74,8 +76,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
   has SSL_crl_file : string;
   
   has SSL_check_crl : int;
-  
-  has SSL_hostname : string;
   
   has SSL_alpn_protocols : string[];
   
@@ -100,6 +100,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
         "SSL_startHandshake",
         "SSL_verify_mode",
         "SSL_verify_callback",
+        "SSL_hostname",
         "SSL_passwd_cb",
         "SSL_ca",
         "SSL_ca_file",
@@ -110,7 +111,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
         "SSL_cert_file",
         "SSL_key",
         "SSL_key_file",
-        "SSL_hostname",
         "SSL_alpn_protocols",
       ],
     );
@@ -133,6 +133,10 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $SSL_verify_callback = (Net::SSLeay::Callback::Verify)$options_h->get_or_default("SSL_verify_callback", undef);
     $self->{SSL_verify_callback} = $SSL_verify_callback;
+    
+    my $SSL_hostname = $options_h->get_or_default_string("SSL_hostname", undef);
+    
+    $self->{SSL_hostname} = $SSL_hostname;
     
     my $SSL_passwd_cb = (Net::SSLeay::Callback::PemPassword)$options_h->get_or_default("SSL_passwd_cb", undef);
     $self->{SSL_passwd_cb} = $SSL_passwd_cb;
@@ -180,10 +184,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
     if ($SSL_key && $SSL_key_file) {
       die "If SSL_key option is specified, SSL_key_file option cannot be specified.";
     }
-    
-    my $SSL_hostname = $options_h->get_or_default_string("SSL_hostname", undef);
-    
-    $self->{SSL_hostname} = $SSL_hostname;
     
     my $SSL_alpn_protocols = (string[])$options_h->get_or_default("SSL_alpn_protocols", undef);
     $self->{SSL_alpn_protocols} = $SSL_alpn_protocols;
@@ -268,6 +268,41 @@ class IO::Socket::SSL extends IO::Socket::IP {
     # SSL_verify_callback
     my $SSL_verify_callback = $self->{SSL_verify_callback};
     $ssl_ctx->set_verify($SSL_verify_mode, $SSL_verify_callback);
+    
+    # verify_param
+    my $verify_param = $ssl_ctx->get0_param;
+    $verify_param->set_hostflags(SSL->X509_CHECK_FLAG_NO_PARTIAL_WILDCARDS);
+    my $PeerAddr_is_ip_address = 0;
+    if ($PeerAddr) {
+      # Maybe IPv6
+      if (Fn->contains($PeerAddr, ":")) {
+        $PeerAddr_is_ip_address = 1;
+      }
+      # IPv4
+      elsif (Regex->new("^(\d+)(?:\.(\d+)\.(\d+)\.(\d+)|[\d\.]*)$")->match($PeerAddr)) {
+        $PeerAddr_is_ip_address = 1;
+      }
+      
+      if ($PeerAddr_is_ip_address) {
+        $verify_param->set1_ip_asc($PeerAddr);
+      }
+      else {
+        $verify_param->set1_host($PeerAddr);
+      }
+    }
+    
+    # SSL_hostname
+    my $SSL_hostname = $self->{SSL_hostname};
+    unless ($SSL_hostname) {
+      if ($PeerAddr && !$PeerAddr_is_ip_address) {
+        $SSL_hostname = $PeerAddr;
+      }
+    }
+    if ($SSL_hostname && $SSL_hostname ne "") {
+      $self->add_before_connect_SSL_cb([$SSL_hostname : string] method : void ($socket : IO::Socket::SSL, $ssl : Net::SSLeay) {
+        $ssl->set_tlsext_host_name($SSL_hostname);
+      });
+    }
     
     # SSL_passwd_cb
     my $SSL_passwd_cb = $self->{SSL_passwd_cb};
@@ -354,42 +389,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
     my $SSL_check_crl = $self->{SSL_check_crl};
     if ($SSL_check_crl) {
       $x509_store_flags |= SSL->X509_V_FLAG_CRL_CHECK;
-    }
-    
-    
-    # verify_param
-    my $verify_param = $ssl_ctx->get0_param;
-    $verify_param->set_hostflags(SSL->X509_CHECK_FLAG_NO_PARTIAL_WILDCARDS);
-    my $PeerAddr_is_ip_address = 0;
-    if ($PeerAddr) {
-      # Maybe IPv6
-      if (Fn->contains($PeerAddr, ":")) {
-        $PeerAddr_is_ip_address = 1;
-      }
-      # IPv4
-      elsif (Regex->new("^(\d+)(?:\.(\d+)\.(\d+)\.(\d+)|[\d\.]*)$")->match($PeerAddr)) {
-        $PeerAddr_is_ip_address = 1;
-      }
-      
-      if ($PeerAddr_is_ip_address) {
-        $verify_param->set1_ip_asc($PeerAddr);
-      }
-      else {
-        $verify_param->set1_host($PeerAddr);
-      }
-    }
-    
-    # SSL_hostname
-    my $SSL_hostname = $self->{SSL_hostname};
-    unless ($SSL_hostname) {
-      if ($PeerAddr && !$PeerAddr_is_ip_address) {
-        $SSL_hostname = $PeerAddr;
-      }
-    }
-    if ($SSL_hostname && $SSL_hostname ne "") {
-      $self->add_before_connect_SSL_cb([$SSL_hostname : string] method : void ($socket : IO::Socket::SSL, $ssl : Net::SSLeay) {
-        $ssl->set_tlsext_host_name($SSL_hostname);
-      });
     }
     
     # SSL_alpn_protocols
