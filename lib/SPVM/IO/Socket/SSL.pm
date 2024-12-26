@@ -105,6 +105,12 @@ See C<SSL_verify_mode> option about its beheivior.
 
 Type: string
 
+This option only has effect in a client socket.
+
+If the string specified by L</"SSL_hostname"> option is not defined and the string specified by L<"PeerAddr"> option does not represetns a IP address, it is set to the value of L<"PeerAddr"> option.
+
+If the string is a non-empty string, a callback that calls L<Net::SSLeay#set_tlsext_host_name|SPVM::Net::SSLeay/"set_tlsext_host_name"> method just before calling L</"connect_SSL"> is added.
+
 =head2 SSL_passwd_cb
 
 Type: L<Net::SSLeay::Callback::PemPassword|SPVM::Net::SSLeay::Callback::PemPassword>
@@ -194,6 +200,12 @@ C<static method new : L<IO::Socket::SSL|SPVM::IO::Socket::SSL> ($options : objec
 Creates a new L<IO::Socket::SSL|SPVM::IO::Socket::SSL> object, calls L</"init"> method given the options $options, calls L</"configure"> method, and returns the new object.
 
 See L</"Constructor Options"> about $options.
+
+Note:
+
+If the value of L</"PeerAddr"> option is defined, a client socket is created.
+
+If the value of L</"Listen"> option is a positive value, a server socket is created.
 
 =head1 Instance Methods
 

@@ -293,15 +293,18 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     # SSL_hostname
     my $SSL_hostname = $self->{SSL_hostname};
-    unless ($SSL_hostname) {
-      if ($PeerAddr && !$PeerAddr_is_ip_address) {
-        $SSL_hostname = $PeerAddr;
+    if ($SocketCategory == &SOCKET_CATEGORY_CLIENT) {
+      unless ($SSL_hostname) {
+        if ($PeerAddr && !$PeerAddr_is_ip_address) {
+          $SSL_hostname = $PeerAddr;
+        }
       }
-    }
-    if ($SSL_hostname && $SSL_hostname ne "") {
-      $self->add_before_connect_SSL_cb([$SSL_hostname : string] method : void ($socket : IO::Socket::SSL, $ssl : Net::SSLeay) {
-        $ssl->set_tlsext_host_name($SSL_hostname);
-      });
+      
+      if (length $SSL_hostname) {
+        $self->add_before_connect_SSL_cb([$SSL_hostname : string] method : void ($socket : IO::Socket::SSL, $ssl : Net::SSLeay) {
+          $ssl->set_tlsext_host_name($SSL_hostname);
+        });
+      }
     }
     
     # SSL_passwd_cb

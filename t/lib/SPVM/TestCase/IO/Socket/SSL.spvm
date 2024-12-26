@@ -120,6 +120,7 @@ class TestCase::IO::Socket::SSL {
           SSL_key_file => "$FILE_DIR/simple-cert.key.enc.pem",
           SSL_passwd_cb => $default_passwd_cb,
           SSL_alpn_protocols => ["http/1.1"],
+          SSL_hostname => "localhost",
         });
         
         my $ssl_ctx = $socket->ssl_ctx;
@@ -147,15 +148,8 @@ class TestCase::IO::Socket::SSL {
           }
         };
         
-        my $host_name = "localhost";
-        
-        my $verify_param = $ssl_ctx->get0_param;
-        
-        $verify_param->set1_host($host_name);
-        
-        $socket->add_before_connect_SSL_cb([$msg_callback : Net::SSLeay::Callback::Msg, $host_name : string] method : void ($socket : IO::Socket::SSL, $ssl : Net::SSLeay) {
+        $socket->add_before_connect_SSL_cb([$msg_callback : Net::SSLeay::Callback::Msg] method : void ($socket : IO::Socket::SSL, $ssl : Net::SSLeay) {
           $ssl->set_msg_callback($msg_callback);
-          $ssl->set_tlsext_host_name($host_name);
         });
         
         $socket->connect_SSL;
