@@ -171,15 +171,13 @@ See L</"SSL_key">.
 
 Type: L<Int|SPVM::Int>
 
-The option value is a true value, C<X509_V_FLAG_CRL_CHECK|SPVM::Net::SSLeay::Constant/"X509_V_FLAG_CRL_CHECK"> flag is set to the L<Net::SSLeay::X509_VERIFY_PARAM|SPVM::Net::SSLeay::X509_VERIFY_PARAM> object stored in the L<Net::SSLeay::SSL_CTX> object.
-
-Adds C<X509_V_FLAG_CRL_CHECK> flag to the options of X509 store.
+The option value is a true value, C<X509_V_FLAG_CRL_CHECK> flag is set by calling L<Net::SSLeay::X509_VERIFY_PARAM#set_flags|SPVM::Net::SSLeay::X509_VERIFY_PARAM/"set_flags"> method.
 
 =head2 SSL_crl_file
 
 Type: string
 
-Add all CRLs contained in the file specified by this option to the certificate store.
+Adds all CRLs contained in the file specified by this option to the certificate store by calling L<Net::SSLeay::X509_STORE#add_crl|Net::SSLeay::X509_STORE/"add_crl"> method.
 
 =head2 SSL_alpn_protocols
 
@@ -187,9 +185,9 @@ Type: string[]
 
 If the value of C<SSL_alpn_protocols> option is defined, performs the following logic.
 
-In client socket, calls L<Net::SSLeay::SSL_CTX#set_alpn_protos_with_protocols|SPVM::Net::SSLeay::SSL_CTX|/"set_alpn_protos_with_protocols"> method given the option value.
+In client socket, calls L<Net::SSLeay::SSL_CTX#set_alpn_protos_with_protocols|SPVM::Net::SSLeay::SSL_CTX/"set_alpn_protos_with_protocols"> method given the option value.
 
-In server socket, calls L<Net::SSLeay::SSL_CTX#set_alpn_select_cb_with_protocols|SPVM::Net::SSLeay::SSL_CTX|/"set_alpn_select_cb_with_protocols"> method given the option value.
+In server socket, calls L<Net::SSLeay::SSL_CTX#set_alpn_select_cb_with_protocols|SPVM::Net::SSLeay::SSL_CTX/"set_alpn_select_cb_with_protocols"> method given the option value.
 
 =head1 Class Methods
 

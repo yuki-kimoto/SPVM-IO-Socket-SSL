@@ -15,6 +15,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
   use Net::SSLeay::BIO;
   use Net::SSLeay::PEM;
   use Net::SSLeay::X509;
+  use Net::SSLeay::X509_STORE;
   use Net::SSLeay::EVP;
   use Net::SSLeay::EVP_PKEY;
   use Net::SSLeay::Error::SSL_ERROR_WANT_READ;
