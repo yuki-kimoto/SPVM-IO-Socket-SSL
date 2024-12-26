@@ -211,7 +211,7 @@ If the socket is a client socket and L</"PeerAddr"> is assumed to be a domain na
 
 If the socket is a client socket, the verify mode is set to L<SSL_VERIFY_PEER>.
 
-If L</"PeerAddr"> is assumed to be a domain name(Nor IPv4(Exactly match IPv4 pattern) and IPv6(Contains C<:>)), the host name verification is enabled by calling L<X509_VERIFY_PARAM#set1_host|SPVM::X509_VERIFY_PARAM/"set1_host"> method.
+If L</"PeerAddr"> is assumed to be a domain name(Nor IPv4(Exactly match IPv4 pattern) and IPv6(Contains C<:>)), the host name verification is enabled by calling L<X509_VERIFY_PARAM#set1_host|SPVM::X509_VERIFY_PARAM/"set1_host"> method. C<X509_CHECK_FLAG_NO_PARTIAL_WILDCARDS> is added to the host flags.
 
 =head1 Instance Methods
 
