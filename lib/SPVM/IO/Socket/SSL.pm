@@ -43,8 +43,8 @@ IO::Socket::SSL class in L<SPVM> represents sockets for SSL communication.
   my $server_socket = IO::Socket::SSL->new({
     Listen => 10,
   });
-  $server_socket->accept;
-  
+  my $accepted_socket = $server_socket->accept;
+
 =head1 Super Class
 
 L<IO::Socket::IP|SPVM::IO::Socket::IP>
@@ -77,29 +77,29 @@ A list of callbacks called before L</"accept_SSL"> method.
 
 =head1 Constructor Options
 
+The following options are available adding to the options of its super class L<IO::Socket::IP|SPVM::IO::Socket::IP>.
+
 =head2 SSL_startHandshake
 
 Type: L<Int|SPVM::Int>
 
 Default: 1
 
-It this option is a true value, L</"configure"> method calls L</"connect_SSL"> method in the case that the instance is a client socket, and L</"accept"> method calls L</"accept_SSL">.
+It this option is a true value, L</"configure"> method calls L</"connect_SSL"> method for a client socket, and L</"accept"> method calls L</"accept_SSL">.
 
 =head2 SSL_verify_mode
 
 Type: L<Int|SPVM::Int>
 
-If the option is not specified and the instance is a client socket, the option value is set to C<SSL_VERIFY_PEER|SPVM::Net::SSLeay::Constant/"SSL_VERIFY_PEER">.
+If L</"SSL_verify_mode"> option is not specified and the instance is a client socket, the option value is set to C<SSL_VERIFY_PEER>.
 
-Otherwise it is set to C<SSL_VERIFY_NONE|SPVM::Net::SSLeay::Constant/"SSL_VERIFY_NONE">.
-
-L</"configure_SSL"> method calls L<set_verify|Net::SSLeay::SSL_CTX#set_verify> method given the option value and the value of C<SSL_verify_callback> option.
+L</"configure_SSL"> method calls L<set_verify|SPVM::Net::SSLeay::SSL_CTX#set_verify> method given the string specified by L</"SSL_verify_mode"> option, the callback specified by L</"SSL_verify_callback"> option.
 
 =head2 SSL_verify_callback
 
 Type: L<Net::SSLeay::Callback::Verify|SPVM::Net::SSLeay::Callback::Verify>
 
-See C<SSL_verify_mode> option about its beheivior.
+See L</"SSL_verify_mode"> option.
 
 =head2 SSL_hostname
 
@@ -107,7 +107,7 @@ Type: string
 
 This option only has effect in a client socket.
 
-If the string specified by L</"SSL_hostname"> option is not defined and the string specified by L<"PeerAddr"> option does not represetns a IP address, it is set to the value of L<"PeerAddr"> option.
+If the string specified by L</"SSL_hostname"> option is not defined and the string specified by L<PeerAddr|IO::Socket::IP/"PeerAddr"> option does not represents an IP address, it is set to the string specified by L<PeerAddr|IO::Socket::IP/"PeerAddr"> option.
 
 If the string is a non-empty string, a callback that calls L<Net::SSLeay#set_tlsext_host_name|SPVM::Net::SSLeay/"set_tlsext_host_name"> method just before calling L</"connect_SSL"> is added.
 
@@ -115,17 +115,17 @@ If the string is a non-empty string, a callback that calls L<Net::SSLeay#set_tls
 
 Type: L<Net::SSLeay::Callback::PemPassword|SPVM::Net::SSLeay::Callback::PemPassword>
 
-If the option value is defined, L</"configure_SSL"> method calls L<set_default_passwd_cb|Net::SSLeay::SSL_CTX#set_default_passwd_cb> method given the option value.
+If the callback specified by this option is defined, L</"configure_SSL"> method calls L<Net::SSLeay::SSL_CTX#set_default_passwd_cb|SPVM::Net::SSLeay::SSL_CTX#set_default_passwd_cb> method given the callback.
 
 =head2 SSL_ca
 
 Type: L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509>[]
 
-If the value of L</"SSL_ca"> option is defined, the certificate is added to the X509 store by calling L<Net::SSLeay::X509_STORE#add_cert|SPVM::Net::SSLeay::X509_STORE/"add_cert"> method.
+If the array specified by L</"SSL_ca"> option is defined, the certificates are added to the X509 store by calling L<Net::SSLeay::X509_STORE#add_cert|SPVM::Net::SSLeay::X509_STORE/"add_cert"> method repeatedly.
 
-Otherwise if the value of C</"SSL_ca_file"> option or the value of L</"SSL_ca_path"> option is defined, calls L<Net::SSLeay::SSL_CTX#load_verify_locations|Net::SSLeay::SSL_CTX/"load_verify_locations"> method given the value of C</"SSL_ca_file"> option, the value of L</"SSL_ca_path"> option.
+Otherwise if the file name specified by L</"SSL_ca_file"> option or the path name specified by L</"SSL_ca_path"> option is defined, the locations are added by calling L<Net::SSLeay::SSL_CTX#load_verify_locations|SPVM::Net::SSLeay::SSL_CTX/"load_verify_locations"> method given the file name, the path name.
 
-Otherwise the default CA certificates are set by calling L<Net::SSLeay::SSL_CTX#set_default_verify_paths/"set_default_verify_paths"> or L<Net::SSLeay::SSL_CTX#set_default_verify_paths_windows/"set_default_verify_paths_windows"> in Windows.
+Otherwise the default CA certificates are set by calling L<Net::SSLeay::SSL_CTX#set_default_verify_paths|SPVM::Net::SSLeay::SSL_CTX/"set_default_verify_paths"> or L<Net::SSLeay::SSL_CTX#set_default_verify_paths_windows|SPVM::Net::SSLeay::SSL_CTX/"set_default_verify_paths_windows"> in Windows.
 
 =head2 SSL_ca_file
 
@@ -143,9 +143,9 @@ See L</"SSL_ca">.
 
 Type: L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509>[]
 
-If the value of L</"SSL_cert"> option is defined, the first element is added as a certificate by calling L<Net::SSLeay::SSL_CTX#use_certificate|SPVM::Net::SSLeay::SSL_CTX/"use_certificate"> method and the rest elements are added as chain certificates using L<Net::SSLeay::SSL_CTX#use_certificate_chain_file|SPVM::Net::SSLeay::SSL_CTX/"use_certificate_chain_file">.
+If the array specified by L</"SSL_cert"> option is defined, the first element is added as a certificate by calling L<Net::SSLeay::SSL_CTX#use_certificate|SPVM::Net::SSLeay::SSL_CTX/"use_certificate"> method and the rest elements are added as chain certificates using L<Net::SSLeay::SSL_CTX#add_extra_chain_cert|SPVM::Net::SSLeay::SSL_CTX/"add_extra_chain_cert"> method repeatedly.
 
-Otherwise if the value of C</"SSL_cert_file"> option is defined, a certificate and chain certificates contained in the file are added by calling L<Net::SSLeay::SSL_CTX#use_certificate_chain_file|Net::SSLeay::SSL_CTX/"use_certificate_chain_file"> method.
+Otherwise if the file name specified by L</"SSL_cert_file"> option is defined, a certificate and chain certificates contained in the file are added by calling L<Net::SSLeay::SSL_CTX#use_certificate_chain_file|SPVM::Net::SSLeay::SSL_CTX/"use_certificate_chain_file"> method.
 
 =head2 SSL_cert_file
 
@@ -157,9 +157,9 @@ See L</"SSL_cert">
 
 Type: L<Net::SSLeay::EVP_PKEY|SPVM::Net::SSLeay::EVP_PKEY>
 
-If the value of L</"SSL_key"> option is defined, the value is added as a private key by calling L<Net::SSLeay::SSL_CTX#use_PrivateKey|SPVM::Net::SSLeay::SSL_CTX/"use_PrivateKey"> method.
+If the L<Net::SSLeay::EVP_PKEY|SPVM::Net::SSLeay::EVP_PKEY> object specified by L</"SSL_key"> option is defined, the object is added as a private key by calling L<Net::SSLeay::SSL_CTX#use_PrivateKey|SPVM::Net::SSLeay::SSL_CTX/"use_PrivateKey"> method.
 
-Otherwise if the value of C</"SSL_key_file"> option is definedthe value is added as a private key by calling L<Net::SSLeay::SSL_CTX#use_PrivateKey_file|SPVM::Net::SSLeay::SSL_CTX/"use_PrivateKey_file"> method given the option value, C<SSL_FILETYPE_PEM>.
+Otherwise if the file name specified by L</"SSL_key_file"> option is defined, the private key contained in the file is added by calling L<Net::SSLeay::SSL_CTX#use_PrivateKey_file|SPVM::Net::SSLeay::SSL_CTX/"use_PrivateKey_file"> method given the file name, C<SSL_FILETYPE_PEM>.
 
 =head2 SSL_key_file
 
@@ -212,6 +212,8 @@ If the socket is a client socket and L</"PeerAddr"> is assumed to be a domain na
 If the socket is a client socket, the verify mode is set to L<SSL_VERIFY_PEER>.
 
 If L</"PeerAddr"> is assumed to be a domain name(Nor IPv4(Exactly match IPv4 pattern) and IPv6(Contains C<:>)), the host name verification is enabled by calling L<X509_VERIFY_PARAM#set1_host|SPVM::X509_VERIFY_PARAM/"set1_host"> method. C<X509_CHECK_FLAG_NO_PARTIAL_WILDCARDS> is added to the host flags.
+
+The socket is set to non-blocking mode, but the L<goroutine scheduler|SPVM::Go> allows it to be treated as if it were synchronous.
 
 =head1 Instance Methods
 
