@@ -754,10 +754,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
       my $ssl = $self->{ssl};
       
       if ($ssl) {
-        my $SocketCategory = $self->{SocketCategory};
-        if ($SocketCategory == &SOCKET_CATEGORY_CLIENT || $SocketCategory == &SOCKET_CATEGORY_ACCEPTED) {
-          $self->shutdown_SSL;
-        }
+        $self->shutdown_SSL;
       }
       
       $self->close;

@@ -351,7 +351,9 @@ An exception is thrown.
 
 C<method DESTROY : void ();>
 
-If the socket is opened, 
+Shutdowns 
+
+Implementation:
 
 =head1 FAQ
 
