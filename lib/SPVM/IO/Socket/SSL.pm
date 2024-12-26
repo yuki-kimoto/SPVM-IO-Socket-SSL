@@ -532,17 +532,17 @@ Server:
   use Net::SSLeay::PEM;
   use List;
   
-  my $ca = Mozilla::CA->SSL_ca;
+  my $ca_content = Mozilla::CA->SSL_ca;
   
   my $bio = Net::SSLeay::BIO->new;
   
-  $bio->write($ca);
+  $bio->write($ca_content);
   
-  my $x509s_list = List->new(new Net::SSLeay::X509[0]);
+  my $cas_list = List->new(new Net::SSLeay::X509[0]);
   while (1) {
-    my $x509 = (Net::SSLeay::X509)undef;
+    my $ca = (Net::SSLeay::X509)undef;
     
-    eval { $x509 = Net::SSLeay::PEM->read_bio_X509($bio); }
+    eval { $ca = Net::SSLeay::PEM->read_bio_X509($bio); }
     
     if ($@) {
       if (eval_error_id isa_error Net::SSLeay::Error::PEM_R_NO_START_LINE) {
@@ -553,12 +553,12 @@ Server:
       }
     }
     
-    $x509s_list->push($x509);
+    $cas_list->push($ca);
   }
   
-  my $x509s = (Net::SSLeay::X509[])$x509s_list->to_array;
+  my $cas = (Net::SSLeay::X509[])$cas_list->to_array;
   
-  my $SSL_ca_option = $x509x;
+  my $SSL_ca = $cas;
 
 =head1 See Also
 

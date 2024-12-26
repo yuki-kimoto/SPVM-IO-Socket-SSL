@@ -32,6 +32,15 @@ else {
   ok($ok);
 }
 
+eval { $ok = SPVM::TestCase::IO::Socket::SSL::Online->https_google_with_mozilla_ca };
+
+if ($@) {
+  warn "[Skip]https_google_with_mozilla_ca test failed. The system may be offline:$@";
+}
+else {
+  ok($ok);
+}
+
 $api->set_exception(undef);
 
 my $end_memory_blocks_count = $api->get_memory_blocks_count;
