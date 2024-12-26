@@ -63,10 +63,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   has SSL_ca_path : string;
   
-  has SSL_check_crl : int;
-  
-  has SSL_crl_file : string;
-  
   has SSL_cert : Net::SSLeay::X509[];
   
   has SSL_cert_file : string;
@@ -74,6 +70,10 @@ class IO::Socket::SSL extends IO::Socket::IP {
   has SSL_key : Net::SSLeay::EVP_PKEY;
   
   has SSL_key_file : string;
+  
+  has SSL_crl_file : string;
+  
+  has SSL_check_crl : int;
   
   has SSL_hostname : string;
   
@@ -104,8 +104,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
         "SSL_ca",
         "SSL_ca_file",
         "SSL_ca_path",
-        "SSL_check_crl",
         "SSL_crl_file",
+        "SSL_check_crl",
         "SSL_cert",
         "SSL_cert_file",
         "SSL_key",
@@ -137,13 +137,13 @@ class IO::Socket::SSL extends IO::Socket::IP {
     my $SSL_passwd_cb = (Net::SSLeay::Callback::PemPassword)$options_h->get_or_default("SSL_passwd_cb", undef);
     $self->{SSL_passwd_cb} = $SSL_passwd_cb;
     
-    my $SSL_check_crl = $options_h->get_or_default_int("SSL_check_crl", 0);
-    
-    $self->{SSL_check_crl} = $SSL_check_crl;
-    
     my $SSL_crl_file = $options_h->get_or_default_string("SSL_crl_file", undef);
     
     $self->{SSL_crl_file} = $SSL_crl_file;
+    
+    my $SSL_check_crl = $options_h->get_or_default_int("SSL_check_crl", 0);
+    
+    $self->{SSL_check_crl} = $SSL_check_crl;
     
     my $SSL_startHandshake = $options_h->get_or_default_int("SSL_startHandshake", 1);
     $self->{SSL_startHandshake} = $SSL_startHandshake;
@@ -299,6 +299,34 @@ class IO::Socket::SSL extends IO::Socket::IP {
       }
     }
     
+    # SSL_cert, SSL_cert_file
+    my $SSL_cert = $self->{SSL_cert};
+    my $SSL_cert_file = $self->{SSL_cert_file};
+    if ($SSL_cert) {
+      for (my $i = 0; $i < @$SSL_cert; $i++) {
+        my $x509 = $SSL_cert->[$i];
+        if ($i == 0) {
+          $ssl_ctx->use_certificate($x509);
+        }
+        else {
+          $ssl_ctx->add_extra_chain_cert($x509);
+        }
+      }
+    }
+    elsif ($SSL_cert_file) {
+      $ssl_ctx->use_certificate_chain_file($SSL_cert_file);
+    }
+    
+    # SSL_key, SSL_key_file
+    my $SSL_key = $self->{SSL_key};
+    my $SSL_key_file = $self->{SSL_key_file};
+    if ($SSL_key) {
+      $ssl_ctx->use_PrivateKey($SSL_key);
+    }
+    elsif ($SSL_key_file) {
+      $ssl_ctx->use_PrivateKey_file($SSL_key_file, SSL->SSL_FILETYPE_PEM);
+    }
+    
     # SSL_crl_file
     my $SSL_crl_file = $self->{SSL_crl_file};
     if ($SSL_crl_file) {
@@ -328,35 +356,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
       $x509_store_flags |= SSL->X509_V_FLAG_CRL_CHECK;
     }
     
-    $x509_store->set_flags($x509_store_flags);
-    
-    # SSL_cert, SSL_cert_file
-    my $SSL_cert = $self->{SSL_cert};
-    my $SSL_cert_file = $self->{SSL_cert_file};
-    if ($SSL_cert) {
-      for (my $i = 0; $i < @$SSL_cert; $i++) {
-        my $x509 = $SSL_cert->[$i];
-        if ($i == 0) {
-          $ssl_ctx->use_certificate($x509);
-        }
-        else {
-          $ssl_ctx->add_extra_chain_cert($x509);
-        }
-      }
-    }
-    elsif ($SSL_cert_file) {
-      $ssl_ctx->use_certificate_chain_file($SSL_cert_file);
-    }
-    
-    # SSL_key, SSL_key_file
-    my $SSL_key = $self->{SSL_key};
-    my $SSL_key_file = $self->{SSL_key_file};
-    if ($SSL_key) {
-      $ssl_ctx->use_PrivateKey($SSL_key);
-    }
-    elsif ($SSL_key_file) {
-      $ssl_ctx->use_PrivateKey_file($SSL_key_file, SSL->SSL_FILETYPE_PEM);
-    }
     
     # verify_param
     my $verify_param = $ssl_ctx->get0_param;
@@ -403,6 +402,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
         $ssl_ctx->set_alpn_protos_with_protocols($SSL_alpn_protocols);
       }
     }
+    
+    $x509_store->set_flags($x509_store_flags);
     
     $self->{ssl_ctx} = $ssl_ctx;
     

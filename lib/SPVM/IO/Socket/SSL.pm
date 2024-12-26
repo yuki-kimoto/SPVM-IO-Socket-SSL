@@ -107,20 +107,6 @@ Type: L<Net::SSLeay::Callback::PemPassword|SPVM::Net::SSLeay::Callback::PemPassw
 
 If the option value is defined, L</"configure_SSL"> method calls L<set_default_passwd_cb|Net::SSLeay::SSL_CTX#set_default_passwd_cb> method given the option value.
 
-=head2 SSL_check_crl
-
-Type: L<Int|SPVM::Int>
-
-The option value is a true value, C<X509_V_FLAG_CRL_CHECK|SPVM::Net::SSLeay::Constant/"X509_V_FLAG_CRL_CHECK"> flag is set to the L<Net::SSLeay::X509_VERIFY_PARAM|SPVM::Net::SSLeay::X509_VERIFY_PARAM> object stored in the L<Net::SSLeay::SSL_CTX> object.
-
-Adds C<X509_V_FLAG_CRL_CHECK> flag to the options of X509 store.
-
-=head2 SSL_crl_file
-
-Type: string
-
-Add all CRLs contained in the file specified by this option to the certificate store.
-
 =head2 SSL_ca
 
 Type: L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509>[]
@@ -143,21 +129,39 @@ Type: string
 
 See L</"SSL_ca">.
 
+=head2 SSL_cert
+
+Type: L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509>[]
+
 =head2 SSL_cert_file
 
 Type: string
 
-=head2 SSL_cert
+See L</"SSL_cert">
 
-Type: L<Net::SSLeay::X509|SPVM::Net::SSLeay::X509>[]
+=head2 SSL_key
+
+Type: L<Net::SSLeay::EVP_PKEY|SPVM::Net::SSLeay::EVP_PKEY>
 
 =head2 SSL_key_file
 
 Type: string
 
-=head2 SSL_key
+See L</"SSL_key">.
 
-Type: L<Net::SSLeay::EVP_PKEY|SPVM::Net::SSLeay::EVP_PKEY>
+=head2 SSL_check_crl
+
+Type: L<Int|SPVM::Int>
+
+The option value is a true value, C<X509_V_FLAG_CRL_CHECK|SPVM::Net::SSLeay::Constant/"X509_V_FLAG_CRL_CHECK"> flag is set to the L<Net::SSLeay::X509_VERIFY_PARAM|SPVM::Net::SSLeay::X509_VERIFY_PARAM> object stored in the L<Net::SSLeay::SSL_CTX> object.
+
+Adds C<X509_V_FLAG_CRL_CHECK> flag to the options of X509 store.
+
+=head2 SSL_crl_file
+
+Type: string
+
+Add all CRLs contained in the file specified by this option to the certificate store.
 
 =head2 SSL_hostname
 
