@@ -113,9 +113,13 @@ Type: L<Int|SPVM::Int>
 
 The option value is a true value, C<X509_V_FLAG_CRL_CHECK|SPVM::Net::SSLeay::Constant/"X509_V_FLAG_CRL_CHECK"> flag is set to the L<Net::SSLeay::X509_VERIFY_PARAM|SPVM::Net::SSLeay::X509_VERIFY_PARAM> object stored in the L<Net::SSLeay::SSL_CTX> object.
 
+Adds C<X509_V_FLAG_CRL_CHECK> flag to the certificate store options.
+
 =head2 SSL_crl_file
 
 Type: string
+
+Add all CRLs contained in the file specified by this option to the certificate store.
 
 =head2 SSL_ca_file
 

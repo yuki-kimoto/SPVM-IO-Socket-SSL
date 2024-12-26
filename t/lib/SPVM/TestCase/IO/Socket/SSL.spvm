@@ -20,6 +20,8 @@ class TestCase::IO::Socket::SSL {
       Listen    => 5,
       ReuseAddr => 1,
       SSL_startHandshake => 0,
+      SSL_crl_file => "$FILE_DIR/simple-cert.csr.pem",
+      SSL_check_crl => 1,
     });
     
     my $ssl_ctx = $server_socket->ssl_ctx;
