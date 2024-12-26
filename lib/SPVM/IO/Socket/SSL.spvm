@@ -615,15 +615,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
     return $status;
   }
   
-  method dump_peer_certificate : string () {
-    
-    my $ssl = $self->{ssl};
-    
-    my $dump = $ssl->dump_peer_certificate;
-    
-    return $dump;
-  }
-  
   method alpn_selected : string () {
     
     my $ssl = $self->{ssl};
@@ -710,6 +701,15 @@ class IO::Socket::SSL extends IO::Socket::IP {
     my $cert = $ssl->get_certificate;
     
     return $cert;
+  }
+  
+  method dump_peer_certificate : string () {
+    
+    my $ssl = $self->{ssl};
+    
+    my $dump = $ssl->dump_peer_certificate;
+    
+    return $dump;
   }
   
   method add_before_connect_SSL_cb : void ($cb : IO::Socket::SSL::Callback::BeforeConnectSSL) {
