@@ -22,11 +22,10 @@ class TestCase::IO::Socket::SSL {
       SSL_startHandshake => 0,
       SSL_crl_file => "$FILE_DIR/simple-cert.csr.pem",
       SSL_check_crl => 1,
+      SSL_key_file => "$FILE_DIR/simple-cert.key.pem",
     });
     
     my $ssl_ctx = $server_socket->ssl_ctx;
-    
-    $ssl_ctx->use_PrivateKey_file("$FILE_DIR/simple-cert.key.pem");
     
     $ssl_ctx->use_certificate_file("$FILE_DIR/simple-cert.cert.pem");
     
