@@ -3,7 +3,8 @@
     * Fix a bug of SSL_crl_file option.
   [Incompatible Changes]
     * Remove IP address verification.
-    
+  [Requirement Changes]
+    * Require SPVM::File::Temp 0.022 for tests.
 0.007 2024-12-25
   [New Features]
     * Add IO::Socket::SSL#DESTROY method.
