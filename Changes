@@ -1,3 +1,6 @@
+0.009 2024-12-27
+  [Bug Fix]
+    * Fix a bug that accept method does not work well.
 0.008 2024-12-26
   [Bug Fix]
     * Fix a bug of SSL_crl_file option.
