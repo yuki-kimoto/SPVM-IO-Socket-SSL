@@ -43,11 +43,15 @@ class TestCase::IO::Socket::SSL {
       return 1;
     });
     
-    my $accepted_socket = $server_socket->accept;
+    my $accepted_socket = (IO::Socket::SSL)undef;
+    eval {
+      $accepted_socket = $server_socket->accept;
+      $accepted_socket->accept_SSL;
+    }
     
-    $accepted_socket->accept_SSL;
-    
-    my $ssl = $server_socket->ssl;
+    if ($@) {
+      warn "[Test Output][IO::Socket::SSL#accept]$@";
+    }
     
     while (1) {
       
@@ -81,24 +85,29 @@ class TestCase::IO::Socket::SSL {
       SSL_key_file => "$FILE_DIR/simple-cert.key.pem",
     });
     
-    my $accepted_socket = $server_socket->accept;
+    my $accepted_socket = (IO::Socket::SSL)undef;
+    eval { $accepted_socket = $server_socket->accept; }
     
-    my $ssl = $server_socket->ssl;
+    if ($@) {
+      warn "[Test Output][IO::Socket::SSL#accept]$@";
+    }
     
-    while (1) {
-      
-      my $data = (mutable string)new_string_len 1;
-      my $read_length = $accepted_socket->read($data);
-      
-      if ($read_length > 0) {
-        if ($data eq "\0") {
+    if ($accepted_socket) {
+      while (1) {
+        
+        my $data = (mutable string)new_string_len 1;
+        my $read_length = $accepted_socket->read($data);
+        
+        if ($read_length > 0) {
+          if ($data eq "\0") {
+            last;
+          }
+          
+          $accepted_socket->write($data);
+        }
+        else {
           last;
         }
-        
-        $accepted_socket->write($data);
-      }
-      else {
-        last;
       }
     }
     
@@ -349,7 +358,7 @@ class TestCase::IO::Socket::SSL {
       
       $go_server_ref->[0] = 1;
       
-      &run_echo_server_accept_once_with_options($port);
+      &run_echo_server_accept_once($port);
     });
     
     # Tests
