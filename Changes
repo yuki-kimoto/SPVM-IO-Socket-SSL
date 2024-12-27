@@ -1,14 +1,11 @@
-0.009 2024-12-27
+0.008 2024-12-27
   [Bug Fix]
     * Fix a bug that accept method does not work well.
+    * Fix a bug of SSL_crl_file option.
   [Test Improvement]
     * Add many tests.
   [Stability Improvement]
     * Improve stability. Finish writing tests and documents.
-    
-0.008 2024-12-26
-  [Bug Fix]
-    * Fix a bug of SSL_crl_file option.
   [Incompatible Changes]
     * Remove IP address verification.
   [Requirement Changes]
