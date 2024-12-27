@@ -316,6 +316,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     # SSL_ca, SSL_ca_file, SSL_ca_path
     my $SSL_ca_file = $self->{SSL_ca_file};
     my $SSL_ca_path = $self->{SSL_ca_path};
+    
     my $SSL_ca = $self->{SSL_ca};
     if ($SSL_ca) {
       for (my $i = 0; $i < @$SSL_ca; $i++) {
@@ -485,12 +486,10 @@ class IO::Socket::SSL extends IO::Socket::IP {
         my $again_write = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
         
         if ($again_read) {
-          warn;
           Go->gosched_io_read($fd, $timeout);
           next;
         }
         elsif ($again_write) {
-          warn;
           Go->gosched_io_write($fd, $timeout);
           next;
         }
