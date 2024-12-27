@@ -386,7 +386,7 @@ class TestCase::IO::Socket::SSL {
     return $success_ref->[0];
   }
   
-  static method client_and_server_SSL_key : int ($port : int) {
+  static method client_and_server_SSL_key_SSL_cert : int ($port : int) {
     
     my $success_ref = [1];
     
@@ -418,16 +418,46 @@ class TestCase::IO::Socket::SSL {
       $go_tests_ref->[0] = 1;
       
       {
-        my $bio = Net::SSLeay::BIO->new_file("$FILE_DIR/simple-cert.key.pem", "r");
+        my $certs_list = List->new(new Net::SSLeay::X509[0]);
         
-        my $evp_pkey = Net::SSLeay::PEM->read_bio_PrivateKey($bio);
+        my $bio_cert = Net::SSLeay::BIO->new_file( "$FILE_DIR/simple-cert.cert.pem", "r");
+        
+        my $cert = Net::SSLeay::PEM->read_bio_X509($bio_cert);
+        $certs_list->push($cert);
+        
+        my $bio_chain_certs = Net::SSLeay::BIO->new_file("$FILE_DIR/simple-cert.certchain.pem", "r");
+        
+        my $chain_certs_list = List->new(new Net::SSLeay::X509[0]);
+        while (1) {
+          my $chain_cert = (Net::SSLeay::X509)undef;
+          
+          eval { $chain_cert = Net::SSLeay::PEM->read_bio_X509($bio_chain_certs); }
+          
+          if ($@) {
+            if (eval_error_id isa_error Net::SSLeay::Error::PEM_R_NO_START_LINE) {
+              last;
+            }
+            else {
+              die $@;
+            }
+          }
+          
+          $certs_list->push($chain_cert);
+        }
+        
+        my $certs = (Net::SSLeay::X509[])$certs_list->to_array;
+        
+        my $bio_pkey = Net::SSLeay::BIO->new_file("$FILE_DIR/simple-cert.key.pem", "r");
+        
+        my $pkey = Net::SSLeay::PEM->read_bio_PrivateKey($bio_pkey);
         
         my $host = "127.0.0.1";
         my $socket = IO::Socket::SSL->new({
           PeerAddr => $host,
           PeerPort => $port,
           SSL_verify_mode => SSL->SSL_VERIFY_NONE,
-          SSL_key => $evp_pkey,
+          SSL_cert => $certs,
+          SSL_key => $pkey,
         });
         
         my $write_buffer = "abc";

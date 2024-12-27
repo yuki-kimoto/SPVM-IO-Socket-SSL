@@ -24,7 +24,7 @@ ok(SPVM::TestCase::IO::Socket::SSL->client_and_server_basic($port));
 
 ok(SPVM::TestCase::IO::Socket::SSL->client_and_server_no_connect_SSL($port));
 
-ok(SPVM::TestCase::IO::Socket::SSL->client_and_server_SSL_key($port));
+ok(SPVM::TestCase::IO::Socket::SSL->client_and_server_SSL_key_SSL_cert($port));
 
 # Version check
 {
