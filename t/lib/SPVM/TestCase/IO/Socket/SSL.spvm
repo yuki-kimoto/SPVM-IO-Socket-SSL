@@ -77,9 +77,13 @@ class TestCase::IO::Socket::SSL {
       LocalPort => $port,
       Listen    => 5,
       ReuseAddr => 1,
+      SSL_cert_file => "$FILE_DIR/simple-cert.cert.pem",
+      SSL_key_file => "$FILE_DIR/simple-cert.key.pem",
     });
     
     my $accepted_socket = $server_socket->accept;
+    
+    my $ssl = $server_socket->ssl;
     
     while (1) {
       
@@ -345,7 +349,7 @@ class TestCase::IO::Socket::SSL {
       
       $go_server_ref->[0] = 1;
       
-      &run_echo_server_accept_once($port);
+      &run_echo_server_accept_once_with_options($port);
     });
     
     # Tests
