@@ -10,8 +10,6 @@ SPVM::IO::Socket::SSL - Sockets for SSL Communication.
 
 =head1 Description
 
-B<This class is highly experimental and not yet implemented completly and not tested well and not yet documented.>
-
 IO::Socket::SSL class in L<SPVM> represents sockets for SSL communication.
 
 =head1 Usage
