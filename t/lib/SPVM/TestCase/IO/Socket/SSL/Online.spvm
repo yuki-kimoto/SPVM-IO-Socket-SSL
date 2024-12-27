@@ -249,6 +249,8 @@ class TestCase::IO::Socket::SSL::Online {
       
       my $ca_path = "$FILE_TMP_DIR/ca_path";
       
+      eval { Sys->mkdir($ca_path, 0755); }
+      
       my $ca_file = "$ca_path/ca.pem";
       
       my $ca_fh = IO->open(">", $ca_file);
