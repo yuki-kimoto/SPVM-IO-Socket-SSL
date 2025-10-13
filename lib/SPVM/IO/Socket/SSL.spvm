@@ -121,72 +121,72 @@ class IO::Socket::SSL extends IO::Socket::IP {
   
   protected method init : void ($options : object[] = undef) {
     
-    my $options_h = Hash->new($options);
-    
     $self->SUPER::init($options);
+    
+    my $options = Hash->new($options);
     
     $self->{before_connect_SSL_cbs} = new IO::Socket::SSL::Callback::BeforeConnectSSL[0];
     
     $self->{before_accept_SSL_cbs} = new IO::Socket::SSL::Callback::BeforeAcceptSSL[0];
     
-    my $SSL_verify_mode_option = $options_h->get("SSL_verify_mode");
+    my $SSL_verify_mode_option = $options->get("SSL_verify_mode");
     $self->{SSL_verify_mode_option} = (Int)$SSL_verify_mode_option;
     
-    my $SSL_verify_callback = (Net::SSLeay::Callback::Verify)$options_h->get_or_default("SSL_verify_callback", undef);
+    my $SSL_verify_callback = (Net::SSLeay::Callback::Verify)$options->get_or_default("SSL_verify_callback", undef);
     $self->{SSL_verify_callback} = $SSL_verify_callback;
     
-    my $SSL_hostname = $options_h->get_or_default("SSL_hostname", undef)->(string);
+    my $SSL_hostname = $options->get_or_default("SSL_hostname", undef)->(string);
     
     $self->{SSL_hostname} = $SSL_hostname;
     
-    my $SSL_passwd_cb = (Net::SSLeay::Callback::PemPassword)$options_h->get_or_default("SSL_passwd_cb", undef);
+    my $SSL_passwd_cb = (Net::SSLeay::Callback::PemPassword)$options->get_or_default("SSL_passwd_cb", undef);
     $self->{SSL_passwd_cb} = $SSL_passwd_cb;
     
-    my $SSL_crl_file = $options_h->get_or_default("SSL_crl_file", undef)->(string);
+    my $SSL_crl_file = $options->get_or_default("SSL_crl_file", undef)->(string);
     
     $self->{SSL_crl_file} = $SSL_crl_file;
     
-    my $SSL_check_crl = $options_h->get_or_default("SSL_check_crl", 0)->(int);
+    my $SSL_check_crl = $options->get_or_default("SSL_check_crl", 0)->(int);
     
     $self->{SSL_check_crl} = $SSL_check_crl;
     
-    my $SSL_startHandshake = $options_h->get_or_default("SSL_startHandshake", 1)->(int);
+    my $SSL_startHandshake = $options->get_or_default("SSL_startHandshake", 1)->(int);
     $self->{SSL_startHandshake} = $SSL_startHandshake;
     
-    my $SSL_ca = (Net::SSLeay::X509[])$options_h->get_or_default("SSL_ca", undef);
+    my $SSL_ca = (Net::SSLeay::X509[])$options->get_or_default("SSL_ca", undef);
     $self->{SSL_ca} = $SSL_ca;
     
-    my $SSL_ca_file = $options_h->get_or_default("SSL_ca_file", undef)->(string);
+    my $SSL_ca_file = $options->get_or_default("SSL_ca_file", undef)->(string);
     $self->{SSL_ca_file} = $SSL_ca_file;
     
-    my $SSL_ca_path = $options_h->get_or_default("SSL_ca_path", undef)->(string);
+    my $SSL_ca_path = $options->get_or_default("SSL_ca_path", undef)->(string);
     $self->{SSL_ca_path} = $SSL_ca_path;
     
     if ($SSL_ca && ($SSL_ca_file || $SSL_ca_path)) {
       die "If SSL_ca option is specified, SSL_ca_file option or SSL_ca_path option cannot be specified.";
     }
     
-    my $SSL_cert = (Net::SSLeay::X509[])$options_h->get_or_default("SSL_cert", undef);
+    my $SSL_cert = (Net::SSLeay::X509[])$options->get_or_default("SSL_cert", undef);
     $self->{SSL_cert} = $SSL_cert;
     
-    my $SSL_cert_file = $options_h->get_or_default("SSL_cert_file", undef)->(string);
+    my $SSL_cert_file = $options->get_or_default("SSL_cert_file", undef)->(string);
     $self->{SSL_cert_file} = $SSL_cert_file;
     
     if ($SSL_cert && $SSL_cert_file) {
       die "If SSL_cert option is specified, SSL_cert_file option cannot be specified.";
     }
     
-    my $SSL_key = $options_h->get_or_default("SSL_key", undef);
+    my $SSL_key = $options->get_or_default("SSL_key", undef);
     $self->{SSL_key} = (Net::SSLeay::EVP_PKEY)$SSL_key;
     
-    my $SSL_key_file = $options_h->get_or_default("SSL_key_file", undef)->(string);
+    my $SSL_key_file = $options->get_or_default("SSL_key_file", undef)->(string);
     $self->{SSL_key_file} = $SSL_key_file;
     
     if ($SSL_key && $SSL_key_file) {
       die "If SSL_key option is specified, SSL_key_file option cannot be specified.";
     }
     
-    my $SSL_alpn_protocols = (string[])$options_h->get_or_default("SSL_alpn_protocols", undef);
+    my $SSL_alpn_protocols = (string[])$options->get_or_default("SSL_alpn_protocols", undef);
     $self->{SSL_alpn_protocols} = $SSL_alpn_protocols;
     
   }
