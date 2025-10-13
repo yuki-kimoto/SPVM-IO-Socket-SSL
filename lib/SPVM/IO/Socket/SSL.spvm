@@ -131,63 +131,45 @@ class IO::Socket::SSL extends IO::Socket::IP {
       $self->{SSL_verify_mode} = $options->get("SSL_verify_mode")->(int);
     }
     
-    my $SSL_verify_callback = (Net::SSLeay::Callback::Verify)$options->get_or_default("SSL_verify_callback", undef);
-    $self->{SSL_verify_callback} = $SSL_verify_callback;
+    $self->{SSL_verify_callback} = $options->get_or_default("SSL_verify_callback", undef)->(Net::SSLeay::Callback::Verify);
     
-    my $SSL_hostname = $options->get_or_default("SSL_hostname", undef)->(string);
+    $self->{SSL_hostname} = $options->get_or_default("SSL_hostname", undef)->(string);
     
-    $self->{SSL_hostname} = $SSL_hostname;
+    $self->{SSL_passwd_cb} = $options->get_or_default("SSL_passwd_cb", undef)->(Net::SSLeay::Callback::PemPassword);
     
-    my $SSL_passwd_cb = (Net::SSLeay::Callback::PemPassword)$options->get_or_default("SSL_passwd_cb", undef);
-    $self->{SSL_passwd_cb} = $SSL_passwd_cb;
+    $self->{SSL_crl_file} = $options->get_or_default("SSL_crl_file", undef)->(string);
     
-    my $SSL_crl_file = $options->get_or_default("SSL_crl_file", undef)->(string);
+    $self->{SSL_check_crl} = $options->get_or_default("SSL_check_crl", 0)->(int);
     
-    $self->{SSL_crl_file} = $SSL_crl_file;
+    $self->{SSL_startHandshake} = $options->get_or_default("SSL_startHandshake", 1)->(int);
     
-    my $SSL_check_crl = $options->get_or_default("SSL_check_crl", 0)->(int);
+    $self->{SSL_ca} = $options->get_or_default("SSL_ca", undef)->(Net::SSLeay::X509[]);
     
-    $self->{SSL_check_crl} = $SSL_check_crl;
+    $self->{SSL_ca_file} = $options->get_or_default("SSL_ca_file", undef)->(string);
     
-    my $SSL_startHandshake = $options->get_or_default("SSL_startHandshake", 1)->(int);
-    $self->{SSL_startHandshake} = $SSL_startHandshake;
+    $self->{SSL_ca_path} = $options->get_or_default("SSL_ca_path", undef)->(string);
     
-    my $SSL_ca = (Net::SSLeay::X509[])$options->get_or_default("SSL_ca", undef);
-    $self->{SSL_ca} = $SSL_ca;
-    
-    my $SSL_ca_file = $options->get_or_default("SSL_ca_file", undef)->(string);
-    $self->{SSL_ca_file} = $SSL_ca_file;
-    
-    my $SSL_ca_path = $options->get_or_default("SSL_ca_path", undef)->(string);
-    $self->{SSL_ca_path} = $SSL_ca_path;
-    
-    if ($SSL_ca && ($SSL_ca_file || $SSL_ca_path)) {
+    if ($self->{SSL_ca} && ($self->{SSL_ca_file} || $self->{SSL_ca_path})) {
       die "If SSL_ca option is specified, SSL_ca_file option or SSL_ca_path option cannot be specified.";
     }
     
-    my $SSL_cert = (Net::SSLeay::X509[])$options->get_or_default("SSL_cert", undef);
-    $self->{SSL_cert} = $SSL_cert;
+    $self->{SSL_cert} = $options->get_or_default("SSL_cert", undef)->(Net::SSLeay::X509[]);
     
-    my $SSL_cert_file = $options->get_or_default("SSL_cert_file", undef)->(string);
-    $self->{SSL_cert_file} = $SSL_cert_file;
+    $self->{SSL_cert_file} = $options->get_or_default("SSL_cert_file", undef)->(string);
     
-    if ($SSL_cert && $SSL_cert_file) {
+    if ($self->{SSL_cert} && $self->{SSL_cert_file}) {
       die "If SSL_cert option is specified, SSL_cert_file option cannot be specified.";
     }
     
-    my $SSL_key = $options->get_or_default("SSL_key", undef);
-    $self->{SSL_key} = (Net::SSLeay::EVP_PKEY)$SSL_key;
+    $self->{SSL_key} = $options->get_or_default("SSL_key", undef)->(Net::SSLeay::EVP_PKEY);
     
-    my $SSL_key_file = $options->get_or_default("SSL_key_file", undef)->(string);
-    $self->{SSL_key_file} = $SSL_key_file;
+    $self->{SSL_key_file} = $options->get_or_default("SSL_key_file", undef)->(string);
     
-    if ($SSL_key && $SSL_key_file) {
+    if ($self->{SSL_key} && $self->{SSL_key_file}) {
       die "If SSL_key option is specified, SSL_key_file option cannot be specified.";
     }
     
-    my $SSL_alpn_protocols = (string[])$options->get_or_default("SSL_alpn_protocols", undef);
-    $self->{SSL_alpn_protocols} = $SSL_alpn_protocols;
-    
+    $self->{SSL_alpn_protocols} = $options->get_or_default("SSL_alpn_protocols", undef)->(string[]);
   }
   
   protected method configure : void () {
