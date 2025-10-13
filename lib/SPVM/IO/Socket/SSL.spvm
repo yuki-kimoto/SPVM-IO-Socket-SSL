@@ -135,31 +135,31 @@ class IO::Socket::SSL extends IO::Socket::IP {
     my $SSL_verify_callback = (Net::SSLeay::Callback::Verify)$options_h->get_or_default("SSL_verify_callback", undef);
     $self->{SSL_verify_callback} = $SSL_verify_callback;
     
-    my $SSL_hostname = $options_h->get_or_default_string("SSL_hostname", undef);
+    my $SSL_hostname = $options_h->get_or_default("SSL_hostname", undef)->(string);
     
     $self->{SSL_hostname} = $SSL_hostname;
     
     my $SSL_passwd_cb = (Net::SSLeay::Callback::PemPassword)$options_h->get_or_default("SSL_passwd_cb", undef);
     $self->{SSL_passwd_cb} = $SSL_passwd_cb;
     
-    my $SSL_crl_file = $options_h->get_or_default_string("SSL_crl_file", undef);
+    my $SSL_crl_file = $options_h->get_or_default("SSL_crl_file", undef)->(string);
     
     $self->{SSL_crl_file} = $SSL_crl_file;
     
-    my $SSL_check_crl = $options_h->get_or_default_int("SSL_check_crl", 0);
+    my $SSL_check_crl = $options_h->get_or_default("SSL_check_crl", 0)->(int);
     
     $self->{SSL_check_crl} = $SSL_check_crl;
     
-    my $SSL_startHandshake = $options_h->get_or_default_int("SSL_startHandshake", 1);
+    my $SSL_startHandshake = $options_h->get_or_default("SSL_startHandshake", 1)->(int);
     $self->{SSL_startHandshake} = $SSL_startHandshake;
     
     my $SSL_ca = (Net::SSLeay::X509[])$options_h->get_or_default("SSL_ca", undef);
     $self->{SSL_ca} = $SSL_ca;
     
-    my $SSL_ca_file = $options_h->get_or_default_string("SSL_ca_file", undef);
+    my $SSL_ca_file = $options_h->get_or_default("SSL_ca_file", undef)->(string);
     $self->{SSL_ca_file} = $SSL_ca_file;
     
-    my $SSL_ca_path = $options_h->get_or_default_string("SSL_ca_path", undef);
+    my $SSL_ca_path = $options_h->get_or_default("SSL_ca_path", undef)->(string);
     $self->{SSL_ca_path} = $SSL_ca_path;
     
     if ($SSL_ca && ($SSL_ca_file || $SSL_ca_path)) {
@@ -169,7 +169,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     my $SSL_cert = (Net::SSLeay::X509[])$options_h->get_or_default("SSL_cert", undef);
     $self->{SSL_cert} = $SSL_cert;
     
-    my $SSL_cert_file = $options_h->get_or_default_string("SSL_cert_file", undef);
+    my $SSL_cert_file = $options_h->get_or_default("SSL_cert_file", undef)->(string);
     $self->{SSL_cert_file} = $SSL_cert_file;
     
     if ($SSL_cert && $SSL_cert_file) {
@@ -179,7 +179,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     my $SSL_key = $options_h->get_or_default("SSL_key", undef);
     $self->{SSL_key} = (Net::SSLeay::EVP_PKEY)$SSL_key;
     
-    my $SSL_key_file = $options_h->get_or_default_string("SSL_key_file", undef);
+    my $SSL_key_file = $options_h->get_or_default("SSL_key_file", undef)->(string);
     $self->{SSL_key_file} = $SSL_key_file;
     
     if ($SSL_key && $SSL_key_file) {
