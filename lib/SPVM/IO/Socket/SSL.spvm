@@ -349,7 +349,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
         eval { $x509_crl = Net::SSLeay::PEM->read_bio_X509_CRL($bio); }
         
         if ($@) {
-          if (eval_error_id isa_error Net::SSLeay::Error::PEM_R_NO_START_LINE) {
+          if ($@ isa Net::SSLeay::Error::PEM_R_NO_START_LINE) {
             last;
           }
           else {
@@ -407,11 +407,11 @@ class IO::Socket::SSL extends IO::Socket::IP {
       eval { $ssl->connect; }
       
       if ($@) {
-        my $again_read = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_WANT_READ;
-        my $again_write = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
+        my $again_read = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_READ;
+        my $again_write = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
         
         # Check if the peer closed the connection during handshake
-        my $is_eof = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_ZERO_RETURN;
+        my $is_eof = $@ isa Net::SSLeay::Error::SSL_ERROR_ZERO_RETURN;
         
         if ($again_read) {
           Go->gosched_io_read_sec($fd, $timeout);
@@ -458,12 +458,12 @@ class IO::Socket::SSL extends IO::Socket::IP {
       eval { $ssl->accept; }
       
       if ($@) {
-        my $again_read = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_WANT_READ;
+        my $again_read = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_READ;
         
-        my $again_write = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
+        my $again_write = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
         
         # Check if the peer closed the connection during the handshake
-        my $is_eof = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_ZERO_RETURN;
+        my $is_eof = $@ isa Net::SSLeay::Error::SSL_ERROR_ZERO_RETURN;
         
         if ($again_read) {
           Go->gosched_io_read_sec($fd, $timeout);
@@ -515,10 +515,10 @@ class IO::Socket::SSL extends IO::Socket::IP {
       eval { $read_length = $ssl->read($buffer, $length, $offset); }
       
       if ($@) {
-        my $again_read = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_WANT_READ;
-        my $again_write = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
+        my $again_read = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_READ;
+        my $again_write = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
         
-        my $is_eof = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_ZERO_RETURN;
+        my $is_eof = $@ isa Net::SSLeay::Error::SSL_ERROR_ZERO_RETURN;
         
         if ($again_read) {
           Go->gosched_io_read_sec($fd, $timeout);
@@ -565,9 +565,9 @@ class IO::Socket::SSL extends IO::Socket::IP {
       eval { $write_length = $ssl->write($buffer, $length, $offset); }
       
       if ($@) {
-        my $again_read = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_WANT_READ;
+        my $again_read = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_READ;
         
-        my $again_write = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
+        my $again_write = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
         
         if ($again_read) {
           Go->gosched_io_read_sec($fd, $timeout);
@@ -608,10 +608,10 @@ class IO::Socket::SSL extends IO::Socket::IP {
       eval { $status = $ssl->shutdown; }
       
       if ($@) {
-        my $again_read = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_WANT_READ;
-        my $again_write = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
+        my $again_read = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_READ;
+        my $again_write = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
         
-        my $is_eof = eval_error_id isa_error Net::SSLeay::Error::SSL_ERROR_ZERO_RETURN;
+        my $is_eof = $@ isa Net::SSLeay::Error::SSL_ERROR_ZERO_RETURN;
         
         if ($again_read) {
           Go->gosched_io_read_sec($fd, $timeout);
