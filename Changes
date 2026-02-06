@@ -1,3 +1,7 @@
+0.018 2026-02-06
+  [Changes]
+    * Implement strict deadline handling in IO::Socket::SSL#shutdown_SSL by using get_remaining_duration and catching IOTimeout.
+    
 0.017 2026-02-06
   [Requirement Changes]
     * Require SPVM::Net::SSLeay 0.042.
