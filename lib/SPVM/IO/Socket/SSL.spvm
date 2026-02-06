@@ -404,7 +404,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
       if ($@) {
         my $again_read = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_READ;
         my $again_write = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
-        my $is_eof = $@ isa Net::SSLeay::Error::SSL_ERROR_ZERO_RETURN;
         
         if ($again_read) {
           eval { Go->gosched_io_read($fd, $timeout_duration); }
@@ -431,9 +430,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
             die $@;
           }
           next;
-        }
-        elsif ($is_eof) {
-          die "SSL connect failed: The peer closed the connection during the handshake.";
         }
         else {
           die $@;
@@ -465,7 +461,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
       if ($@) {
         my $again_read = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_READ;
         my $again_write = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
-        my $is_eof = $@ isa Net::SSLeay::Error::SSL_ERROR_ZERO_RETURN;
         
         if ($again_read) {
           eval { Go->gosched_io_read($fd, $timeout_duration); }
@@ -492,9 +487,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
             die $@;
           }
           next;
-        }
-        elsif ($is_eof) {
-          die "SSL accept failed: The peer closed the connection during the handshake.";
         }
         else {
           die $@;
@@ -535,7 +527,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
       if ($@) {
         my $again_read = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_READ;
         my $again_write = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
-        my $is_eof = $@ isa Net::SSLeay::Error::SSL_ERROR_ZERO_RETURN;
         
         if ($again_read) {
           eval { Go->gosched_io_read($fd, $timeout_duration); }
@@ -562,10 +553,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
             die $@;
           }
           next;
-        }
-        elsif ($is_eof) {
-          $read_length = 0;
-          last;
         }
         else {
           die $@;
@@ -658,8 +645,6 @@ class IO::Socket::SSL extends IO::Socket::IP {
         my $again_read = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_READ;
         my $again_write = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
         
-        my $is_eof = $@ isa Net::SSLeay::Error::SSL_ERROR_ZERO_RETURN;
-        
         if ($again_read) {
           Go->gosched_io_read_sec($fd, $timeout);
           next;
@@ -668,16 +653,11 @@ class IO::Socket::SSL extends IO::Socket::IP {
           Go->gosched_io_write_sec($fd, $timeout);
           next;
         }
-        elsif ($is_eof) {
-          last;
-        }
         else {
           die $@;
         }
       }
       else {
-        # status 1: bidirectional shutdown complete
-        # status 0: close_notify sent, waiting for reply (but in many cases we don't wait further)
         last;
       }
     }
