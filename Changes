@@ -3,6 +3,8 @@
     * Require SPVM::Net::SSLeay 0.042.
   [Test Improvement]
     * test: update online tests to use httpbin.org instead of google.com
+  [Changes]
+    * Support deadline for SSL operations in IO::Socket::SSL
     
 0.016 2026-01-17
   [Internal Changes]
