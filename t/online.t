@@ -15,46 +15,46 @@ my $start_memory_blocks_count = $api->get_memory_blocks_count;
 
 my $ok = 0;
 
-eval { $ok = SPVM::TestCase::IO::Socket::SSL::Online->https_google };
+eval { $ok = SPVM::TestCase::IO::Socket::SSL::Online->https_httpbin };
 
 if ($@) {
-  warn "[Skip]https_google test failed. The system may be offline:$@";
+  warn "[Skip]https_httpbin test failed. The system may be offline:$@";
 }
 else {
   ok($ok);
 }
 
-eval { $ok = SPVM::TestCase::IO::Socket::SSL::Online->https_google_SSL_startHandshake_false };
+eval { $ok = SPVM::TestCase::IO::Socket::SSL::Online->https_httpbin_SSL_startHandshake_false };
 
 if ($@) {
-  warn "[Skip]https_google_SSL_startHandshake_false test failed. The system may be offline:$@";
+  warn "[Skip]https_httpbin_SSL_startHandshake_false test failed. The system may be offline:$@";
 }
 else {
   ok($ok);
 }
 
-eval { $ok = SPVM::TestCase::IO::Socket::SSL::Online->https_google_with_mozilla_ca };
+eval { $ok = SPVM::TestCase::IO::Socket::SSL::Online->https_httpbin_with_mozilla_ca };
 
 if ($@) {
-  warn "[Skip]https_google_with_mozilla_ca test failed. The system may be offline:$@";
+  warn "[Skip]https_httpbin_with_mozilla_ca test failed. The system may be offline:$@";
 }
 else {
   ok($ok);
 }
 
-eval { $ok = SPVM::TestCase::IO::Socket::SSL::Online->https_google_with_mozilla_ca_SSL_ca_file };
+eval { $ok = SPVM::TestCase::IO::Socket::SSL::Online->https_httpbin_with_mozilla_ca_SSL_ca_file };
 
 if ($@) {
-  warn "[Skip]https_google_with_mozilla_ca_SSL_ca_file test failed. The system may be offline:$@";
+  warn "[Skip]https_httpbin_with_mozilla_ca_SSL_ca_file test failed. The system may be offline:$@";
 }
 else {
   ok($ok);
 }
 
-$ok = SPVM::TestCase::IO::Socket::SSL::Online->https_google_with_mozilla_ca_SSL_ca_path;
+$ok = SPVM::TestCase::IO::Socket::SSL::Online->https_httpbin_with_mozilla_ca_SSL_ca_path;
 
 if ($@) {
-  warn "[Skip]https_google_with_mozilla_ca_SSL_ca_path test failed. The system may be offline:$@";
+  warn "[Skip]https_httpbin_with_mozilla_ca_SSL_ca_path test failed. The system may be offline:$@";
 }
 else {
   ok($ok);
