@@ -362,15 +362,23 @@ If timeout occurs, an exception is thrown with C<eval_error_id> set to the basic
 
 C<method shutdown_SSL : int ();>
 
-Shutdowns the SSL connection by calling L<Net::SSLeay#shutdown|SPVM::Net::SSLeay/"shutdown"> method.
+Shuts down the SSL connection by calling the L<Net::SSLeay#shutdown|SPVM::Net::SSLeay/"shutdown"> method.
 
-If an IO wait occurs, the program jumps to the L<goroutine scheduler|SPVM::Go>, and retries this operation until it succeeds or the timeout seconds set by L<Timeout|SPVM::IO::Socket/"Timeout"> field expires.
+If an IO wait occurs, the current goroutine is suspended, and the control jumps to the L<goroutine scheduler|SPVM::Go>. This operation is retried until it succeeds or the deadline is reached.
+
+The deadline is determined by the L<ReadDeadline|SPVM::IO::Socket/"ReadDeadline">, L<WriteDeadline|SPVM::IO::Socket/"WriteDeadline">, or L<Deadline|SPVM::IO::Socket/"Deadline"> fields.
+
+Note that even though this is a shutdown (writing a close notify), it may wait for a read event if the underlying SSL protocol requires it (C<SSL_ERROR_WANT_READ>).
 
 Exceptions:
 
-Exceptions thrown by L<Net::SSLeay#shutdown|SPVM::Net::SSLeay/"shutdown"> method could be thrown.
+Exceptions thrown by the L<Net::SSLeay#shutdown|SPVM::Net::SSLeay/"shutdown"> method could be thrown.
 
-If timeout occurs, an exception is thrown with C<eval_error_id> set to the basic type ID of L<Go::Error::IOTimeout|SPVM::Go::Error::IOTimeout>.
+If a timeout occurs, an exception is thrown. 
+
+If the timeout is caused by a deadline exceedance, the C<eval_error_id> is set to the basic type ID of L<Go::Context::Error::DeadlineExceeded|SPVM::Go::Context::Error::DeadlineExceeded>. 
+
+Otherwise, if it's a general IO timeout, the C<eval_error_id> is set to the basic type ID of L<Go::Error::IOTimeout|SPVM::Go::Error::IOTimeout>.
 
 =head2 alpn_selected
 
