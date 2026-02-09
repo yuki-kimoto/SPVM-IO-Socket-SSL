@@ -14,7 +14,7 @@ L<IO::Socket::SSL> in L<SPVM> provides SSL/TLS communication for sockets.
 
 It is fully compatible with L<Go|SPVM::Go> goroutines. I/O operations (read, write, handshake, accept) yield control to the L<Go|SPVM::Go> scheduler when they would block by calling C<Go#gosched_io_read> or C<Go#gosched_io_write> internally.
 
-As a subclass of L<IO::Socket|SPVM::IO::Socket>, it inherits the support for **deadlines** (C<Deadline>, C<ReadDeadline>, and C<WriteDeadline> options). These are highly compatible with L<Go::Context>, allowing for seamless timeout management across API boundaries.
+As a subclass of L<IO::Socket|SPVM::IO::Socket>, it inherits the support for **deadlines** (C<ReadDeadline> and C<WriteDeadline> options). These are highly compatible with L<Go::Context>, allowing for seamless timeout management across API boundaries.
 
 =head1 Usage
 
@@ -33,11 +33,12 @@ As a subclass of L<IO::Socket|SPVM::IO::Socket>, it inherits the support for **d
     my $ctx_derived = Go::Context->with_timeout_sec(Go::Context->background, 5.0);
     my $ctx = $ctx_derived->ctx;
     
-    # Use "Deadline" option (defined in IO::Socket)
+    # Use "ReadDeadline" and WriteDeadline options (defined in IO::Socket)
     my $socket = IO::Socket::SSL->new({
       PeerAddr => $host, 
       PeerPort => $port,
-      Deadline => $ctx->deadline,
+      ReadDeadline => $ctx->deadline,
+      WriteDeadline => $ctx->deadline,
     });
     
     # Send a request

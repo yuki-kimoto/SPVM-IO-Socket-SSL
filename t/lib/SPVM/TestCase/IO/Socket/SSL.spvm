@@ -537,7 +537,8 @@ class TestCase::IO::Socket::SSL {
         $socket = IO::Socket::SSL->new({
           PeerAddr => $host,
           PeerPort => $port,
-          Deadline => $deadline,
+          ReadDeadline => $deadline,
+          WriteDeadline => $deadline,
           SSL_verify_mode => SSL->SSL_VERIFY_NONE,
         });
       }
