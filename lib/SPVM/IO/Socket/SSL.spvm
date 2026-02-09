@@ -411,7 +411,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
             if ($@ isa Go::Error::IOTimeout) {
               my $deadline = $self->{ReadDeadline} ? $self->{ReadDeadline} : $self->{Deadline};
               if ($deadline && Go::Time->now->after($deadline)) {
-                die Go::Context::Error::DeadlineExceeded "The deadline has been exceeded.";
+                die Go::Error::IOTimeout "The deadline has been exceeded.";
               }
             }
             die $@;
@@ -424,7 +424,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
             if ($@ isa Go::Error::IOTimeout) {
               my $deadline = $self->{WriteDeadline} ? $self->{WriteDeadline} : $self->{Deadline};
               if ($deadline && Go::Time->now->after($deadline)) {
-                die Go::Context::Error::DeadlineExceeded "The deadline has been exceeded.";
+                die Go::Error::IOTimeout "The deadline has been exceeded.";
               }
             }
             die $@;
@@ -468,7 +468,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
             if ($@ isa Go::Error::IOTimeout) {
               my $deadline = $self->{ReadDeadline} ? $self->{ReadDeadline} : $self->{Deadline};
               if ($deadline && Go::Time->now->after($deadline)) {
-                die Go::Context::Error::DeadlineExceeded "The deadline has been exceeded.";
+                die Go::Error::IOTimeout "The deadline has been exceeded.";
               }
             }
             die $@;
@@ -481,7 +481,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
             if ($@ isa Go::Error::IOTimeout) {
               my $deadline = $self->{WriteDeadline} ? $self->{WriteDeadline} : $self->{Deadline};
               if ($deadline && Go::Time->now->after($deadline)) {
-                die Go::Context::Error::DeadlineExceeded "The deadline has been exceeded.";
+                die Go::Error::IOTimeout "The deadline has been exceeded.";
               }
             }
             die $@;
@@ -534,7 +534,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
             if ($@ isa Go::Error::IOTimeout) {
               my $deadline = $self->{ReadDeadline} ? $self->{ReadDeadline} : $self->{Deadline};
               if ($deadline && Go::Time->now->after($deadline)) {
-                die Go::Context::Error::DeadlineExceeded "The deadline has been exceeded.";
+                die Go::Error::IOTimeout "The deadline has been exceeded.";
               }
             }
             die $@;
@@ -547,7 +547,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
             if ($@ isa Go::Error::IOTimeout) {
               my $deadline = $self->{WriteDeadline} ? $self->{WriteDeadline} : $self->{Deadline};
               if ($deadline && Go::Time->now->after($deadline)) {
-                die Go::Context::Error::DeadlineExceeded "The deadline has been exceeded.";
+                die Go::Error::IOTimeout "The deadline has been exceeded.";
               }
             }
             die $@;
@@ -592,7 +592,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
             if ($@ isa Go::Error::IOTimeout) {
               my $deadline = $self->{ReadDeadline} ? $self->{ReadDeadline} : $self->{Deadline};
               if ($deadline && Go::Time->now->after($deadline)) {
-                die Go::Context::Error::DeadlineExceeded "The deadline has been exceeded.";
+                die Go::Error::IOTimeout "The deadline has been exceeded.";
               }
             }
             die $@;
@@ -605,7 +605,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
             if ($@ isa Go::Error::IOTimeout) {
               my $deadline = $self->{WriteDeadline} ? $self->{WriteDeadline} : $self->{Deadline};
               if ($deadline && Go::Time->now->after($deadline)) {
-                die Go::Context::Error::DeadlineExceeded "The deadline has been exceeded.";
+                die Go::Error::IOTimeout "The deadline has been exceeded.";
               }
             }
             die $@;
@@ -651,7 +651,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
             if ($@ isa Go::Error::IOTimeout) {
               my $deadline = $self->{ReadDeadline} ? $self->{ReadDeadline} : $self->{Deadline};
               if ($deadline && Go::Time->now->after($deadline)) {
-                die Go::Context::Error::DeadlineExceeded "The deadline has been exceeded.";
+                die Go::Error::IOTimeout "The deadline has been exceeded.";
               }
             }
             die $@;
@@ -664,7 +664,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
             if ($@ isa Go::Error::IOTimeout) {
               my $deadline = $self->{WriteDeadline} ? $self->{WriteDeadline} : $self->{Deadline};
               if ($deadline && Go::Time->now->after($deadline)) {
-                die Go::Context::Error::DeadlineExceeded "The deadline has been exceeded.";
+                die Go::Error::IOTimeout "The deadline has been exceeded.";
               }
             }
             die $@;

@@ -376,7 +376,7 @@ Exceptions thrown by the L<Net::SSLeay#shutdown|SPVM::Net::SSLeay/"shutdown"> me
 
 If a timeout occurs, an exception is thrown. 
 
-If the timeout is caused by a deadline exceedance, the C<eval_error_id> is set to the basic type ID of L<Go::Context::Error::DeadlineExceeded|SPVM::Go::Context::Error::DeadlineExceeded>. 
+If the timeout is caused by a deadline exceedance, the C<eval_error_id> is set to the basic type ID of L<Go::Error::IOTimeout|SPVM::Go::Error::IOTimeout>. 
 
 Otherwise, if it's a general IO timeout, the C<eval_error_id> is set to the basic type ID of L<Go::Error::IOTimeout|SPVM::Go::Error::IOTimeout>.
 

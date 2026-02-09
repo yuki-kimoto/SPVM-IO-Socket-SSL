@@ -1,3 +1,7 @@
+0.019 2026-02-09
+  [Incompatible Changes]
+    * Change I/O timeout exception from Go::Context::Error::DeadlineExceeded to Go::Error::IOTimeout.
+
 0.018 2026-02-06
   [Changes]
     * Implement strict deadline handling in IO::Socket::SSL#shutdown_SSL by using get_remaining_duration and catching IOTimeout.
