@@ -543,7 +543,7 @@ class TestCase::IO::Socket::SSL {
       }
       
       if ($@) {
-        unless ($@ isa Go::Context::Error::DeadlineExceeded) {
+        unless ($@ isa Go::Error::IOTimeout) {
           warn "Unexpected error: " . $@;
           $success_ref->[0] = 0;
         }
@@ -612,8 +612,8 @@ class TestCase::IO::Socket::SSL {
         $socket->close;
       }
       if ($@) {
-        # Check if the error is exactly Go::Context::Error::DeadlineExceeded
-        unless ($@ isa Go::Context::Error::DeadlineExceeded) {
+        # Check if the error is exactly Go::Error::IOTimeout
+        unless ($@ isa Go::Error::IOTimeout) {
           warn "Unexpected error type: " . $@;
           $success_ref->[0] = 0;
         }
@@ -655,7 +655,7 @@ class TestCase::IO::Socket::SSL {
         $listen_socket->close;
       }
       if ($@) {
-        unless ($@ isa Go::Context::Error::DeadlineExceeded) {
+        unless ($@ isa Go::Error::IOTimeout) {
           warn "Unexpected error type in accept: " . $@;
           $success_ref->[0] = 0;
         }
@@ -722,7 +722,7 @@ class TestCase::IO::Socket::SSL {
         }
       }
       if ($@) {
-        unless ($@ isa Go::Context::Error::DeadlineExceeded) {
+        unless ($@ isa Go::Error::IOTimeout) {
           warn "Unexpected error: " . $@;
           $success_ref->[0] = 0;
         }
@@ -783,7 +783,7 @@ class TestCase::IO::Socket::SSL {
         $success_ref->[0] = 0;
       }
       if ($@) {
-        unless ($@ isa Go::Context::Error::DeadlineExceeded) {
+        unless ($@ isa Go::Error::IOTimeout) {
           warn "Unexpected error type in sysread: " . $@;
           $success_ref->[0] = 0;
         }
@@ -840,7 +840,7 @@ class TestCase::IO::Socket::SSL {
         }
       }
       if ($@) {
-        unless ($@ isa Go::Context::Error::DeadlineExceeded) {
+        unless ($@ isa Go::Error::IOTimeout) {
           warn "Unexpected error type in syswrite: " . $@;
           $success_ref->[0] = 0;
         }
