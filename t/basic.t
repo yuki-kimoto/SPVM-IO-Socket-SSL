@@ -9,19 +9,15 @@ use SPVM 'TestCase::IO::Socket::SSL';
 use SPVM 'IO::Socket::SSL';
 use SPVM::IO::Socket::SSL;
 
-use Test::SPVM::Sys::Socket::Util;
-
 my $api = SPVM::api();
 
 my $start_memory_blocks_count = $api->get_memory_blocks_count;
 
-my $port = Test::SPVM::Sys::Socket::Util::get_available_port();
-
 ok(SPVM::TestCase::IO::Socket::SSL->client_and_server_basic);
 
-ok(SPVM::TestCase::IO::Socket::SSL->client_and_server_SSL_key_SSL_cert($port));
+ok(SPVM::TestCase::IO::Socket::SSL->client_and_server_SSL_key_SSL_cert);
 
-ok(SPVM::TestCase::IO::Socket::SSL->client_and_server_no_connect_SSL($port));
+ok(SPVM::TestCase::IO::Socket::SSL->client_and_server_no_connect_SSL);
 
 # Version check
 {
