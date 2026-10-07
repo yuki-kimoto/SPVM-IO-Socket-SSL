@@ -522,7 +522,7 @@ class TestCase::IO::Socket::SSL {
     return $success_ref->[0];
   }
   
-  static method connect_deadline : int ($port : int) {
+  static method connect_deadline : int () {
     
     my $success_ref = [1];
     
@@ -536,7 +536,6 @@ class TestCase::IO::Socket::SSL {
       eval {
         $socket = IO::Socket::SSL->new({
           PeerAddr => $host,
-          PeerPort => $port,
           ReadDeadline => $deadline,
           WriteDeadline => $deadline,
           SSL_verify_mode => SSL->SSL_VERIFY_NONE,
@@ -556,7 +555,11 @@ class TestCase::IO::Socket::SSL {
       }
     }
     
-    return $success_ref->[0];
+    unless ($success_ref->[0]) {
+      return 0;
+    }
+    
+    return 1;
   }
   
   static method read_deadline : int () {
