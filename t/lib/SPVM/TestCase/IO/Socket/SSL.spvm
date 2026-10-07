@@ -559,36 +559,46 @@ class TestCase::IO::Socket::SSL {
     return $success_ref->[0];
   }
   
-  static method read_deadline : int ($port : int) {
+  static method read_deadline : int () {
     
     my $success_ref = [1];
+    my $server_start_ch = Go->make(1);
     
-    # Server side
-    Go->go([$port : int] method : void () {
+    my $wg = Go::Sync::WaitGroup->new;
+    $wg->add(1);
+    Go->go([$success_ref : int[], $server_start_ch : Go::Channel, $wg : Go::Sync::WaitGroup] method : void () {
+      
+      Fn->defer([$wg : Go::Sync::WaitGroup] method : void () {
+        $wg->done;
+      });
+      
+      my $port_ref = [0];
+      Go->go([$server_start_ch : Go::Channel, $port_ref : int[]] method : void () {
+        eval {
+          my $listen_socket = IO::Socket::SSL->new({
+            LocalAddr => "127.0.0.1",
+            Listen => 5,
+            ReuseAddr => 1,
+            SSL_cert_file => "$FILE_DIR/simple-cert.cert.pem",
+            SSL_key_file => "$FILE_DIR/simple-cert.key.pem",
+          });
+          
+          $port_ref->[0] = $listen_socket->sockport;
+          $server_start_ch->write(1);
+          my $client_socket = $listen_socket->accept;
+          
+          # Sleep longer than the client's deadline to trigger the timeout.
+          Go->sleep(Go::Duration_1l->new_from_sec(1.0));
+          
+          $client_socket->close;
+          $listen_socket->close;
+        }
+        if ($@) { warn "Server error: " . $@; }
+      });
+      
       eval {
-        my $listen_socket = IO::Socket::SSL->new({
-          LocalAddr => "127.0.0.1",
-          LocalPort => $port,
-          Listen => 5,
-          ReuseAddr => 1,
-          SSL_cert_file => "$FILE_DIR/simple-cert.cert.pem",
-          SSL_key_file => "$FILE_DIR/simple-cert.key.pem",
-        });
-        
-        my $client_socket = $listen_socket->accept;
-        
-        # Sleep longer than the client's deadline to trigger the timeout.
-        Go->sleep(Go::Duration_1l->new_from_sec(1.0));
-        
-        $client_socket->close;
-        $listen_socket->close;
-      }
-      if ($@) { warn "Server error: " . $@; }
-    });
-    
-    # Client side
-    Go->go([$port : int, $success_ref : int[]] method : void () {
-      eval {
+        $server_start_ch->read;
+        my $port = $port_ref->[0];
         my $host = "127.0.0.1";
         
         # Connect to the server
@@ -620,11 +630,13 @@ class TestCase::IO::Socket::SSL {
         }
       }
     });
+    $wg->wait;
     
-    # Run the scheduler until all goroutines are finished.
-    Go->gosched;
+    unless ($success_ref->[0]) {
+      return 0;
+    }
     
-    return $success_ref->[0];
+    return 1;
   }
   
   static method accept_deadline : int () {
