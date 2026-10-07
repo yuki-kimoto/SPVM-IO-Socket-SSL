@@ -829,7 +829,6 @@ class TestCase::IO::Socket::SSL {
         my $payload = Fn->repeat("a", 8192);
         while (1) {
           $socket->syswrite($payload);
-          Go->gosched;
         }
       }
       if ($@) {
