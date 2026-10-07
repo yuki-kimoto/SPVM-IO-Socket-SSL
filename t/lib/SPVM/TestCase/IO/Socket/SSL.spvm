@@ -627,16 +627,15 @@ class TestCase::IO::Socket::SSL {
     return $success_ref->[0];
   }
   
-    static method accept_deadline : int ($port : int) {
+  static method accept_deadline : int () {
     
     my $success_ref = [1];
     
     # Server side
-    Go->go([$port : int, $success_ref : int[]] method : void () {
+    Go->go([$success_ref : int[]] method : void () {
       eval {
         my $listen_socket = IO::Socket::SSL->new({
           LocalAddr => "127.0.0.1",
-          LocalPort => $port,
           Listen => 5,
           ReuseAddr => 1,
           SSL_cert_file => "$FILE_DIR/simple-cert.cert.pem",
@@ -668,7 +667,7 @@ class TestCase::IO::Socket::SSL {
     return $success_ref->[0];
   }
   
-    static method write_deadline : int ($port : int) {
+  static method write_deadline : int ($port : int) {
     
     my $success_ref = [1];
     my $server_start_ch = Go->make(1);
