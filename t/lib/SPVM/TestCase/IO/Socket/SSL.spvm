@@ -17,7 +17,6 @@ class TestCase::IO::Socket::SSL {
     my $server_socket = IO::Socket::SSL->new({
       LocalAddr => $localhost,
       Listen    => 5,
-      ReuseAddr => 1,
       SSL_startHandshake => 0,
       SSL_cert_file => "$FILE_DIR/simple-cert.cert.pem",
       SSL_key_file => "$FILE_DIR/simple-cert.key.pem",
@@ -81,7 +80,6 @@ class TestCase::IO::Socket::SSL {
     my $server_socket = IO::Socket::SSL->new({
       LocalAddr => $localhost,
       Listen    => 5,
-      ReuseAddr => 1,
       SSL_cert_file => "$FILE_DIR/simple-cert.cert.pem",
       SSL_key_file => "$FILE_DIR/simple-cert.key.pem",
     });
@@ -525,7 +523,6 @@ class TestCase::IO::Socket::SSL {
           my $listen_socket = IO::Socket::SSL->new({
             LocalAddr => "127.0.0.1",
             Listen => 5,
-            ReuseAddr => 1,
             SSL_cert_file => "$FILE_DIR/simple-cert.cert.pem",
             SSL_key_file => "$FILE_DIR/simple-cert.key.pem",
           });
@@ -596,7 +593,6 @@ class TestCase::IO::Socket::SSL {
         my $listen_socket = IO::Socket::SSL->new({
           LocalAddr => "127.0.0.1",
           Listen => 5,
-          ReuseAddr => 1,
           SSL_cert_file => "$FILE_DIR/simple-cert.cert.pem",
           SSL_key_file => "$FILE_DIR/simple-cert.key.pem",
         });
@@ -645,7 +641,6 @@ class TestCase::IO::Socket::SSL {
           my $listen_socket = IO::Socket::SSL->new({
             LocalAddr => "127.0.0.1",
             Listen => 5,
-            ReuseAddr => 1,
             SSL_cert_file => "$FILE_DIR/simple-cert.cert.pem",
             SSL_key_file => "$FILE_DIR/simple-cert.key.pem",
           });
@@ -725,7 +720,6 @@ class TestCase::IO::Socket::SSL {
           my $listen_socket = IO::Socket::SSL->new({
             LocalAddr => "127.0.0.1",
             Listen => 5,
-            ReuseAddr => 1,
             SSL_cert_file => "$FILE_DIR/simple-cert.cert.pem",
             SSL_key_file => "$FILE_DIR/simple-cert.key.pem",
           });
@@ -795,7 +789,6 @@ class TestCase::IO::Socket::SSL {
           my $listen_socket = IO::Socket::SSL->new({
             LocalAddr => "127.0.0.1",
             Listen => 5,
-            ReuseAddr => 1,
             SSL_cert_file => "$FILE_DIR/simple-cert.cert.pem",
             SSL_key_file => "$FILE_DIR/simple-cert.key.pem",
           });
