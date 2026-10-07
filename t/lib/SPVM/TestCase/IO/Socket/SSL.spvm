@@ -667,41 +667,48 @@ class TestCase::IO::Socket::SSL {
     return $success_ref->[0];
   }
   
-  static method write_deadline : int ($port : int) {
+  static method write_deadline : int () {
     
     my $success_ref = [1];
     my $server_start_ch = Go->make(1);
     
-    # Server side
-    Go->go([$port : int, $server_start_ch : Go::Channel] method : void () {
-      eval {
-        my $listen_socket = IO::Socket::SSL->new({
-          LocalAddr => "127.0.0.1",
-          LocalPort => $port,
-          Listen => 5,
-          ReuseAddr => 1,
-          SSL_cert_file => "$FILE_DIR/simple-cert.cert.pem",
-          SSL_key_file => "$FILE_DIR/simple-cert.key.pem",
-        });
-        
-        $server_start_ch->write(1);
-        
-        # Accept the connection but DO NOT read.
-        my $client_socket = $listen_socket->accept;
-        
-        # Keep the connection alive longer than the client's deadline.
-        Go->sleep(Go::Duration_1l->new_from_sec(2.0));
-        
-        $client_socket->close;
-        $listen_socket->close;
-      }
-      if ($@) { warn "Server error: " . $@; }
-    });
-    
-    # Client side
-    Go->go([$port : int, $success_ref : int[], $server_start_ch : Go::Channel] method : void () {
+    my $wg = Go::Sync::WaitGroup->new;
+    $wg->add(1);
+    Go->go([$success_ref : int[], $server_start_ch : Go::Channel, $wg : Go::Sync::WaitGroup] method : void () {
+      
+      Fn->defer([$wg : Go::Sync::WaitGroup] method : void () {
+        $wg->done;
+      });
+      
+      my $port_ref = [0];
+      Go->go([$server_start_ch : Go::Channel, $port_ref : int[]] method : void () {
+        eval {
+          my $listen_socket = IO::Socket::SSL->new({
+            LocalAddr => "127.0.0.1",
+            Listen => 5,
+            ReuseAddr => 1,
+            SSL_cert_file => "$FILE_DIR/simple-cert.cert.pem",
+            SSL_key_file => "$FILE_DIR/simple-cert.key.pem",
+          });
+          
+          $port_ref->[0] = $listen_socket->sockport;
+          $server_start_ch->write(1);
+          
+          # Accept the connection but DO NOT read.
+          my $client_socket = $listen_socket->accept;
+          
+          # Keep the connection alive longer than the client's deadline.
+          Go->sleep(Go::Duration_1l->new_from_sec(2.0));
+          
+          $client_socket->close;
+          $listen_socket->close;
+        }
+        if ($@) { warn "Server error: " . $@; }
+      });
+      
       eval {
         $server_start_ch->read;
+        my $port = $port_ref->[0];
         
         my $host = "127.0.0.1";
         my $socket = IO::Socket::SSL->new({
@@ -731,9 +738,13 @@ class TestCase::IO::Socket::SSL {
         $success_ref->[0] = 0;
       }
     });
+    $wg->wait;
     
-    Go->gosched;
-    return $success_ref->[0];
+    unless ($success_ref->[0]) {
+      return 0;
+    }
+    
+    return 1;
   }
   
   static method read_deadline_specific : int () {
