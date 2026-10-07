@@ -36,13 +36,8 @@ my $start_memory_blocks_count = $api->get_memory_blocks_count;
   ok(SPVM::TestCase::IO::Socket::SSL->accept_deadline($port));
 }
 
-# read_deadline_specific test (Priority check)
 {
-  my $port = Test::SPVM::Sys::Socket::Util::get_available_port;
-  ok(SPVM::TestCase::IO::Socket::SSL->read_deadline_specific($port));
-}
-
-{
+  ok(SPVM::TestCase::IO::Socket::SSL->read_deadline_specific);
   ok(SPVM::TestCase::IO::Socket::SSL->write_deadline_specific);
 }
 
