@@ -17,7 +17,7 @@ my $start_memory_blocks_count = $api->get_memory_blocks_count;
 
 my $port = Test::SPVM::Sys::Socket::Util::get_available_port();
 
-ok(SPVM::TestCase::IO::Socket::SSL->client_and_server_basic($port));
+ok(SPVM::TestCase::IO::Socket::SSL->client_and_server_basic);
 
 ok(SPVM::TestCase::IO::Socket::SSL->client_and_server_SSL_key_SSL_cert($port));
 
