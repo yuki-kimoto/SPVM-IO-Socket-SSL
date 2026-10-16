@@ -188,22 +188,8 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
     my $FD = $self->{FD};
     
-    # SocketCategory
-    my $SocketCategory = -1;
-    if ($Listen > 0) {
-      $SocketCategory = IO::Socket->SOCKET_CATEGORY_SERVER;
-    }
-    elsif ($PeerAddr) {
-      $SocketCategory = IO::Socket->SOCKET_CATEGORY_CLIENT;
-    }
-    elsif ($FD > 0) {
-      $SocketCategory = IO::Socket->SOCKET_CATEGORY_ACCEPTED;
-    }
-    else {
-      die "[Unexpected Error]A socket category cannot be detected.";
-    }
-    $self->{SocketCategory} = $SocketCategory;
-    unless ($Listen > 0 || $PeerAddr) {
+    my $SocketCategory = $self->{SocketCategory};
+    unless ($SocketCategory == IO::Socket->SOCKET_CATEGORY_SERVER || $SocketCategory == IO::Socket->SOCKET_CATEGORY_CLIENT) {
       return;
     }
     
