@@ -203,7 +203,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
       die "[Unexpected Error]A socket category cannot be detected.";
     }
     $self->{SocketCategory} = $SocketCategory;
-    if ($SocketCategory == IO::Socket->SOCKET_CATEGORY_ACCEPTED) {
+    unless ($Listen > 0 || $PeerAddr) {
       return;
     }
     
