@@ -1,4 +1,4 @@
-0.025 2026-11-18
+0.026 2026-11-18
   [Incompatible Changes]
     * Remove write_deadline and read_dealine logic from connect/accept/read/write codes.
   [Warning Fix]
