@@ -175,10 +175,10 @@ class IO::Socket::SSL extends IO::Socket::IP {
       my $SocketCategory = $self->{SocketCategory};
       if ($SocketCategory == IO::Socket->SOCKET_CATEGORY_CLIENT) {
         if ($self->{Context}) {
-          $self->connect_SSL_v2(Go->bg);
+          $self->connect_SSL($self->{Context});
         }
         else {
-          $self->connect_SSL;
+          die "Context must be defined. You perhapps forget to specify Context option.";
         }
       }
     }
@@ -366,7 +366,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     
   }
   
-  method connect_SSL : void () {
+  method connect_SSL : void ($context : Go::Context) {
     
     my $fd = $self->{FD};
     my $ssl_ctx = $self->{ssl_ctx};
@@ -379,7 +379,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     }
     
     while (1) {
-      my $timeout_duration = $self->get_remaining_duration(1);
+      $context = $self->get_context_with_deadline($context, 1);
       
       eval { $ssl->connect; }
       
@@ -388,11 +388,11 @@ class IO::Socket::SSL extends IO::Socket::IP {
         my $again_write = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
         
         if ($again_read) {
-          Go->gosched_io_read($fd, $timeout_duration);
+          Go->gosched_poll_read($context, $fd);
           next;
         }
         elsif ($again_write) {
-          Go->gosched_io_write($fd, $timeout_duration);
+          Go->gosched_poll_write($context, $fd);
           next;
         }
         else {
@@ -446,7 +446,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     $self->{ssl} = $ssl;
   }
   
-  method accept_SSL : void () {
+  method accept_SSL : void ($context : Go::Context) {
     my $fd = $self->{FD};
     my $ssl_ctx = $self->{ssl_ctx};
     my $ssl = Net::SSLeay->new($ssl_ctx);
@@ -458,7 +458,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
     }
     
     while (1) {
-      my $timeout_duration = $self->get_remaining_duration(0);
+      $context = $self->get_context_with_deadline($context, 0);
       
       eval { $ssl->accept; }
       
@@ -467,11 +467,11 @@ class IO::Socket::SSL extends IO::Socket::IP {
         my $again_write = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
         
         if ($again_read) {
-          Go->gosched_io_read($fd, $timeout_duration);
+          Go->gosched_poll_read($context, $fd);
           next;
         }
         elsif ($again_write) {
-          Go->gosched_io_write($fd, $timeout_duration);
+          Go->gosched_poll_write($context, $fd);
           next;
         }
         else {
@@ -524,21 +524,21 @@ class IO::Socket::SSL extends IO::Socket::IP {
     $self->{ssl} = $ssl;
   }
   
-  method accept : IO::Socket::SSL ($peer_ref : Sys::Socket::Sockaddr[] = undef) {
-
-    my $accepted_socket = (IO::Socket::SSL)$self->SUPER::accept($peer_ref);
-
+  method accept : IO::Socket::SSL ($context : Go::Context, $peer_ref : Sys::Socket::Sockaddr[] = undef) {
+    
+    my $accepted_socket = (IO::Socket::SSL)$self->SUPER::accept_v2($context, $peer_ref);
+    
     $accepted_socket->{ssl_ctx} = $self->{ssl_ctx};
-
+    
     my $SSL_startHandshake = $self->{SSL_startHandshake};
-
+    
     if ($SSL_startHandshake) {
-      $accepted_socket->accept_SSL;
+      $accepted_socket->accept_SSL($context);
     }
-
+    
     return $accepted_socket;
   }
-
+  
   method accept_v2 : IO::Socket::SSL ($context : Go::Context, $peer_ref : Sys::Socket::Sockaddr[] = undef) {
     
     my $accepted_socket = (IO::Socket::SSL)$self->SUPER::accept_v2($context, $peer_ref);
@@ -554,13 +554,13 @@ class IO::Socket::SSL extends IO::Socket::IP {
     return $accepted_socket;
   }
   
-  method sysread : int ($buffer : mutable string, $length : int = -1, $offset : int = 0) {
+  method sysread : int ($context : Go::Context, $buffer : mutable string, $length : int = -1, $offset : int = 0) {
     my $ssl = $self->{ssl};
     my $fd = $self->{FD};
     my $read_length = -1;
     
     while (1) {
-      my $timeout_duration = $self->get_remaining_duration(0);
+      $context = $self->get_context_with_deadline($context, 0);
       
       eval { $read_length = $ssl->read($buffer, $length, $offset); }
       
@@ -569,11 +569,11 @@ class IO::Socket::SSL extends IO::Socket::IP {
         my $again_write = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
         
         if ($again_read) {
-          Go->gosched_io_read($fd, $timeout_duration);
+          Go->gosched_poll_read($context, $fd);
           next;
         }
         elsif ($again_write) {
-          Go->gosched_io_write($fd, $timeout_duration);
+          Go->gosched_poll_write($context, $fd);
           next;
         }
         else {
@@ -620,20 +620,13 @@ class IO::Socket::SSL extends IO::Socket::IP {
     return $read_length;
   }
   
-  method read : int ($buffer : mutable string, $length : int = -1, $offset : int = 0) {
-    
-    diag "IO::Socket::SSL#read method is depreacted. Use sysread method instead.";
-    
-    return $self->sysread($buffer, $length, $offset);
-  }
-  
-  method syswrite : int ($buffer : string, $length : int = -1, $offset : int = 0) {
+  method syswrite : int ($context : Go::Context, $buffer : string, $length : int = -1, $offset : int = 0) {
     my $ssl = $self->{ssl};
     my $fd = $self->{FD};
     my $write_length = -1;
     
     while (1) {
-      my $timeout_duration = $self->get_remaining_duration(1);
+      $context = $self->get_context_with_deadline($context, 1);
       
       eval { $write_length = $ssl->write($buffer, $length, $offset); }
       
@@ -642,11 +635,11 @@ class IO::Socket::SSL extends IO::Socket::IP {
         my $again_write = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
         
         if ($again_read) {
-          Go->gosched_io_read($fd, $timeout_duration);
+          Go->gosched_poll_read($context, $fd);
           next;
         }
         elsif ($again_write) {
-          Go->gosched_io_write($fd, $timeout_duration);
+          Go->gosched_poll_write($context, $fd);
           next;
         }
         else {
@@ -693,21 +686,14 @@ class IO::Socket::SSL extends IO::Socket::IP {
     return $write_length;
   }
   
-  method write : int ($buffer : string, $length : int = -1, $offset : int = 0) {
-    
-    diag "IO::Socket::SSL#write method is depreacted. Use syswrite method instead.";
-    
-    return $self->syswrite($buffer, $length, $offset);
-  }
-  
-  method shutdown_SSL : int () {
+  method shutdown_SSL : int ($context : Go::Context) {
     
     my $ssl = $self->{ssl};
     my $fd = $self->{FD};
     
     my $status = -1;
     while (1) {
-      my $timeout_duration = $self->get_remaining_duration(1);
+      $context = $self->get_context_with_deadline($context, 1);
       
       eval { $status = $ssl->shutdown; }
       
@@ -716,11 +702,11 @@ class IO::Socket::SSL extends IO::Socket::IP {
         my $again_write = $@ isa Net::SSLeay::Error::SSL_ERROR_WANT_WRITE;
         
         if ($again_read) {
-          Go->gosched_io_read($fd, $timeout_duration);
+          Go->gosched_poll_read($context, $fd);
           next;
         }
         elsif ($again_write) {
-          Go->gosched_io_write($fd, $timeout_duration);
+          Go->gosched_poll_write($context, $fd);
           next;
         }
         else {
@@ -881,19 +867,19 @@ class IO::Socket::SSL extends IO::Socket::IP {
     die "This method is not allowed in IO::Scoekt::SSL.";
   }
   
-  method send : int ($buffer : string, $flags : int = 0, $length : int = -1, $offset : int = 0) {
+  method send : int ($context : Go::Context, $buffer : string, $flags : int = 0, $length : int = -1, $offset : int = 0) {
     die "This method is not allowed in IO::Scoekt::SSL.";
   }
   
-  method sendto : int ($buffer : string, $flags : int, $to : Sys::Socket::Sockaddr, $length : int = -1, $offset : int = 0) {
+  method sendto : int ($context : Go::Context, $buffer : string, $flags : int, $to : Sys::Socket::Sockaddr, $length : int = -1, $offset : int = 0) {
     die "This method is not allowed in IO::Scoekt::SSL.";
   }
   
-  method recv : int ($buffer : mutable string, $length : int = -1, $flags : int = 0, $offset : int = 0) {
+  method recv : int ($context : Go::Context, $buffer : mutable string, $length : int = -1, $flags : int = 0, $offset : int = 0) {
     die "This method is not allowed in IO::Scoekt::SSL.";
   }
   
-  method recvfrom : int ($buffer : mutable string, $length : int, $flags : int, $from_ref : Sys::Socket::Sockaddr[], $offset : int = 0) {
+  method recvfrom : int ($context : Go::Context, $buffer : mutable string, $length : int, $flags : int, $from_ref : Sys::Socket::Sockaddr[], $offset : int = 0) {
     die "This method is not allowed in IO::Scoekt::SSL.";
   }
   
@@ -903,7 +889,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
       my $ssl = $self->{ssl};
       
       if ($ssl) {
-        $self->shutdown_SSL;
+        $self->shutdown_SSL(Go->bg);
       }
       
       $self->close;

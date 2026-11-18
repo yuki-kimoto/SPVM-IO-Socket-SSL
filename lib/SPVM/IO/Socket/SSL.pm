@@ -35,6 +35,7 @@ As a subclass of L<IO::Socket|SPVM::IO::Socket>, it inherits the support for **d
     
     # Use "ReadDeadline" and WriteDeadline options (defined in IO::Socket)
     my $socket = IO::Socket::SSL->new({
+      Context => Go->bg,
       PeerAddr => $host, 
       PeerPort => $port,
       ReadDeadline => $ctx->deadline,
@@ -70,6 +71,7 @@ As a subclass of L<IO::Socket|SPVM::IO::Socket>, it inherits the support for **d
 
   # --- Server with Goroutines ---
   my $server_socket = IO::Socket::SSL->new({
+    Context => Go->bg,
     LocalPort => 443,
     Listen    => 10,
     SSL_cert_file => "server.crt",
@@ -243,6 +245,8 @@ See L</"Constructor Options"> about $options.
 
 Note:
 
+If the value of L</"Context"> option is not defined, an exception is thrown.
+
 If the value of L</"PeerAddr"> option is defined, a client socket is created.
 
 If the value of L</"Listen"> option is a positive value, a server socket is created.
@@ -289,7 +293,7 @@ Creates a new L<Net::SSLeay::SSL_CTX|SPVM::Net::SSLeay::SSL_CTX> object, configu
 
 =head2 connect_SSL
 
-C<method connect_SSL : void ();>
+C<method connect_SSL : void ($context : Go::Context);>
 
 Creates a new L<Net::SSLeay|SPVM::Net::SSLeay> object, and connects the SSL connection by calling L<Net::SSLeay#connect|SPVM::Net::SSLeay/"connect"> method.
 
@@ -305,7 +309,7 @@ If timeout occurs, an exception is thrown with C<eval_error_id> set to the basic
 
 =head2 accept_SSL
 
-C<method accept_SSL : void ();>
+C<method accept_SSL : void ($context : Go::Context);>
 
 Creates a new L<Net::SSLeay|SPVM::Net::SSLeay> object, and accepts the SSL connection by calling L<Net::SSLeay#accept|SPVM::Net::SSLeay/"accept"> method.
 
@@ -321,7 +325,7 @@ If timeout occurs, an exception is thrown with C<eval_error_id> set to the basic
 
 =head2 accept
 
-C<method accept : L<IO::Socket::SSL|SPVM::IO::Socket::SSL> ($peer_ref : Sys::Socket::Sockaddr[] = undef);>
+C<method accept : L<IO::Socket::SSL|SPVM::IO::Socket::SSL> ($context : Go::Context, $peer_ref : Sys::Socket::Sockaddr[] = undef);>
 
 Creates a new L<IO::Socket::SSL|SPVM::IO::Socket::SSL> object by calling L<accept|SPVM::IO::Socket::IP/"accept"> method in the super class.
 
@@ -333,7 +337,7 @@ And returns the new object.
 
 =head2 sysread
 
-C<method sysread : int ($buffer : mutable string, $length : int = -1, $offset : int = 0);>
+C<method sysread : int ($context : Go::Context, $buffer : mutable string, $length : int = -1, $offset : int = 0);>
 
 Reads the buffer $buffer at offset $offset to the length $length from the socket by calling L<Net::SSLeay#read|SPVM::Net::SSLeay/"read"> method.
 
@@ -347,7 +351,7 @@ If timeout occurs, an exception is thrown with C<eval_error_id> set to the basic
 
 =head2 syswrite
 
-C<method syswrite : int ($buffer : string, $length : int = -1, $offset : int = 0);>
+C<method syswrite : int ($context : Go::Context, $buffer : string, $length : int = -1, $offset : int = 0);>
 
 Writes the buffer $buffer at offset $offset to the length $length to the socket by calling L<Net::SSLeay#write|SPVM::Net::SSLeay/"write"> method.
 
@@ -549,7 +553,7 @@ Client:
   
   my $host = "www.google.com";
   my $port = 443;
-  my $socket = IO::Socket::SSL->new({PeerAddr => $host, PeerPort => $port, SSL_startHandshake => 0});
+  my $socket = IO::Socket::SSL->new({Context => Go->bg, PeerAddr => $host, PeerPort => $port, SSL_startHandshake => 0});
   
   my $ssl_ctx = $socket->ssl_ctx;
   
@@ -565,7 +569,7 @@ Server:
   
   my $host = "www.google.com";
   my $port = 443;
-  my $socket = IO::Socket::SSL->new({Listen => 1, SSL_startHandshake => 0});
+  my $socket = IO::Socket::SSL->new({Context => Go->bg, Listen => 1, SSL_startHandshake => 0});
   
   my $ssl_ctx = $socket->ssl_ctx;
   
