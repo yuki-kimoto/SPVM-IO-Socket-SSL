@@ -684,7 +684,7 @@ class IO::Socket::SSL extends IO::Socket::IP {
       my $ssl = $self->{ssl};
       
       if ($ssl) {
-        $self->shutdown_SSL(Go->bg);
+        eval { $self->shutdown_SSL(Go->bg); }
       }
       
       $self->close;
