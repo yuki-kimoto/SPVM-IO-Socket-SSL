@@ -1,3 +1,6 @@
+0.022 2026-11-18
+  [Internal Changes]
+    * Add v2 methods for Go::Context.
 0.021 2026-10-16
   [Requirement Changes]
     * Require SPVM::IO 0.255
