@@ -47,8 +47,8 @@ class TestCase::IO::Socket::SSL {
     
     my $accepted_socket = (IO::Socket::SSL)undef;
     eval {
-      $accepted_socket = $server_socket->accept_v2(Go->bg);
-      $accepted_socket->accept_SSL_v2(Go->bg);
+      $accepted_socket = $server_socket->accept(Go->bg);
+      $accepted_socket->accept_SSL(Go->bg);
     }
     
     if ($@) {
@@ -58,7 +58,7 @@ class TestCase::IO::Socket::SSL {
     while (1) {
       
       my $data = (mutable string)new_string_len 1;
-      my $read_length = $accepted_socket->sysread_v2(Go->bg, $data);
+      my $read_length = $accepted_socket->sysread(Go->bg, $data);
       
       if ($read_length > 0) {
         if ($data eq "\0") {
