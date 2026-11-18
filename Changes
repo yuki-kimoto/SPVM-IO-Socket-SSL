@@ -1,3 +1,7 @@
+0.025 2026-11-18
+  [Incompatible Changes]
+    * Remove write_deadline and read_dealine logic from connect/accept/read/write codes.
+    
 0.024 2026-11-18
   [Internal Changes]
     * Catch up with latest SPVM::IO.
